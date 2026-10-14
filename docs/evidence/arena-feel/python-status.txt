@@ -1,0 +1,54 @@
+
+  Scores: overall 13.5/100 · objective 53.8/100 · strict 13.9/100 · verified 53.8/100
+  Score guide: overall (lenient) · objective (mechanical only) · strict (penalizes wontfix) · verified (scan-confirmed only)
+  Strict 13.9 (target: 85.0) — run `desloppify next` to find the next improvement
+  Queue: 1 item (1 subjective)
+  Start planning: `desloppify plan`
+  1 files · 0 LOC · 1 dirs · Last scan: 2026-10-13T19:56:00+00:00
+  open (in-scope): 21 · open (out-of-scope carried): 18 · open (global): 39
+
+  Dimension               Checks  Health  Strict  Bar                    Tier  Action
+  ──────────────────────────────────────────────────────────────────────────────────────
+  Code quality                 8  100.0%   96.2%  ████████████████████  T3  autofix  
+  Security                     2   85.0%   85.0%  █████████████████░░░  T4  move  
+  File health                  1  100.0%  100.0%  ████████████████████  T3  refactor  
+  Duplication                 79  100.0%  100.0%  ████████████████████  T3  refactor  
+  Test health                155   26.9%   30.1%  █████░░░░░░░░░░░░░░░  T4  autofix ←
+  Health = open penalized | Strict = open + wontfix penalized
+  Action: fix=auto-fixer | move=reorganize | refactor=manual rewrite | manual=review & fix
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 53.8% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Test health: -11.51 pts (score 26.9%, 63.0% of mechanical pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Focus: Test health (30.1%) — fix 10 items
+
+
+  ── Structural Debt by Area ──
+  Create a task doc for each area → farm to sub-agents for decomposition
+
+Area                                        Items   Tiers       Open   Debt   Weight 
+─────────────────────────────────────────────────────────────────────────────────────
+(unknown)                                   20      T3:0 T4:20  20     0      80     
+scripts/audio                               1       T3:1 T4:0   1      0      3      
+
+  Workflow:
+    1. desloppify show <area> --status wontfix --top 50
+    2. Create tasks/<date>-<area-name>.md with decomposition plan
+    3. Farm each task doc to a sub-agent for implementation
+
+
+  1 resolved issue uncommitted — `desloppify plan commit-log` to review
+  AGENT PLAN (use `desloppify next` to see your next task):
+  Living plan active: Queue: 0 items
+  Next command: `desloppify next`
+  View plan: `desloppify plan`
+  -> ⚠ 1 security issue — review before other cleanup. 21 issues open. Abstraction fit (0.0%) needs attention — run `desloppify next` to start.
+
+

@@ -1,0 +1,246 @@
+{
+  "method": "Original procedural synthesis, deterministic seeded noise and authored tones; no third-party recordings, samples or paid service",
+  "script": "scripts/audio/prepare.py",
+  "measurements": [
+    {
+      "cue": "select",
+      "path": "public/combat/audio/select.wav",
+      "duration": 0.055,
+      "frames": 2426,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 4896,
+      "decodedFloat32Bytes": 9704
+    },
+    {
+      "cue": "confirm",
+      "path": "public/combat/audio/confirm.wav",
+      "duration": 0.11,
+      "frames": 4851,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 9746,
+      "decodedFloat32Bytes": 19404
+    },
+    {
+      "cue": "impact",
+      "path": "public/combat/audio/impact.wav",
+      "duration": 0.16,
+      "frames": 7056,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 14156,
+      "decodedFloat32Bytes": 28224
+    },
+    {
+      "cue": "block",
+      "path": "public/combat/audio/block.wav",
+      "duration": 0.2,
+      "frames": 8820,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 17684,
+      "decodedFloat32Bytes": 35280
+    },
+    {
+      "cue": "brace",
+      "path": "public/combat/audio/brace.wav",
+      "duration": 0.09,
+      "frames": 3969,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 7982,
+      "decodedFloat32Bytes": 15876
+    },
+    {
+      "cue": "counter",
+      "path": "public/combat/audio/counter.wav",
+      "duration": 0.2,
+      "frames": 8820,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 17684,
+      "decodedFloat32Bytes": 35280
+    },
+    {
+      "cue": "heal",
+      "path": "public/combat/audio/heal.wav",
+      "duration": 0.28,
+      "frames": 12348,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 24740,
+      "decodedFloat32Bytes": 49392
+    },
+    {
+      "cue": "energy",
+      "path": "public/combat/audio/energy.wav",
+      "duration": 0.12,
+      "frames": 5292,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 10628,
+      "decodedFloat32Bytes": 21168
+    },
+    {
+      "cue": "knockout",
+      "path": "public/combat/audio/knockout.wav",
+      "duration": 0.38,
+      "frames": 16758,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 33560,
+      "decodedFloat32Bytes": 67032
+    },
+    {
+      "cue": "victory",
+      "path": "public/combat/audio/victory.wav",
+      "duration": 0.5,
+      "frames": 22050,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 44144,
+      "decodedFloat32Bytes": 88200
+    },
+    {
+      "cue": "defeat",
+      "path": "public/combat/audio/defeat.wav",
+      "duration": 0.4,
+      "frames": 17640,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 35324,
+      "decodedFloat32Bytes": 70560
+    },
+    {
+      "cue": "draw",
+      "path": "public/combat/audio/draw.wav",
+      "duration": 0.3,
+      "frames": 13230,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 26504,
+      "decodedFloat32Bytes": 52920
+    },
+    {
+      "cue": "special-pip",
+      "path": "public/combat/audio/special-pip.wav",
+      "duration": 0.23,
+      "frames": 10143,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 20330,
+      "decodedFloat32Bytes": 40572
+    },
+    {
+      "cue": "special-bolt",
+      "path": "public/combat/audio/special-bolt.wav",
+      "duration": 0.19,
+      "frames": 8379,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 16802,
+      "decodedFloat32Bytes": 33516
+    },
+    {
+      "cue": "special-patch",
+      "path": "public/combat/audio/special-patch.wav",
+      "duration": 0.25,
+      "frames": 11025,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 22094,
+      "decodedFloat32Bytes": 44100
+    },
+    {
+      "cue": "special-moss",
+      "path": "public/combat/audio/special-moss.wav",
+      "duration": 0.3,
+      "frames": 13230,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 26504,
+      "decodedFloat32Bytes": 52920
+    },
+    {
+      "cue": "special-aegis",
+      "path": "public/combat/audio/special-aegis.wav",
+      "duration": 0.27,
+      "frames": 11907,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 23858,
+      "decodedFloat32Bytes": 47628
+    },
+    {
+      "cue": "special-nyx",
+      "path": "public/combat/audio/special-nyx.wav",
+      "duration": 0.24,
+      "frames": 10584,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 21212,
+      "decodedFloat32Bytes": 42336
+    },
+    {
+      "cue": "special-echo",
+      "path": "public/combat/audio/special-echo.wav",
+      "duration": 0.27,
+      "frames": 11907,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 23858,
+      "decodedFloat32Bytes": 47628
+    },
+    {
+      "cue": "special-prism",
+      "path": "public/combat/audio/special-prism.wav",
+      "duration": 0.3,
+      "frames": 13230,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 26504,
+      "decodedFloat32Bytes": 52920
+    },
+    {
+      "cue": "special-atlas",
+      "path": "public/combat/audio/special-atlas.wav",
+      "duration": 0.3,
+      "frames": 13230,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 26504,
+      "decodedFloat32Bytes": 52920
+    },
+    {
+      "cue": "special-flux",
+      "path": "public/combat/audio/special-flux.wav",
+      "duration": 0.26,
+      "frames": 11466,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 22976,
+      "decodedFloat32Bytes": 45864
+    },
+    {
+      "cue": "special-ember",
+      "path": "public/combat/audio/special-ember.wav",
+      "duration": 0.32,
+      "frames": 14112,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 28268,
+      "decodedFloat32Bytes": 56448
+    },
+    {
+      "cue": "special-mneme",
+      "path": "public/combat/audio/special-mneme.wav",
+      "duration": 0.3,
+      "frames": 13230,
+      "sampleRate": 44100,
+      "channels": 1,
+      "bytes": 26504,
+      "decodedFloat32Bytes": 52920
+    }
+  ]
+}

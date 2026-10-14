@@ -1,0 +1,260 @@
+{
+  "stage": "before",
+  "target": "heavy",
+  "sample": 1,
+  "browser": "155.0.8059.41",
+  "conditions": "M3/8GiB;390×844 DPR3;6xCPU;1.6Mbps down/750kbps up;150ms;cache disabled;warm Node",
+  "marks": {
+    "battleUsable": 22871,
+    "moveClick": 23376,
+    "animationComplete": 26309
+  },
+  "navigationBytes": 3584,
+  "resources": [
+    {
+      "path": "/_next/static/css/2721d9e440758220.css",
+      "start": 173.89999999850988,
+      "end": 612.3000000007451,
+      "duration": 438.4000000022352,
+      "ttfb": 2.800000000745058,
+      "transfer": 14815,
+      "body": 14515
+    },
+    {
+      "path": "/_next/static/chunks/webpack-daf2b84f7d4f4531.js",
+      "start": 174.69999999925494,
+      "end": 469.8999999985099,
+      "duration": 295.19999999925494,
+      "ttfb": 1.6000000014901161,
+      "transfer": 4572,
+      "body": 4272
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "start": 174.69999999925494,
+      "end": 1422.699999999255,
+      "duration": 1248,
+      "ttfb": 2.300000000745058,
+      "transfer": 64363,
+      "body": 64063
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "start": 174.69999999925494,
+      "end": 1436.6000000014901,
+      "duration": 1261.9000000022352,
+      "ttfb": 2.300000000745058,
+      "transfer": 67184,
+      "body": 66884
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "start": 174.80000000074506,
+      "end": 364.1000000014901,
+      "duration": 189.30000000074506,
+      "ttfb": 1.300000000745058,
+      "transfer": 827,
+      "body": 527
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "start": 174.80000000074506,
+      "end": 446.3999999985099,
+      "duration": 271.5999999977648,
+      "ttfb": 1.6000000014901161,
+      "transfer": 3559,
+      "body": 3259
+    },
+    {
+      "path": "/_next/static/chunks/8437-6e083d946181c622.js",
+      "start": 175.80000000074506,
+      "end": 746.6999999992549,
+      "duration": 570.8999999985099,
+      "ttfb": 0.9000000022351742,
+      "transfer": 5832,
+      "body": 5532
+    },
+    {
+      "path": "/_next/static/chunks/6936-b1fa8e267edb9c3f.js",
+      "start": 175.80000000074506,
+      "end": 770,
+      "duration": 594.1999999992549,
+      "ttfb": 1.1000000014901161,
+      "transfer": 4718,
+      "body": 4418
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "start": 175.80000000074506,
+      "end": 1077.800000000745,
+      "duration": 902,
+      "ttfb": 1.800000000745058,
+      "transfer": 25150,
+      "body": 24850
+    },
+    {
+      "path": "/_next/static/chunks/app/arena/page-8ab8030c2ee5af18.js",
+      "start": 175.89999999850988,
+      "end": 971.1999999992549,
+      "duration": 795.3000000007451,
+      "ttfb": 1.3999999985098839,
+      "transfer": 2617,
+      "body": 2317
+    },
+    {
+      "path": "/_next/static/chunks/3767-d561ccf7f4e9a475.js",
+      "start": 175.89999999850988,
+      "end": 1144.3999999985099,
+      "duration": 968.5,
+      "ttfb": 1.8999999985098839,
+      "transfer": 16538,
+      "body": 16238
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "start": 647.6000000014901,
+      "end": 964,
+      "duration": 316.3999999985099,
+      "ttfb": 0.8000000007450581,
+      "transfer": 614,
+      "body": 314
+    },
+    {
+      "path": "/brand/wordmark.svg",
+      "start": 647.6000000014901,
+      "end": 1136.699999999255,
+      "duration": 489.0999999977648,
+      "ttfb": 0.9000000022351742,
+      "transfer": 1237,
+      "body": 937
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "start": 1632.199999999255,
+      "end": 1788.8999999985099,
+      "duration": 156.69999999925494,
+      "ttfb": 0.5999999977648258,
+      "transfer": 614,
+      "body": 314
+    },
+    {
+      "path": "/api/battle",
+      "start": 1657.8999999985099,
+      "end": 1664.300000000745,
+      "duration": 6.400000002235174,
+      "ttfb": 6.400000002235174,
+      "transfer": 2395,
+      "body": 2095
+    },
+    {
+      "path": "/combat/crisp/aegis.webp",
+      "start": 1680.199999999255,
+      "end": 21889.199999999255,
+      "duration": 20209,
+      "ttfb": 1.4000000022351742,
+      "transfer": 1031222,
+      "body": 1030922
+    },
+    {
+      "path": "/combat/crisp/armadillo-pet.webp",
+      "start": 1680.800000000745,
+      "end": 18012.39999999851,
+      "duration": 16331.599999997765,
+      "ttfb": 1.199999999254942,
+      "transfer": 768624,
+      "body": 768324
+    },
+    {
+      "path": "/combat/crisp/ember.webp",
+      "start": 1680.800000000745,
+      "end": 21783.89999999851,
+      "duration": 20103.099999997765,
+      "ttfb": 1,
+      "transfer": 1021330,
+      "body": 1021030
+    },
+    {
+      "path": "/combat/crisp/phoenix-pet.webp",
+      "start": 1680.800000000745,
+      "end": 22414.300000000745,
+      "duration": 20733.5,
+      "ttfb": 1,
+      "transfer": 1134590,
+      "body": 1134290
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "start": 1680.8999999985099,
+      "end": 5771.89999999851,
+      "duration": 4091,
+      "ttfb": 0.8000000007450581,
+      "transfer": 156534,
+      "body": 156234
+    },
+    {
+      "path": "/api/battle",
+      "start": 23420,
+      "end": 23474.699999999255,
+      "duration": 54.69999999925494,
+      "ttfb": 54.69999999925494,
+      "transfer": 6135,
+      "body": 5835
+    }
+  ],
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 652
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 652
+    }
+  ],
+  "decode": [
+    {
+      "path": "http://127.0.0.1:3100/brand/emblem.svg",
+      "start": 1649.8999999985099,
+      "end": 1650.800000000745
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1649.8999999985099,
+      "end": 1650.800000000745
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1649.8999999985099,
+      "end": 1650.800000000745
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/arenas/sanctuary-portrait.webp",
+      "start": 5774.300000000745,
+      "end": 5779.39999999851
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/armadillo-pet.webp",
+      "start": 18016.800000000745,
+      "end": 18030.60000000149
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/ember.webp",
+      "start": 21787.199999999255,
+      "end": 21805.60000000149
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/aegis.webp",
+      "start": 21891.39999999851,
+      "end": 21910.10000000149
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/phoenix-pet.webp",
+      "start": 22418.300000000745,
+      "end": 22440.5
+    }
+  ],
+  "longTasks": [
+    150,
+    129
+  ]
+}

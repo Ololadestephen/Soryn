@@ -1,0 +1,88 @@
+[
+  {
+    "path": "public/hero/sanctuary-desktop.mp4",
+    "bytes": 460371,
+    "sha256": "659b1e9f7c6b2977ad8f38b557419735270cb6073d7709806f608f6cc88bd185",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 1280,
+          "height": 720,
+          "pix_fmt": "yuv420p"
+        }
+      ],
+      "format": {
+        "duration": "10.000000",
+        "size": "460371"
+      }
+    }
+  },
+  {
+    "path": "public/hero/sanctuary-mobile.mp4",
+    "bytes": 208212,
+    "sha256": "95d740c0e6f88090a6036cae555efcccb4275ca8ad1d3c3a1078e4de6b917970",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "codec_type": "video",
+          "width": 540,
+          "height": 844,
+          "pix_fmt": "yuv420p"
+        }
+      ],
+      "format": {
+        "duration": "10.000000",
+        "size": "208212"
+      }
+    }
+  },
+  {
+    "path": "public/combat/arenas/sanctuary-desktop.webp",
+    "bytes": 485850,
+    "sha256": "492cbfbaf8fbee2e6e39dad8197b014735a78fe0c86b3350a4a75224229d6193",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "webp",
+          "codec_type": "video",
+          "width": 1672,
+          "height": 941,
+          "pix_fmt": "yuv420p"
+        }
+      ],
+      "format": {
+        "size": "485850"
+      }
+    }
+  },
+  {
+    "path": "public/combat/arenas/sanctuary-portrait.webp",
+    "bytes": 156234,
+    "sha256": "6dd4298d898c85cbcadc66545add29856b62c9266bb2c0b3e6c2f499fdb70611",
+    "metadata": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "webp",
+          "codec_type": "video",
+          "width": 602,
+          "height": 941,
+          "pix_fmt": "yuv420p"
+        }
+      ],
+      "format": {
+        "size": "156234"
+      }
+    }
+  }
+]

@@ -1,0 +1,134 @@
+@media (max-width: 700px) and (min-height: 501px) {
+  .battle-stage .combat-scoreboard {
+    inset: max(10px, env(safe-area-inset-top)) 10px auto;
+    gap: 12px;
+    padding-top: 44px;
+  }
+  .battle-stage .combat-status {
+    width: 50%;
+    padding: 8px;
+  }
+  .battle-stage .combat-status h3 {
+    font-size: 16px;
+  }
+  .battle-stage .combat-status h3 small {
+    display: none;
+  }
+  .battle-stage .combat-status p,
+  .battle-stage .health-row {
+    font-size: 11px;
+  }
+  .battle-stage .arena-round {
+    top: max(14px, env(safe-area-inset-top));
+    max-width: 190px;
+  }
+  .move-notice-region {
+    width: 52%;
+  }
+  .move-notice {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+  .battle-stage .arena-fighter {
+    width: min(66vw, 100cqh, var(--fighter-limit));
+    height: min(66vw, 100cqh, var(--fighter-limit));
+  }
+  .battle-stage .fighter-player {
+    left: -6%;
+  }
+  .battle-stage .fighter-opponent {
+    right: -6%;
+  }
+  .battle-stage .combat-arena {
+    --arena-reach: calc(112cqw - min(66cqw, 100cqh, var(--fighter-limit)));
+  }
+  .battle-stage .combat-controls {
+    width: calc(100% - 20px);
+    gap: 7px;
+  }
+  .battle-stage .combat-controls span {
+    font-size: 15px;
+  }
+  .battle-stage .combat-controls small {
+    font-size: 10px;
+  }
+  .battle-stage .combat-result h2 {
+    font-size: 32px;
+  }
+}
+@media (max-height: 500px) {
+  .battle-stage .combat-scoreboard {
+    padding-top: 0;
+    inset: 8px 58px auto 12px;
+  }
+  .battle-stage .combat-status {
+    padding: 6px 10px;
+    width: 38%;
+  }
+  .battle-stage .combat-status h3 {
+    font-size: 16px;
+  }
+  .battle-stage .combat-status p {
+    font-size: 10px;
+  }
+  .battle-stage .arena-fighter {
+    width: min(50dvh, 100cqh, var(--fighter-limit));
+    height: min(50dvh, 100cqh, var(--fighter-limit));
+  }
+  .battle-stage .fighter-player {
+    left: 13%;
+  }
+  .battle-stage .fighter-opponent {
+    right: 13%;
+  }
+  .battle-stage .combat-arena {
+    --arena-reach: calc(74cqw - min(50dvh, 100cqh, var(--fighter-limit)));
+  }
+  .battle-stage .combat-controls button {
+    min-height: 60px;
+    padding: 5px;
+  }
+  .battle-stage .combat-controls .move-icon {
+    height: 20px;
+    font-size: 18px;
+  }
+  .battle-stage .combat-controls span {
+    font-size: 13px;
+  }
+  .battle-stage .combat-controls small {
+    margin-top: 2px;
+    font-size: 10px;
+  }
+  .move-notice-region {
+    width: 28%;
+  }
+  .move-notice {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .move-notice {
+    animation-name: move-notice-static;
+  }
+  .battle-stage *,
+  .battle-stage *::before {
+    transition: none !important;
+  }
+}
+@keyframes move-notice-static {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  7%,
+  91% {
+    opacity: 1;
+  }
+}
+body:has(.battle-stage[open]) .topbar,
+body:has(.battle-stage[open]) footer,
+body:has(.battle-stage[open]) .arena-intro,
+body:has(.battle-stage[open]) .skip-link {
+  display: none;
+}

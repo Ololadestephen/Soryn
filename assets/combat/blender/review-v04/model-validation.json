@@ -1,0 +1,37 @@
+{
+  "scene": "Chog_Aegis_ModelReview_v04",
+  "blender": "5.2.2 LTS",
+  "view_transform": "AgX",
+  "mesh_parts": 227,
+  "vertices": 75668,
+  "polygons": 77781,
+  "bounds": {
+    "Aegis": {
+      "minimum": [
+        -1.7447845935821533,
+        -0.7490000128746033,
+        0.0
+      ],
+      "maximum": [
+        1.308203935623169,
+        0.7466562986373901,
+        4.542091369628906
+      ]
+    },
+    "Armadillo": {
+      "minimum": [
+        1.0470000505447388,
+        -1.1177499294281006,
+        0.00019999966025352478
+      ],
+      "maximum": [
+        2.1130001544952393,
+        1.03141188621521,
+        0.8615058064460754
+      ]
+    }
+  },
+  "armatures": 0,
+  "animated_objects": 0,
+  "stage": "editable model draft, pending visual review; not rig-ready approval"
+}

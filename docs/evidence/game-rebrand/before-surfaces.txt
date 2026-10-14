@@ -1,0 +1,88 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs rebrand-surfaces.spec.ts
+
+[WebServer] (node:14731) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:14732) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/e2e/rebrand-surfaces.spec.ts:12:3 › desktop main route and state coverage (2.1s)
+(node:14749) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/e2e/rebrand-surfaces.spec.ts:12:3 › mobile main route and state coverage (1.3s)
+
+
+  1) tests/e2e/rebrand-surfaces.spec.ts:12:3 › desktop main route and state coverage ───────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="error">…</div> aka getByText('Invalid request. Check fields and supported versions.Retry saved requestReload')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      18 |       if (route === "/arena") await expect(page.getByRole("button", { name: "Enter guest arena" })).toBeEnabled();
+      19 |       if (route === "/character") await expect(page.locator(".identity-status")).toBeVisible();
+    > 20 |       if (route.includes("challenge=")) await expect(page.getByRole("alert")).toBeVisible();
+         |                                                                               ^
+      21 |       if (route === "/play") await expect(page.getByRole("button", { name: "Start guest adventure" })).toBeEnabled();
+      22 |       await page.screenshot({ path: `${evidence}/${name}-${label}.png` });
+      23 |       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        at /Users/apple/Desktop/chogsnft/tests/e2e/rebrand-surfaces.spec.ts:20:79
+
+    Error Context: test-results/rebrand-surfaces-desktop-main-route-and-state-coverage/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rebrand-surfaces-desktop-main-route-and-state-coverage/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rebrand-surfaces-desktop-main-route-and-state-coverage/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/e2e/rebrand-surfaces.spec.ts:12:3 › mobile main route and state coverage ────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('alert')
+    Expected: visible
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="error">…</div> aka getByText('Invalid request. Check fields and supported versions.Retry saved requestReload')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toBeVisible" getByRole('alert') with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      18 |       if (route === "/arena") await expect(page.getByRole("button", { name: "Enter guest arena" })).toBeEnabled();
+      19 |       if (route === "/character") await expect(page.locator(".identity-status")).toBeVisible();
+    > 20 |       if (route.includes("challenge=")) await expect(page.getByRole("alert")).toBeVisible();
+         |                                                                               ^
+      21 |       if (route === "/play") await expect(page.getByRole("button", { name: "Start guest adventure" })).toBeEnabled();
+      22 |       await page.screenshot({ path: `${evidence}/${name}-${label}.png` });
+      23 |       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+        at /Users/apple/Desktop/chogsnft/tests/e2e/rebrand-surfaces.spec.ts:20:79
+
+    Error Context: test-results/rebrand-surfaces-mobile-main-route-and-state-coverage/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/rebrand-surfaces-mobile-main-route-and-state-coverage/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/rebrand-surfaces-mobile-main-route-and-state-coverage/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/e2e/rebrand-surfaces.spec.ts:12:3 › desktop main route and state coverage ────────────────
+    tests/e2e/rebrand-surfaces.spec.ts:12:3 › mobile main route and state coverage ─────────────────

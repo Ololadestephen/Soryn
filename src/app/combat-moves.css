@@ -1,0 +1,272 @@
+.move-effect {
+  position: absolute;
+  top: 38%;
+  left: 52%;
+  width: 58px;
+  height: 58px;
+  color: #f7db65;
+  filter: drop-shadow(0 0 5px #292137);
+  overflow: visible;
+  z-index: 5;
+  pointer-events: none;
+}
+.move-special .move-effect {
+  width: 90px;
+  height: 90px;
+  top: 27%;
+}
+.combat-ranged .move-effect {
+  animation: move-flight 260ms linear both;
+}
+.effect-lens {
+  color: #fff4ca;
+}
+.effect-gear {
+  color: #bde4ed;
+}
+.effect-leaf,
+.effect-bloom {
+  color: #a8d790;
+}
+.effect-mask,
+.effect-memory {
+  color: #e5bcf7;
+}
+.effect-spectrum {
+  color: #bde4ed;
+}
+.effect-circuit {
+  color: #bde4ed;
+}
+.effect-flame {
+  color: #ffa786;
+}
+.treatment-echo-special.hit-2 {
+  top: 52%;
+  color: #bde4ed;
+}
+.treatment-bolt-special.hit-2 {
+  top: 58%;
+  rotate: 25deg;
+}
+.treatment-pip-basic {
+  width: 28px;
+  height: 28px;
+}
+.treatment-patch-basic {
+  rotate: 30deg;
+}
+.treatment-flux-basic {
+  rotate: -20deg;
+}
+.treatment-prism-special {
+  filter: drop-shadow(10px 0 0 #c9a3df) drop-shadow(-10px 0 0 #f7db65);
+}
+.treatment-atlas-special {
+  width: 110px;
+  height: 110px;
+  top: 12%;
+}
+.treatment-ember-special {
+  width: 120px;
+  height: 120px;
+}
+.combat-number {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  translate: -50% 0;
+  background: #fff4ca;
+  color: #292137;
+  border: 2px solid #292137;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  width: max-content;
+  max-width: 230px;
+  text-align: center;
+  z-index: 7;
+  pointer-events: none;
+}
+.cue-heal {
+  background: #def4d4;
+}
+.cue-counter {
+  background: #f7db65;
+}
+.cue-dodge,
+.cue-block,
+.cue-decoy {
+  background: #e7dff4;
+}
+.combat-decoy {
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  top: 29%;
+  left: -25%;
+  opacity: 0.5;
+  font-size: 12px;
+  color: white;
+  text-shadow: none;
+}
+.combat-decoy .combat-art {
+  height: 100%;
+  width: 100%;
+}
+.combat-decoy span {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  font-weight: 700;
+  color: white;
+  background: #292137;
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .combat-anticipate .fighter-facing {
+    animation: move-wind 160ms ease-out both;
+    transform-origin: 50% 90%;
+  }
+  .visual-pip-special.combat-anticipate {
+    filter: drop-shadow(0 0 8px #f7db65);
+  }
+  .visual-bolt-special.combat-melee .fighter-facing {
+    animation: delivery-bounce 260ms ease-out;
+  }
+  .visual-aegis-special.combat-melee .fighter-facing {
+    rotate: calc(var(--facing) * 16deg);
+  }
+  .visual-atlas-special.combat-melee .fighter-facing {
+    animation: heavy-stomp 260ms ease-out;
+  }
+  .visual-nyx-special.combat-melee .fighter-facing {
+    filter: drop-shadow(-25px 0 3px #c9a3df);
+    opacity: 0.7;
+  }
+  .visual-ember-special.combat-melee .fighter-facing {
+    filter: drop-shadow(0 0 18px #dc8366);
+  }
+  .combat-dodge .fighter-facing {
+    animation: combat-dodge 340ms ease-out both;
+  }
+  .combat-number {
+    animation: number-pop 340ms ease-out both;
+  }
+  .treatment-patch-special,
+  .treatment-moss-special {
+    animation: repair-spin 340ms ease-out;
+  }
+}
+@keyframes move-flight {
+  from {
+    transform: translateX(0) scale(0.6);
+  }
+  to {
+    transform: translateX(calc(var(--facing) * var(--arena-reach))) scale(1);
+  }
+}
+@keyframes move-wind {
+  to {
+    rotate: calc(var(--facing) * -9deg);
+    translate: calc(var(--facing) * -8px) 2px;
+  }
+}
+@keyframes delivery-bounce {
+  0%,
+  100% {
+    translate: 0;
+  }
+  50% {
+    translate: 0 -16px;
+  }
+}
+@keyframes heavy-stomp {
+  0% {
+    translate: 0 -14px;
+  }
+  80% {
+    translate: 0 7px;
+  }
+  100% {
+    translate: 0;
+  }
+}
+@keyframes combat-dodge {
+  50% {
+    translate: calc(var(--facing) * -26px) 0;
+    rotate: calc(var(--facing) * -18deg);
+  }
+}
+@keyframes number-pop {
+  from {
+    opacity: 0.5;
+    scale: 0.75;
+  }
+  35% {
+    opacity: 1;
+    scale: 1.1;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes repair-spin {
+  from {
+    rotate: -50deg;
+    scale: 0.6;
+  }
+  to {
+    rotate: 0deg;
+    scale: 1;
+  }
+}
+@media (max-width: 700px) {
+  .combat-number {
+    font-size: 12px;
+    max-width: 145px;
+    top: 0;
+    padding: 4px 6px;
+  }
+  .move-effect {
+    width: 40px;
+    height: 40px;
+  }
+  .move-special .move-effect {
+    width: 65px;
+    height: 65px;
+  }
+  .treatment-atlas-special,
+  .treatment-ember-special {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+.fighter-motion {
+  height: 100%;
+  width: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .phase-action.visual-bolt-special .fighter-motion {
+    animation: delivery-bounce 260ms ease-out;
+  }
+  .phase-action.visual-atlas-special .fighter-motion {
+    animation: heavy-stomp 260ms ease-out;
+  }
+  .phase-action.visual-aegis-special .fighter-motion {
+    animation: shield-drive 260ms ease-out;
+  }
+}
+@keyframes shield-drive {
+  from {
+    rotate: calc(var(--facing) * -8deg);
+  }
+  to {
+    rotate: calc(var(--facing) * 8deg);
+  }
+}

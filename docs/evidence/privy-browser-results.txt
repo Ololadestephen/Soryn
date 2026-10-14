@@ -1,0 +1,19 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs
+
+[WebServer] (node:61324) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:61368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/game.spec.ts:4:1 › a real failure, replay, consent and cross-browser challenge (3.3s)
+  ✓  2 tests/e2e/game.spec.ts:89:1 › mobile layout, keyboard play and reduced motion (652ms)
+  ✓  3 tests/e2e/game.spec.ts:124:1 › design stays accessible at narrow widths and enlarged text (1.4s)
+  ✓  4 tests/e2e/game.spec.ts:190:1 › a lost response retries the persisted turn without double spending (533ms)
+  ✓  5 tests/e2e/identity.spec.ts:4:1 › unconfigured Privy is honest and leaves guest adventures playable (1.0s)
+  ✓  6 tests/e2e/identity.spec.ts:30:1 › public token history requires no Privy login and protected APIs fail closed (1.2s)
+
+  6 passed (11.3s)

@@ -1,0 +1,178 @@
+.combat-shield {
+  position: absolute;
+  inset: 15px -10px;
+  border: 4px solid #f7db65;
+  border-radius: 50%;
+  box-shadow: 0 0 18px #f7db6544;
+  pointer-events: none;
+}
+.shield-nyx {
+  border-style: dashed;
+  transform: skewX(-15deg);
+}
+.combat-projectile {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  background: #f7db65;
+  border: 3px solid #fff4ca;
+  border-radius: 50%;
+  box-shadow: 0 0 18px #f7db65;
+}
+.projectile-prism {
+  border-radius: 0;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: #bde4ed;
+}
+.projectile-patch,
+.projectile-flux {
+  border-radius: 3px;
+  background: #bde4ed;
+}
+.projectile-moss {
+  background: #a8d790;
+  border-radius: 70% 10%;
+}
+.projectile-mneme {
+  background: #c9a3df;
+}
+.combat-impact,
+.combat-recovery,
+.combat-decoy,
+.combat-mark,
+.combat-disrupt,
+.combat-burn {
+  position: absolute;
+  left: 45%;
+  top: 25%;
+  font-size: 48px;
+  font-weight: 700;
+  color: #f7db65;
+  text-shadow: 0 0 8px var(--ink);
+  pointer-events: none;
+}
+.combat-recovery {
+  color: #a8d790;
+}
+.combat-decoy {
+  left: -20px;
+  top: 50%;
+  opacity: 0.8;
+  color: #c9a3df;
+}
+.combat-mark {
+  left: 30%;
+  top: -8px;
+  font-size: 32px;
+  color: #bde4ed;
+}
+.combat-disrupt {
+  left: 75%;
+  top: 35%;
+  font-size: 38px;
+}
+.combat-burn {
+  left: 25%;
+  top: 65%;
+  color: #ffa786;
+  font-size: 38px;
+}
+.combat-ko .combat-body {
+  transform: translate(-12px, 20px) rotate(-45deg);
+  transform-origin: 90px 170px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fighter-style-bolt.combat-melee:not(.combat-ko) .fighter-facing {
+    rotate: calc(var(--facing) * 12deg);
+    transform-origin: 50% 90%;
+  }
+  .fighter-style-atlas.combat-melee:not(.combat-ko) .fighter-facing {
+    rotate: calc(var(--facing) * 6deg);
+    transform-origin: 50% 90%;
+  }
+  .fighter-style-nyx.combat-melee:not(.combat-ko) .fighter-facing {
+    opacity: 0.65;
+    filter: drop-shadow(-10px 0 5px #c9a3df);
+  }
+  .fighter-style-ember.combat-melee:not(.combat-ko) .fighter-facing {
+    filter: drop-shadow(0 0 10px #dc8366);
+  }
+  .combat-impact {
+    animation: combat-flash 260ms ease-out;
+  }
+  .arena-fighter {
+    transition: transform 220ms ease-in-out;
+  }
+  .combat-melee {
+    transform: translateX(calc(var(--facing) * (var(--arena-reach) - 60px)));
+  }
+  .combat-melee .arm-front {
+    transform: rotate(-45deg);
+    transform-origin: 116px 136px;
+  }
+  .combat-ranged .combat-projectile {
+    animation: combat-projectile 300ms ease-in;
+  }
+  .combat-hit .fighter-facing {
+    animation: combat-hit 240ms ease-out;
+  }
+  .combat-heal .combat-recovery {
+    animation: combat-heal 300ms ease-out;
+  }
+  .combat-defend .fighter-facing {
+    animation: combat-brace 180ms ease-out;
+  }
+}
+@keyframes combat-projectile {
+  from {
+    transform: translateX(0) scale(0.5);
+  }
+  to {
+    transform: translateX(calc(var(--facing) * var(--arena-reach))) scale(1.3);
+  }
+}
+@keyframes combat-hit {
+  0%,
+  100% {
+    translate: 0;
+  }
+  35% {
+    translate: calc(var(--facing) * -14px);
+    filter: brightness(1.5);
+  }
+}
+@keyframes combat-heal {
+  from {
+    translate: 0 16px;
+    opacity: 0.3;
+  }
+  to {
+    translate: 0 -20px;
+    opacity: 1;
+  }
+}
+@keyframes combat-brace {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0.94;
+  }
+}
+
+@keyframes combat-flash {
+  from {
+    scale: 0.6;
+    opacity: 0.4;
+  }
+  50% {
+    scale: 1.4;
+    opacity: 1;
+  }
+  to {
+    scale: 1;
+    opacity: 0.6;
+  }
+}

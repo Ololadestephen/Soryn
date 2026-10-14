@@ -1,0 +1,16 @@
+
+> chog-deja-vu@0.1.0 test
+> vitest run
+
+
+ RUN  v5.0.3 /Users/apple/Desktop/chogsnft
+
+
+ Test Files  37 passed (37)
+      Tests  206 passed | 1 skipped (207)
+   Start at  21:07:49
+   Duration  1.95s (import 40%, tests 40%, transform 19%, worker 1%)
+
+    Isolate  37 workers spawned · ~92ms startup each (spawn + environment, per file)
+             at least ~393ms faster with isolate: false — reuses workers across files instead of one per file
+

@@ -1,0 +1,207 @@
+.character-selection {
+  padding-bottom: 32px;
+}
+.character-selection > p {
+  max-width: 70ch;
+  margin-bottom: 20px;
+}
+.character-selection fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.character-selection legend {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.character-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+  overflow-wrap: anywhere;
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 18px;
+  gap: 12px;
+}
+.character-card.selected {
+  border: 2px solid var(--purple);
+  background: var(--paper);
+  padding: 17px;
+}
+.character-portrait {
+  width: 100px;
+  max-width: 100%;
+  flex-shrink: 0;
+  height: auto;
+}
+.character-card-copy {
+  min-width: 0;
+}
+.character-card h3 {
+  font-size: 22px;
+}
+.character-card h3 span {
+  display: block;
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.character-card p {
+  font-size: 14px;
+  margin-top: 10px;
+}
+.character-card strong {
+  display: block;
+  margin-top: 12px;
+}
+.character-pick {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  gap: 8px;
+  margin-top: 14px;
+  font-weight: 700;
+}
+.character-pick input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--purple);
+}
+.locked-label {
+  display: block;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.ability-status {
+  border: 1px solid currentColor;
+  border-radius: 8px;
+  padding: 14px;
+  margin-top: 18px;
+}
+.ability-status h4 {
+  font-size: 18px;
+  margin: 0;
+}
+.ability-status ul {
+  padding-left: 20px;
+}
+.ability-status p {
+  font-size: 14px;
+}
+.room-interactions {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+}
+.room-interactions button {
+  font-size: 14px;
+  padding: 8px 12px;
+}
+.stage-character {
+  transform-origin: 0 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .stage-character {
+    transition: transform 220ms ease-out;
+  }
+}
+@media (max-width: 1050px) {
+  .character-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .character-grid {
+    grid-template-columns: 1fr;
+  }
+  .character-card {
+    padding: 16px;
+  }
+  .character-card.selected {
+    padding: 15px;
+  }
+  .character-portrait {
+    width: 86px;
+  }
+  .character-card {
+    flex-wrap: wrap;
+  }
+}
+@media (forced-colors: active) {
+  .character-card,
+  .character-card.selected,
+  .ability-status {
+    border-color: ButtonText;
+  }
+}
+.roster-disclosure {
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 20px;
+  background: var(--soft);
+}
+.roster-disclosure > summary {
+  min-height: 44px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-weight: 700;
+}
+.roster-disclosure[open] > summary {
+  margin-bottom: 20px;
+}
+.exhibit-loadout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+.exhibit-loadout .character-portrait {
+  width: 66px;
+}
+.exhibit-loadout p {
+  margin: 0;
+}
+.tactical-play {
+  align-items: start;
+  gap: 20px;
+  border: 0;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+}
+.tactical-play > .stage {
+  position: sticky;
+  top: 24px;
+  border: 1px solid var(--ink);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.tactical-play .stage-art {
+  margin: 0;
+}
+.tactical-play > .controls {
+  border-radius: 18px;
+}
+.ability-status summary {
+  min-height: 44px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-weight: 700;
+}
+@media (max-width: 700px) {
+  .tactical-play > .stage {
+    position: static;
+  }
+}

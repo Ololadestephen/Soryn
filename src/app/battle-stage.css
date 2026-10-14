@@ -1,0 +1,134 @@
+/* Native modal makes all ordinary site chrome inert during a battle. */
+.battle-stage {
+  position: fixed;
+  inset: 0;
+  width: 100dvw;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  color: #fff4e6;
+  background: #292137;
+  overscroll-behavior: none;
+  --hud-bottom: 136px;
+  --controls-height: 120px;
+}
+.battle-stage::backdrop {
+  background: #292137;
+}
+.battle-stage .combat-arena {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(#19132226, transparent 35%, #19132222),
+    url("/combat/rendered/environment.webp") center / cover;
+  --arena-reach: calc(84cqw - min(38cqw, 64dvh, 100cqh, var(--fighter-limit)));
+}
+.battle-stage .combat-scoreboard {
+  position: absolute;
+  inset: max(12px, env(safe-area-inset-top))
+    max(64px, env(safe-area-inset-right)) auto
+    max(16px, env(safe-area-inset-left));
+  padding: 0;
+  gap: 18%;
+}
+.battle-stage .combat-status {
+  padding: 10px 16px;
+  background: #21192ce8;
+  border: 1px solid #c5acc466;
+  border-radius: 14px;
+  width: 38%;
+  min-width: 0;
+  max-width: 400px;
+  box-shadow: 0 5px 20px #21192c44;
+}
+.battle-stage .combat-status h3 {
+  font: 800 22px var(--font-display);
+  margin: 0;
+}
+.battle-stage .combat-status small {
+  font:
+    11px Arial,
+    sans-serif;
+}
+.battle-stage .health-row {
+  margin-top: 3px;
+}
+.battle-stage .combat-status p {
+  margin-top: 4px;
+  font-size: 12px;
+}
+.battle-stage .combat-status progress {
+  height: 12px;
+}
+.battle-stage .status-list {
+  margin-top: 4px;
+}
+.battle-stage .status-list li {
+  font-size: 10px;
+  padding: 1px 4px;
+}
+.battle-stage .combat-field {
+  position: absolute;
+  inset: calc(var(--hud-bottom) + 44px) 0 var(--controls-height);
+  height: auto;
+  container-type: size;
+}
+.battle-stage .arena-round {
+  top: max(14px, env(safe-area-inset-top));
+  color: #ffe2a2;
+  background: #21192ce8;
+  text-align: center;
+  white-space: normal;
+  max-width: 150px;
+  font-size: 12px;
+  border-color: #ffe2a255;
+}
+.battle-stage .arena-floor {
+  display: none;
+}
+.battle-stage .arena-fighter {
+  width: min(38vw, 64dvh, 100cqh, var(--fighter-limit));
+  height: min(38vw, 64dvh, 100cqh, var(--fighter-limit));
+  bottom: 0;
+  filter: drop-shadow(0 12px 6px #21192c66);
+}
+.battle-stage .fighter-player {
+  left: 8%;
+}
+.battle-stage .fighter-opponent {
+  right: 8%;
+}
+.rendered-art {
+  background-repeat: no-repeat;
+  aspect-ratio: 1;
+}
+.battle-stage .rendered-art {
+  width: 100%;
+  height: 100%;
+}
+.battle-stage .fighter-motion {
+  height: 100%;
+}
+.battle-stage .combat-art {
+  object-fit: contain;
+}
+.battle-stage .combat-announcement {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .battle-stage .combat-melee {
+    transform: translateX(
+      calc(
+        var(--facing) * max(0px, var(--arena-reach) - min(24cqw, 40dvh, 60cqh))
+      )
+    );
+  }
+}

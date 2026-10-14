@@ -1,0 +1,150 @@
+{
+  "aegis": {
+    "bounds": [0, 0, 208, 391],
+    "sourceCrop": {
+      "left": 62,
+      "top": 44,
+      "width": 208,
+      "height": 391
+    },
+    "clips": {
+      "idle": {
+        "path": "/combat/blender/aegis-idle.webp",
+        "width": 1040,
+        "height": 1173,
+        "columns": 5,
+        "count": 12,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "basic": {
+        "path": "/combat/blender/aegis-basic.webp",
+        "width": 1664,
+        "height": 1564,
+        "columns": 8,
+        "count": 32,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "special": {
+        "path": "/combat/blender/aegis-special.webp",
+        "width": 1872,
+        "height": 1564,
+        "columns": 9,
+        "count": 36,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "guard": {
+        "path": "/combat/blender/aegis-guard.webp",
+        "width": 832,
+        "height": 782,
+        "columns": 4,
+        "count": 7,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "guard-recovery": {
+        "path": "/combat/blender/aegis-guard-recovery.webp",
+        "width": 832,
+        "height": 782,
+        "columns": 4,
+        "count": 6,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "counter": {
+        "path": "/combat/blender/aegis-counter.webp",
+        "width": 1456,
+        "height": 1564,
+        "columns": 7,
+        "count": 26,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "hit": {
+        "path": "/combat/blender/aegis-hit.webp",
+        "width": 1040,
+        "height": 1173,
+        "columns": 5,
+        "count": 12,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "guard-hit": {
+        "path": "/combat/blender/aegis-guard-hit.webp",
+        "width": 1040,
+        "height": 1173,
+        "columns": 5,
+        "count": 12,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "knockout": {
+        "path": "/combat/blender/aegis-knockout.webp",
+        "width": 1456,
+        "height": 1173,
+        "columns": 7,
+        "count": 20,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "guard-knockout": {
+        "path": "/combat/blender/aegis-guard-knockout.webp",
+        "width": 1456,
+        "height": 1173,
+        "columns": 7,
+        "count": 20,
+        "frameWidth": 208,
+        "frameHeight": 391
+      },
+      "defeated": {
+        "path": "/combat/blender/aegis-defeated.webp",
+        "width": 416,
+        "height": 391,
+        "columns": 2,
+        "count": 1,
+        "frameWidth": 208,
+        "frameHeight": 391
+      }
+    }
+  },
+  "armadillo": {
+    "bounds": [0, 0, 239, 163],
+    "sourceCrop": {
+      "left": 3,
+      "top": 26,
+      "width": 239,
+      "height": 163
+    },
+    "clips": {
+      "idle": {
+        "path": "/combat/blender/armadillo-idle.webp",
+        "width": 717,
+        "height": 652,
+        "columns": 3,
+        "count": 12,
+        "frameWidth": 239,
+        "frameHeight": 163
+      },
+      "special": {
+        "path": "/combat/blender/armadillo-special.webp",
+        "width": 1195,
+        "height": 1304,
+        "columns": 5,
+        "count": 36,
+        "frameWidth": 239,
+        "frameHeight": 163
+      },
+      "defeated": {
+        "path": "/combat/blender/armadillo-defeated.webp",
+        "width": 239,
+        "height": 163,
+        "columns": 1,
+        "count": 1,
+        "frameWidth": 239,
+        "frameHeight": 163
+      }
+    }
+  }
+}

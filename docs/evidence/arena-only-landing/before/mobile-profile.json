@@ -1,0 +1,118 @@
+{
+  "browser": "155.0.8059.40",
+  "host": "Apple M3, 8 GiB; Chrome emulation, not physical phone",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "density": 3,
+  "cpuSlowdown": 6,
+  "downloadBitsPerSecond": 1600000,
+  "uploadBitsPerSecond": 750000,
+  "latencyMs": 150,
+  "coldCache": true,
+  "contentMs": 424,
+  "controlsMs": 4303,
+  "heroReadyMs": 4470,
+  "selectionConfirmedMs": 5105,
+  "lcp": 4376,
+  "cls": 0,
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 912
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 912
+    }
+  ],
+  "resources": [
+    {
+      "path": "/combat/crisp/aegis-idle.webp",
+      "transferBytes": 163270,
+      "bodyBytes": 162970,
+      "ms": 4242.199999999721
+    },
+    {
+      "path": "/landing/aegis-companion.webp",
+      "transferBytes": 60176,
+      "bodyBytes": 59876,
+      "ms": 1926.2999999998137
+    },
+    {
+      "path": "/combat/crisp/ember-idle.webp",
+      "transferBytes": 170664,
+      "bodyBytes": 170364,
+      "ms": 4287.899999999907
+    },
+    {
+      "path": "/landing/ember-companion.webp",
+      "transferBytes": 68106,
+      "bodyBytes": 67806,
+      "ms": 2157.4000000003725
+    },
+    {
+      "path": "/_next/static/css/7ff52bffbf9aa6ae.css",
+      "transferBytes": 15517,
+      "bodyBytes": 15217,
+      "ms": 610.5
+    },
+    {
+      "path": "/_next/static/chunks/webpack-8da6ca1e9e29b07b.js",
+      "transferBytes": 4577,
+      "bodyBytes": 4277,
+      "ms": 933
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "transferBytes": 827,
+      "bodyBytes": 527,
+      "ms": 2342.1999999997206
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "transferBytes": 64363,
+      "bodyBytes": 64063,
+      "ms": 2898
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "transferBytes": 67184,
+      "bodyBytes": 66884,
+      "ms": 3834.399999999907
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "transferBytes": 3559,
+      "bodyBytes": 3259,
+      "ms": 2626.9000000003725
+    },
+    {
+      "path": "/_next/static/chunks/5772-5431e976776fd064.js",
+      "transferBytes": 5910,
+      "bodyBytes": 5610,
+      "ms": 3226.8000000002794
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "transferBytes": 25150,
+      "bodyBytes": 24850,
+      "ms": 3475.4000000003725
+    },
+    {
+      "path": "/_next/static/chunks/app/page-e7db3bb3af35f57e.js",
+      "transferBytes": 10461,
+      "bodyBytes": 10161,
+      "ms": 3700.3000000002794
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "transferBytes": 156534,
+      "bodyBytes": 156234,
+      "ms": 4180
+    }
+  ],
+  "navigationBytes": 8152,
+  "totalTransferredBytes": 824450
+}

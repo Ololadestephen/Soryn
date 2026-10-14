@@ -1,0 +1,152 @@
+.battle-stage .combat-arena {
+  background: linear-gradient(#31273f, #6a5260);
+  --arena-reach: var(--attack-reach);
+}
+.arena-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.arena-backdrop img {
+  position: relative;
+  top: var(--backdrop-top, 0px);
+  height: var(--backdrop-height, 100%);
+  width: 100%;
+  object-fit: cover;
+  object-position: 50% 72%;
+  mask-image: linear-gradient(#000 82%, transparent);
+}
+.arena-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(#19132233, transparent 32%, #19132222);
+}
+.battle-stage .combat-field {
+  inset: auto 0 auto;
+  top: var(--field-top, 210px);
+  height: var(--field-height, 430px);
+}
+.battle-stage .arena-fighter {
+  width: var(--fighter-size, 300px);
+  height: var(--fighter-size, 300px);
+}
+.battle-stage .fighter-player {
+  left: var(--fighter-left, 8%);
+}
+.battle-stage .fighter-opponent {
+  right: var(--fighter-left, 8%);
+}
+.battle-stage .combat-status {
+  min-height: 144px;
+}
+.battle-stage .status-list {
+  min-height: 38px;
+  align-content: flex-start;
+}
+.battle-stage .status-list li {
+  height: fit-content;
+}
+.battle-stage .combat-controls small {
+  min-height: 2.4em;
+}
+.battle-stage .combat-controls button {
+  min-height: 98px;
+}
+.turn-readiness {
+  position: absolute;
+  bottom: calc(var(--controls-height) - 18px);
+  width: 100%;
+  text-align: center;
+  margin: 0;
+  color: #fff4e6;
+  font-size: 13px;
+  text-shadow: 0 1px 4px #21192c;
+}
+.turn-readiness small {
+  display: block;
+  font-size: 12px;
+  font-weight: 650;
+}
+.arena-preparing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: #fff4e6;
+  background: #21192ce8;
+  z-index: 14;
+  text-align: center;
+}
+.battle-stage[data-preparing="true"] .fighter-facing,
+.battle-stage[data-preparing="true"] .companion-facing {
+  visibility: hidden;
+}
+.asset-warning,
+.arena-art-warning {
+  position: absolute;
+  top: calc(var(--hud-bottom) + 4px);
+  left: 14px;
+  font-size: 11px;
+  color: #ffe2a2;
+  background: #21192c;
+  padding: 4px;
+  z-index: 7;
+  max-width: 44%;
+}
+@media (max-width: 700px) and (min-height: 501px) {
+  .battle-stage .combat-scoreboard {
+    padding-top: var(--round-clearance, 44px);
+    inset: max(10px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right)) auto
+      max(10px, env(safe-area-inset-left));
+  }
+  .battle-stage .combat-controls {
+    width: calc(
+      100% -
+        max(20px, env(safe-area-inset-left) * 2, env(safe-area-inset-right) * 2)
+    );
+  }
+  .arena-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .battle-stage .combat-status {
+    min-height: 144px;
+  }
+  .battle-stage .status-list {
+    min-height: 44px;
+  }
+  .battle-stage .combat-controls button {
+    min-height: 100px;
+  }
+  .battle-stage .arena-companion {
+    width: min(22vw, 30cqh);
+    height: min(22vw, 30cqh);
+    bottom: 0;
+  }
+  .battle-stage .companion-side-player {
+    left: 4%;
+  }
+  .battle-stage .companion-side-opponent {
+    right: 4%;
+  }
+}
+@media (max-height: 500px) {
+  .battle-stage .combat-scoreboard {
+    inset: max(8px, env(safe-area-inset-top))
+      max(58px, env(safe-area-inset-right)) auto
+      max(12px, env(safe-area-inset-left));
+  }
+  .battle-stage .combat-status {
+    min-height: 108px;
+  }
+  .battle-stage .status-list {
+    min-height: 20px;
+  }
+  .battle-stage .combat-controls button {
+    min-height: 78px;
+  }
+}

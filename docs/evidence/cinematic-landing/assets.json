@@ -1,0 +1,401 @@
+{
+  "method": "Approved idle pixels; existing full-quality fighter exports, companion idle crops capped at 512px (WebP quality 92, alpha 100, proportional canvas/offset), 128px catalogue thumbnails. Full battle sources preserved. No image regeneration/upscaling or NFT artwork.",
+  "measurements": [
+    {
+      "id": "pip",
+      "kind": "fighter",
+      "path": "/combat/crisp/pip-idle.webp",
+      "dimensions": [
+        415,
+        403
+      ],
+      "bytes": 108224,
+      "rgbaBytes": 668980
+    },
+    {
+      "id": "pip",
+      "kind": "companion",
+      "path": "/landing/pip-companion.webp",
+      "dimensions": [
+        417,
+        407
+      ],
+      "bytes": 41970,
+      "rgbaBytes": 678876
+    },
+    {
+      "id": "pip",
+      "kind": "thumbnail",
+      "path": "/landing/pip-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 8068,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "bolt",
+      "kind": "fighter",
+      "path": "/combat/crisp/bolt-idle.webp",
+      "dimensions": [
+        444,
+        418
+      ],
+      "bytes": 119230,
+      "rgbaBytes": 742368
+    },
+    {
+      "id": "bolt",
+      "kind": "companion",
+      "path": "/landing/bolt-companion.webp",
+      "dimensions": [
+        422,
+        344
+      ],
+      "bytes": 47504,
+      "rgbaBytes": 580672
+    },
+    {
+      "id": "bolt",
+      "kind": "thumbnail",
+      "path": "/landing/bolt-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 8374,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "patch",
+      "kind": "fighter",
+      "path": "/combat/crisp/patch-idle.webp",
+      "dimensions": [
+        374,
+        427
+      ],
+      "bytes": 120696,
+      "rgbaBytes": 638792
+    },
+    {
+      "id": "patch",
+      "kind": "companion",
+      "path": "/landing/patch-companion.webp",
+      "dimensions": [
+        343,
+        332
+      ],
+      "bytes": 34706,
+      "rgbaBytes": 455504
+    },
+    {
+      "id": "patch",
+      "kind": "thumbnail",
+      "path": "/landing/patch-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 7976,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "moss",
+      "kind": "fighter",
+      "path": "/combat/crisp/moss-idle.webp",
+      "dimensions": [
+        392,
+        361
+      ],
+      "bytes": 130526,
+      "rgbaBytes": 566048
+    },
+    {
+      "id": "moss",
+      "kind": "companion",
+      "path": "/landing/moss-companion.webp",
+      "dimensions": [
+        330,
+        303
+      ],
+      "bytes": 32620,
+      "rgbaBytes": 399960
+    },
+    {
+      "id": "moss",
+      "kind": "thumbnail",
+      "path": "/landing/moss-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 9892,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "aegis",
+      "kind": "fighter",
+      "path": "/combat/crisp/aegis-idle.webp",
+      "dimensions": [
+        502,
+        438
+      ],
+      "bytes": 162970,
+      "rgbaBytes": 879504
+    },
+    {
+      "id": "aegis",
+      "kind": "companion",
+      "path": "/landing/aegis-companion.webp",
+      "dimensions": [
+        512,
+        315
+      ],
+      "bytes": 59876,
+      "rgbaBytes": 645120
+    },
+    {
+      "id": "aegis",
+      "kind": "thumbnail",
+      "path": "/landing/aegis-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 7830,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "nyx",
+      "kind": "fighter",
+      "path": "/combat/crisp/nyx-idle.webp",
+      "dimensions": [
+        384,
+        351
+      ],
+      "bytes": 108630,
+      "rgbaBytes": 539136
+    },
+    {
+      "id": "nyx",
+      "kind": "companion",
+      "path": "/landing/nyx-companion.webp",
+      "dimensions": [
+        422,
+        300
+      ],
+      "bytes": 40244,
+      "rgbaBytes": 506400
+    },
+    {
+      "id": "nyx",
+      "kind": "thumbnail",
+      "path": "/landing/nyx-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 9130,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "echo",
+      "kind": "fighter",
+      "path": "/combat/crisp/echo-idle.webp",
+      "dimensions": [
+        430,
+        362
+      ],
+      "bytes": 124772,
+      "rgbaBytes": 622640
+    },
+    {
+      "id": "echo",
+      "kind": "companion",
+      "path": "/landing/echo-companion.webp",
+      "dimensions": [
+        421,
+        319
+      ],
+      "bytes": 36760,
+      "rgbaBytes": 537196
+    },
+    {
+      "id": "echo",
+      "kind": "thumbnail",
+      "path": "/landing/echo-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 8372,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "prism",
+      "kind": "fighter",
+      "path": "/combat/crisp/prism-idle.webp",
+      "dimensions": [
+        422,
+        400
+      ],
+      "bytes": 120620,
+      "rgbaBytes": 675200
+    },
+    {
+      "id": "prism",
+      "kind": "companion",
+      "path": "/landing/prism-companion.webp",
+      "dimensions": [
+        422,
+        299
+      ],
+      "bytes": 40732,
+      "rgbaBytes": 504712
+    },
+    {
+      "id": "prism",
+      "kind": "thumbnail",
+      "path": "/landing/prism-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 8510,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "atlas",
+      "kind": "fighter",
+      "path": "/combat/crisp/atlas-idle.webp",
+      "dimensions": [
+        352,
+        333
+      ],
+      "bytes": 117436,
+      "rgbaBytes": 468864
+    },
+    {
+      "id": "atlas",
+      "kind": "companion",
+      "path": "/landing/atlas-companion.webp",
+      "dimensions": [
+        356,
+        272
+      ],
+      "bytes": 37726,
+      "rgbaBytes": 387328
+    },
+    {
+      "id": "atlas",
+      "kind": "thumbnail",
+      "path": "/landing/atlas-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 10586,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "flux",
+      "kind": "fighter",
+      "path": "/combat/crisp/flux-idle.webp",
+      "dimensions": [
+        386,
+        409
+      ],
+      "bytes": 103332,
+      "rgbaBytes": 631496
+    },
+    {
+      "id": "flux",
+      "kind": "companion",
+      "path": "/landing/flux-companion.webp",
+      "dimensions": [
+        329,
+        296
+      ],
+      "bytes": 35962,
+      "rgbaBytes": 389536
+    },
+    {
+      "id": "flux",
+      "kind": "thumbnail",
+      "path": "/landing/flux-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 7760,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "ember",
+      "kind": "fighter",
+      "path": "/combat/crisp/ember-idle.webp",
+      "dimensions": [
+        516,
+        426
+      ],
+      "bytes": 170364,
+      "rgbaBytes": 879264
+    },
+    {
+      "id": "ember",
+      "kind": "companion",
+      "path": "/landing/ember-companion.webp",
+      "dimensions": [
+        512,
+        405
+      ],
+      "bytes": 67806,
+      "rgbaBytes": 829440
+    },
+    {
+      "id": "ember",
+      "kind": "thumbnail",
+      "path": "/landing/ember-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 9818,
+      "rgbaBytes": 65536
+    },
+    {
+      "id": "mneme",
+      "kind": "fighter",
+      "path": "/combat/crisp/mneme-idle.webp",
+      "dimensions": [
+        382,
+        340
+      ],
+      "bytes": 125334,
+      "rgbaBytes": 519520
+    },
+    {
+      "id": "mneme",
+      "kind": "companion",
+      "path": "/landing/mneme-companion.webp",
+      "dimensions": [
+        388,
+        351
+      ],
+      "bytes": 50724,
+      "rgbaBytes": 544752
+    },
+    {
+      "id": "mneme",
+      "kind": "thumbnail",
+      "path": "/landing/mneme-thumb.webp",
+      "dimensions": [
+        128,
+        128
+      ],
+      "bytes": 10492,
+      "rgbaBytes": 65536
+    }
+  ]
+}

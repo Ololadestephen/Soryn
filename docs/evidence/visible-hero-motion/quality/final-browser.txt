@@ -1,0 +1,15 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/cinematic-readiness/visible-motion.spec.ts
+
+[WebServer] (node:58594) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:58595) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/cinematic-readiness/visible-motion.spec.ts:7:3 › visible environmental motion: desktop (21.3s)
+  ✓  2 tests/e2e/cinematic-readiness/visible-motion.spec.ts:7:3 › visible environmental motion: portrait 3x (20.7s)
+
+  2 passed (44.8s)

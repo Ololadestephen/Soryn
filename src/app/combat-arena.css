@@ -1,0 +1,227 @@
+.combat-arena {
+  container-type: inline-size;
+  --arena-reach: calc(66cqw - 200px);
+  position: relative;
+  height: auto;
+  border: 2px solid var(--ink);
+  border-radius: 18px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 60%, #4a3c65 0%, #292137 75%);
+  color: white;
+  isolation: isolate;
+}
+.combat-scoreboard {
+  position: absolute;
+  inset: 18px 20px auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  z-index: 3;
+}
+.combat-status {
+  width: 40%;
+  max-width: 400px;
+}
+.combat-status h3 {
+  font-size: 22px;
+}
+.combat-status h3 small {
+  font-size: 13px;
+  color: #e0d5ee;
+}
+.health-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.combat-status progress {
+  display: block;
+  width: 100%;
+  height: 16px;
+  accent-color: #a8d790;
+  border: 0;
+}
+.combat-status progress::-webkit-progress-bar {
+  background: #64566e;
+  border-radius: 8px;
+}
+.combat-status progress::-webkit-progress-value {
+  background: #a8d790;
+  border-radius: 8px;
+}
+.combat-status p {
+  font-size: 13px;
+  margin-top: 8px;
+}
+.status-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+.status-list li {
+  font-size: 12px;
+  border: 1px solid #b6aaca;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+.arena-round {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid #b6aaca;
+  border-radius: 30px;
+  padding: 5px 12px;
+  z-index: 2;
+  white-space: nowrap;
+}
+.arena-floor {
+  position: absolute;
+  width: 100%;
+  height: 180px;
+  left: 0;
+  bottom: 38px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 35px, #b6aaca22 36px 37px),
+    repeating-linear-gradient(90deg, transparent 0 115px, #b6aaca22 116px 117px);
+  border-top: 2px solid #b6aaca66;
+  border-radius: 50%;
+  transform: scaleY(0.8);
+}
+.arena-fighter {
+  position: absolute;
+  bottom: 108px;
+  width: 200px;
+  height: clamp(240px, 36vh, 300px);
+  z-index: 2;
+}
+.fighter-player {
+  left: 17%;
+  --facing: 1;
+}
+.fighter-opponent {
+  right: 17%;
+  --facing: -1;
+}
+.fighter-facing {
+  height: 100%;
+}
+.fighter-opponent .fighter-facing {
+  transform: scaleX(-1);
+}
+.arena-fighter .combat-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.combat-announcement {
+  position: absolute;
+  bottom: 30px;
+  left: 20px;
+  right: 20px;
+  text-align: center;
+  z-index: 4;
+  background: #292137e8;
+  border-radius: 10px;
+  padding: 10px 16px;
+  min-height: 60px;
+  border: 1px solid #b6aaca;
+}
+.combat-announcement strong {
+  color: #f7db65;
+  display: block;
+  font-size: 15px;
+}
+.combat-announcement span {
+  font-size: 13px;
+  display: block;
+}
+.arena-art-credit {
+  position: absolute;
+  bottom: 5px;
+  left: 16px;
+  right: 16px;
+  text-align: center;
+  font-size: 10px;
+  color: #e0d5ee;
+}
+/* Status and combat zones flow separately, including enlarged text. */
+.combat-arena {
+  height: auto;
+  min-height: 0;
+}
+.combat-scoreboard {
+  position: relative;
+  inset: auto;
+  padding: 18px 20px 8px;
+}
+.combat-field {
+  position: relative;
+  height: 340px;
+}
+.combat-field .arena-round {
+  top: 4px;
+}
+.combat-field .arena-floor {
+  bottom: 0;
+}
+.combat-field .arena-fighter {
+  height: 300px;
+  bottom: 6px;
+}
+.combat-announcement {
+  position: relative;
+  inset: auto;
+  margin: 10px 20px 18px;
+}
+.health-row {
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.combat-bonus {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 0;
+  background: #f7db65;
+  color: #292137;
+  border: 1px solid #292137;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 12px;
+  max-width: 190px;
+  width: max-content;
+  font-weight: 700;
+  text-align: center;
+  z-index: 7;
+}
+@media (max-width: 700px) {
+  .combat-field {
+    height: 280px;
+  }
+  .combat-field .arena-fighter {
+    height: 240px;
+    bottom: 4px;
+    width: 140px;
+  }
+  .combat-scoreboard {
+    padding: 16px 12px 8px;
+  }
+  .combat-announcement {
+    margin: 8px 10px 14px;
+  }
+  .combat-bonus {
+    max-width: 140px;
+    font-size: 11px;
+  }
+}
+.combat-status p,
+.combat-status small {
+  overflow-wrap: anywhere;
+}

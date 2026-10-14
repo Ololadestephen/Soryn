@@ -1,0 +1,191 @@
+{
+  "safeInsets": {
+    "top": 24,
+    "bottom": 20,
+    "left": 16,
+    "right": 16
+  },
+  "textTest": "Computed gameplay label font sizes doubled; desktop browser emulation",
+  "measurements": [
+    {
+      "size": {
+        "width": 320,
+        "height": 640
+      },
+      "hud": {
+        "x": 16,
+        "y": 24,
+        "width": 288,
+        "height": 199.96875
+      },
+      "field": {
+        "x": 0,
+        "y": 267.96875,
+        "width": 320,
+        "height": 223.234375
+      },
+      "controls": {
+        "x": 16,
+        "y": 520,
+        "width": 288,
+        "height": 100
+      },
+      "settings": {
+        "x": 262,
+        "y": 24,
+        "width": 42,
+        "height": 44
+      },
+      "fighter": {
+        "x": -22,
+        "y": 287.203125,
+        "width": 204,
+        "height": 204
+      }
+    },
+    {
+      "size": {
+        "width": 390,
+        "height": 844
+      },
+      "hud": {
+        "x": 16,
+        "y": 24,
+        "width": 358,
+        "height": 187.1875
+      },
+      "field": {
+        "x": 0,
+        "y": 255.1875,
+        "width": 390,
+        "height": 277
+      },
+      "controls": {
+        "x": 16,
+        "y": 724,
+        "width": 358,
+        "height": 100
+      },
+      "settings": {
+        "x": 332,
+        "y": 24,
+        "width": 42,
+        "height": 44
+      },
+      "fighter": {
+        "x": -27,
+        "y": 283.1875,
+        "width": 249,
+        "height": 249
+      }
+    },
+    {
+      "size": {
+        "width": 430,
+        "height": 932
+      },
+      "hud": {
+        "x": 16,
+        "y": 24,
+        "width": 398,
+        "height": 187.1875
+      },
+      "field": {
+        "x": 0,
+        "y": 255.1875,
+        "width": 430,
+        "height": 303
+      },
+      "controls": {
+        "x": 16,
+        "y": 812,
+        "width": 398,
+        "height": 100
+      },
+      "settings": {
+        "x": 372,
+        "y": 24,
+        "width": 42,
+        "height": 44
+      },
+      "fighter": {
+        "x": -30,
+        "y": 283.1875,
+        "width": 275,
+        "height": 275
+      }
+    },
+    {
+      "size": {
+        "width": 844,
+        "height": 390
+      },
+      "hud": {
+        "x": 16,
+        "y": 24,
+        "width": 770,
+        "height": 112.796875
+      },
+      "field": {
+        "x": 0,
+        "y": 180.796875,
+        "width": 844,
+        "height": 82.40625
+      },
+      "controls": {
+        "x": 182,
+        "y": 292,
+        "width": 480,
+        "height": 78
+      },
+      "settings": {
+        "x": 786,
+        "y": 24,
+        "width": 42,
+        "height": 44
+      },
+      "fighter": {
+        "x": 170,
+        "y": 181.203125,
+        "width": 82,
+        "height": 82
+      }
+    },
+    {
+      "size": {
+        "width": 1280,
+        "height": 800
+      },
+      "hud": {
+        "x": 16,
+        "y": 24,
+        "width": 1200,
+        "height": 147.984375
+      },
+      "field": {
+        "x": 0,
+        "y": 215.984375,
+        "width": 1280,
+        "height": 434.828125
+      },
+      "controls": {
+        "x": 400,
+        "y": 679.609375,
+        "width": 480,
+        "height": 100.390625
+      },
+      "settings": {
+        "x": 1222,
+        "y": 24,
+        "width": 42,
+        "height": 44
+      },
+      "fighter": {
+        "x": 131,
+        "y": 220.8125,
+        "width": 430,
+        "height": 430
+      }
+    }
+  ]
+}

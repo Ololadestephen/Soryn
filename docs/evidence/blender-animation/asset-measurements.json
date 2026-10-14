@@ -1,0 +1,91 @@
+{
+  "note": "Real compressed file bytes; RGBA figures are full-image estimates, not measured browser heap/GPU allocations.",
+  "files": [
+    {
+      "actor": "aegis",
+      "clip": "idle",
+      "encodedBytes": 124138,
+      "rgbaDecodedBytes": 4879680
+    },
+    {
+      "actor": "aegis",
+      "clip": "basic",
+      "encodedBytes": 386432,
+      "rgbaDecodedBytes": 10409984
+    },
+    {
+      "actor": "aegis",
+      "clip": "special",
+      "encodedBytes": 428842,
+      "rgbaDecodedBytes": 11711232
+    },
+    {
+      "actor": "aegis",
+      "clip": "guard",
+      "encodedBytes": 80144,
+      "rgbaDecodedBytes": 2602496
+    },
+    {
+      "actor": "aegis",
+      "clip": "guard-recovery",
+      "encodedBytes": 72128,
+      "rgbaDecodedBytes": 2602496
+    },
+    {
+      "actor": "aegis",
+      "clip": "counter",
+      "encodedBytes": 240250,
+      "rgbaDecodedBytes": 9108736
+    },
+    {
+      "actor": "aegis",
+      "clip": "hit",
+      "encodedBytes": 131684,
+      "rgbaDecodedBytes": 4879680
+    },
+    {
+      "actor": "aegis",
+      "clip": "guard-hit",
+      "encodedBytes": 123770,
+      "rgbaDecodedBytes": 4879680
+    },
+    {
+      "actor": "aegis",
+      "clip": "knockout",
+      "encodedBytes": 240496,
+      "rgbaDecodedBytes": 6831552
+    },
+    {
+      "actor": "aegis",
+      "clip": "guard-knockout",
+      "encodedBytes": 235704,
+      "rgbaDecodedBytes": 6831552
+    },
+    {
+      "actor": "aegis",
+      "clip": "defeated",
+      "encodedBytes": 13114,
+      "rgbaDecodedBytes": 650624
+    },
+    {
+      "actor": "armadillo",
+      "clip": "idle",
+      "encodedBytes": 58312,
+      "rgbaDecodedBytes": 1869936
+    },
+    {
+      "actor": "armadillo",
+      "clip": "special",
+      "encodedBytes": 122492,
+      "rgbaDecodedBytes": 6233120
+    },
+    {
+      "actor": "armadillo",
+      "clip": "defeated",
+      "encodedBytes": 6920,
+      "rgbaDecodedBytes": 155828
+    }
+  ],
+  "totalEncodedBytes": 2264426,
+  "totalRgbaDecodedBytes": 73646596
+}

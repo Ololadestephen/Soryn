@@ -1,0 +1,56 @@
+ffmpeg version 8.1.1 Copyright (c) 2000-2026 the FFmpeg developers
+  built with Apple clang version 21.0.0 (clang-2100.0.123.102)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/8.1.1 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gpl --enable-libsvtav1 --enable-libopus --enable-libx264 --enable-libmp3lame --enable-libdav1d --enable-libvmaf --enable-libvpx --enable-libx265 --enable-openssl --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      60. 26.101 / 60. 26.101
+  libavcodec     62. 28.101 / 62. 28.101
+  libavformat    62. 12.101 / 62. 12.101
+  libavdevice    62.  3.101 / 62.  3.101
+  libavfilter    11. 14.101 / 11. 14.101
+  libswscale      9.  5.101 /  9.  5.101
+  libswresample   6.  3.101 /  6.  3.101
+Input #0, matroska,webm, from 'docs/evidence/arena-feel/foundry-complete.webm':
+  Metadata:
+    creation_time   : 2026-10-13T20:25:51.723000Z
+    ENCODER         : Lavf62.12.101
+  Duration: 00:00:58.88, start: 0.000000, bitrate: 1227 kb/s
+  Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(pc, bt470bg/unknown/unknown, progressive), 1280x800, SAR 1:1 DAR 8:5, 25 fps, 25 tbr, 1k tbn (default)
+    Metadata:
+      ENCODER         : Lavc62.28.101 libvpx-vp9
+      DURATION        : 00:00:58.880000000
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp9 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 0x7808c74a80] using SAR=1/1
+[libx264 @ 0x7808c74a80] using cpu capabilities: ARMv8 NEON DotProd I8MM
+[libx264 @ 0x7808c74a80] profile High, level 3.0, 4:2:0, 8-bit
+[libx264 @ 0x7808c74a80] 264 - core 165 r3222 b35605a - H.264/MPEG-4 AVC codec - Copyleft 2003-2025 - http://www.videolan.org/x264.html - options: cabac=1 ref=2 deblock=1:0:0 analyse=0x3:0x113 me=hex subme=6 psy=1 psy_rd=1.00:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=12 lookahead_threads=2 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=3 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=1 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=30 rc=crf mbtree=1 crf=20.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 ip_ratio=1.40 aq=1:1.00
+Output #0, mp4, to 'docs/evidence/arena-feel/foundry-complete.mp4':
+  Metadata:
+    encoder         : Lavf62.12.101
+  Stream #0:0(eng): Video: h264 (avc1 / 0x31637661), yuv420p(pc, bt470bg/unknown/unknown, progressive), 370x800 [SAR 1:1 DAR 37:80], q=2-31, 25 fps, 12800 tbn (default)
+    Metadata:
+      encoder         : Lavc62.28.101 libx264
+      DURATION        : 00:00:58.880000000
+    Side data:
+      CPB properties: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=  226 fps=0.0 q=25.0 size=     512KiB time=00:00:08.96 bitrate= 468.2kbits/s speed=17.7x elapsed=0:00:00.50    frame=  571 fps=565 q=25.0 size=    1280KiB time=00:00:22.76 bitrate= 460.7kbits/s speed=22.5x elapsed=0:00:01.00    frame= 1101 fps=727 q=25.0 size=    2048KiB time=00:00:43.96 bitrate= 381.7kbits/s speed=  29x elapsed=0:00:01.51    [mp4 @ 0x7808c28280] Starting second pass: moving the moov atom to the beginning of the file
+[out#0/mp4 @ 0x7809018240] video:2387KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.756407%
+frame= 1472 fps=842 q=-1.0 Lsize=    2405KiB time=00:00:58.80 bitrate= 335.0kbits/s speed=33.6x elapsed=0:00:01.74    
+[libx264 @ 0x7808c74a80] frame I:13    Avg QP:15.15  size: 50032
+[libx264 @ 0x7808c74a80] frame P:379   Avg QP:16.39  size:  4440
+[libx264 @ 0x7808c74a80] frame B:1080  Avg QP:20.97  size:   102
+[libx264 @ 0x7808c74a80] consecutive B-frames:  1.5%  1.4%  2.0% 95.1%
+[libx264 @ 0x7808c74a80] mb I  I16..4: 13.4% 59.1% 27.6%
+[libx264 @ 0x7808c74a80] mb P  I16..4:  0.5%  2.1%  1.0%  P16..4: 11.1%  0.9%  1.1%  0.0%  0.0%    skip:83.2%
+[libx264 @ 0x7808c74a80] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  0.9%  0.1%  0.0%  direct: 1.0%  skip:98.0%  L0:47.1% L1:52.1% BI: 0.8%
+[libx264 @ 0x7808c74a80] 8x8 transform intra:57.2% inter:74.3%
+[libx264 @ 0x7808c74a80] coded y,uvDC,uvAC intra: 65.3% 69.3% 60.9% inter: 0.8% 3.2% 0.9%
+[libx264 @ 0x7808c74a80] i16 v,h,dc,p: 26% 62%  5%  7%
+[libx264 @ 0x7808c74a80] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 17% 30% 18%  4%  6%  4%  8%  4%  9%
+[libx264 @ 0x7808c74a80] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 18% 34% 12%  4%  6%  5%  8%  4%  8%
+[libx264 @ 0x7808c74a80] i8c dc,h,v,p: 47% 31% 15%  7%
+[libx264 @ 0x7808c74a80] Weighted P-Frames: Y:0.3% UV:0.3%
+[libx264 @ 0x7808c74a80] ref P L0: 75.5% 24.5%
+[libx264 @ 0x7808c74a80] ref B L0: 90.8%  9.2%
+[libx264 @ 0x7808c74a80] ref B L1: 94.8%  5.2%
+[libx264 @ 0x7808c74a80] kb/s:331.94

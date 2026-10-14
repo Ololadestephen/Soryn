@@ -1,0 +1,286 @@
+.arena-main {
+  padding: 24px 0 40px;
+  min-height: 70vh;
+}
+.combat-hero-art {
+  background: var(--surface);
+  color: white;
+  border: 1px solid var(--ink);
+  border-radius: 24px;
+  padding: 20px;
+  margin: 0;
+}
+.hero-fighters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  gap: 8px;
+}
+.hero-fighters > .combat-art,
+.hero-facing {
+  height: 300px;
+  width: 44%;
+}
+.hero-facing .combat-art {
+  height: 100%;
+  width: 100%;
+  transform: scaleX(-1);
+}
+.hero-fighters > span {
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 20px;
+}
+.combat-hero-art figcaption {
+  text-align: center;
+  font-size: 15px;
+}
+.combat-hero-art figcaption span {
+  font-size: 12px;
+  color: #e0d5ee;
+}
+.arena-intro h1 {
+  font-size: clamp(30px, 3.5vw, 44px);
+}
+.combat-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin: 18px 0;
+}
+.combat-heading .eyebrow {
+  margin: 0;
+}
+.combat-heading a {
+  font-size: 14px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.combat-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.combat-controls button {
+  text-align: left;
+  padding: 16px;
+}
+.combat-controls span {
+  font-size: 18px;
+  display: block;
+}
+.combat-controls small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-top: 8px;
+}
+.combat-controls button:disabled {
+  opacity: 0.65;
+}
+.combat-result {
+  background: var(--raised);
+  padding: 24px;
+  border: 1px solid var(--ink);
+  border-radius: 16px;
+  margin-top: 20px;
+}
+.combat-result .button-row {
+  margin-top: 16px;
+}
+.combat-result h2 {
+  font-size: 30px;
+}
+.combat-log,
+.combat-history {
+  margin-top: 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.combat-log summary,
+.combat-history summary {
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 8px 0;
+}
+.combat-log article {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--soft);
+  border-radius: 10px;
+}
+.combat-log h3 {
+  font-size: 18px;
+}
+.combat-log p,
+.combat-log li {
+  font-size: 14px;
+}
+.combat-log ol {
+  margin-bottom: 0;
+  padding-left: 24px;
+}
+.combat-history li {
+  margin: 12px 0;
+}
+.combat-error {
+  background: var(--raised);
+  padding: 18px;
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.combat-error p {
+  margin: 0 0 12px;
+}
+@media (max-width: 700px) {
+  .fighter-focus {
+    grid-template-columns: 120px 1fr;
+    padding: 16px;
+    gap: 16px;
+  }
+  .fighter-focus .combat-art {
+    height: 210px;
+  }
+  .fighter-focus h2 {
+    font-size: 26px;
+  }
+  .fighter-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fighter-option {
+    padding: 8px;
+    gap: 6px;
+  }
+  .fighter-option .combat-art {
+    width: 42px;
+    height: 78px;
+  }
+  .combat-arena {
+    --arena-reach: calc(92cqw - 140px);
+  }
+  .combat-scoreboard {
+    gap: 15px;
+  }
+  .combat-status {
+    width: 48%;
+  }
+  .combat-status h3 {
+    font-size: 18px;
+  }
+  .combat-status p {
+    font-size: 12px;
+  }
+  .arena-round {
+    top: 180px;
+  }
+  .arena-fighter {
+    width: 140px;
+    height: 240px;
+    bottom: 105px;
+  }
+  .fighter-player {
+    left: 4%;
+  }
+  .fighter-opponent {
+    right: 4%;
+  }
+  .combat-announcement {
+    left: 10px;
+    right: 10px;
+    bottom: 30px;
+    padding: 8px;
+  }
+  .combat-controls {
+    gap: 8px;
+  }
+  .combat-controls button {
+    padding: 10px;
+  }
+  .combat-controls span {
+    font-size: 15px;
+  }
+  .combat-controls small {
+    font-size: 12px;
+  }
+  .combat-heading {
+    align-items: start;
+  }
+  .combat-heading a {
+    font-size: 12px;
+    max-width: 100px;
+  }
+}
+@media (max-width: 400px) {
+  .fighter-roster {
+    grid-template-columns: 1fr;
+  }
+  .fighter-focus {
+    display: block;
+  }
+  .fighter-focus .combat-art {
+    height: 170px;
+  }
+  .combat-controls {
+    grid-template-columns: 1fr;
+  }
+  .combat-controls button {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+  }
+  .combat-controls small:last-child {
+    grid-column: 1/-1;
+  }
+  .combat-controls small {
+    margin-top: 0;
+  }
+}
+@media (forced-colors: active) {
+  .combat-arena,
+  .fighter-option,
+  .combat-announcement {
+    border-color: ButtonText;
+  }
+  .combat-arena {
+    background: Canvas;
+    color: CanvasText;
+  }
+  .combat-announcement strong,
+  .combat-status small {
+    color: CanvasText;
+  }
+  .combat-controls button:disabled {
+    opacity: 1;
+  }
+}
+
+.combat-recent {
+  padding: 16px 20px;
+  margin-top: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--soft);
+}
+.combat-recent h3 {
+  font-size: 18px;
+}
+.combat-recent p,
+.combat-recent li {
+  font-size: 14px;
+}
+.combat-heading > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.combat-controls button,
+.combat-controls span,
+.combat-controls small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

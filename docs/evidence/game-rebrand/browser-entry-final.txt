@@ -1,0 +1,23 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs rebrand/rebrand-performance.spec.ts rebrand/rebrand-media.spec.ts pages.spec.ts
+
+[WebServer] (node:28234) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:28235) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/pages.spec.ts:4:1 › landing introduces the loop without opening a guest session or wallet (2.4s)
+  ✓   2 tests/e2e/pages.spec.ts:83:1 › dedicated pages preserve active play through navigation, back, refresh and home (930ms)
+  ✓   3 tests/e2e/pages.spec.ts:142:1 › legacy bookmarks and challenge links resolve to the new pages (1.2s)
+  ✓   4 tests/e2e/pages.spec.ts:190:1 › a lost turn response remains recoverable on another app page (786ms)
+  ✓   5 tests/e2e/rebrand/rebrand-media.spec.ts:4:1 › gameplay loads only on request, plays the real clip, pauses offscreen and closes (1.3s)
+  ✓   6 tests/e2e/rebrand/rebrand-media.spec.ts:52:1 › failed gameplay retains explicit retry and a working battle link (1.5s)
+  ✓   7 tests/e2e/rebrand/rebrand-media.spec.ts:79:1 › a missing route retains the game identity and recovery destinations (261ms)
+  ✓   8 tests/e2e/rebrand/rebrand-media.spec.ts:93:1 › nested routes reflow in landscape and with enlarged portrait text (3.0s)
+  ✓   9 tests/e2e/rebrand/rebrand-performance.spec.ts:11:3 › comparable cold mobile landing (2.7s)
+  ✓  10 tests/e2e/rebrand/rebrand-performance.spec.ts:11:3 › comparable cold mobile arena (13.4s)
+
+  10 passed (34.4s)

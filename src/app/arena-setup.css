@@ -1,0 +1,81 @@
+.arena-picker {
+  margin: 24px 0;
+  border: 1px solid var(--line);
+  padding: 16px;
+  border-radius: 14px;
+}
+.arena-name {
+  position: absolute;
+  top: var(--hud-bottom);
+  left: max(14px, env(safe-area-inset-left));
+  color: #fff1c9;
+  background: #21192ce8;
+  padding: 5px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  z-index: 4;
+}
+.arena-picker legend {
+  font-weight: 700;
+}
+.arena-picker legend small {
+  font-weight: 400;
+  display: block;
+}
+.arena-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.arena-options label {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 4px;
+  background: var(--surface);
+}
+.arena-options img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 7px;
+}
+.arena-options span {
+  font-size: 13px;
+  font-weight: 700;
+}
+.arena-options input {
+  margin-right: 5px;
+}
+.arena-options .arena-selected {
+  border-color: var(--yellow);
+  background: #372d28;
+}
+.arena-random {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+}
+.sound-controls {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  max-width: 540px;
+  margin: 16px 0;
+}
+.sound-controls label {
+  flex-wrap: wrap;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+.sound-controls p {
+  font-size: 13px;
+}
+.sound-controls input[type="range"] {
+  min-width: 80px;
+  flex: 1;
+}

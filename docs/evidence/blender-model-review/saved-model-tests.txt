@@ -1,0 +1,19 @@
+00:00.332  blend            | Read blend: "/Users/apple/Desktop/chogsnft/assets/combat/blender/review-v05/aegis-armadillo-model-review.blend"
+test_actual_editable_models_and_no_animations (__main__.SavedModelReviewTests.test_actual_editable_models_and_no_animations) ... ok
+test_armour_clearance_at_visible_front (__main__.SavedModelReviewTests.test_armour_clearance_at_visible_front) ... ok
+test_finite_geometry (__main__.SavedModelReviewTests.test_finite_geometry) ... ok
+test_fitted_spiral_and_tall_kite_shield (__main__.SavedModelReviewTests.test_fitted_spiral_and_tall_kite_shield) ... ok
+test_ground_contact_and_relative_proportions (__main__.SavedModelReviewTests.test_ground_contact_and_relative_proportions) ... ok
+test_materials_and_packed_references (__main__.SavedModelReviewTests.test_materials_and_packed_references) ... ok
+test_review_cameras_and_no_transparent_runtime_exports (__main__.SavedModelReviewTests.test_review_cameras_and_no_transparent_runtime_exports) ... ok
+test_segmented_shell_and_named_limbs (__main__.SavedModelReviewTests.test_segmented_shell_and_named_limbs) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.151s
+
+OK
+BlenderMCP addon registered
+BlenderMCP addon unregistered
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

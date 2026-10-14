@@ -1,0 +1,180 @@
+{
+  "browser": "155.0.8059.40",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "context": "actual Blender pilot; Apple M3, 8 GiB RAM, local host; not low-end-device validation",
+  "frameSamples": 381,
+  "medianFrameGapMs": 16.699999999999818,
+  "p95FrameGapMs": 16.799999999999727,
+  "maxFrameGapMs": 66.70000000000005,
+  "resources": [
+    {
+      "name": "/combat/rendered/pip.webp",
+      "transferSize": 450138,
+      "encodedBodySize": 449838,
+      "decodedBodySize": 449838,
+      "duration": 21.100000001490116
+    },
+    {
+      "name": "/combat/rendered/bolt.webp",
+      "transferSize": 459106,
+      "encodedBodySize": 458806,
+      "decodedBodySize": 458806,
+      "duration": 21.299999997019768
+    },
+    {
+      "name": "/combat/rendered/patch.webp",
+      "transferSize": 436126,
+      "encodedBodySize": 435826,
+      "decodedBodySize": 435826,
+      "duration": 21
+    },
+    {
+      "name": "/combat/rendered/moss.webp",
+      "transferSize": 412570,
+      "encodedBodySize": 412270,
+      "decodedBodySize": 412270,
+      "duration": 21.299999997019768
+    },
+    {
+      "name": "/combat/rendered/aegis.webp",
+      "transferSize": 330126,
+      "encodedBodySize": 329826,
+      "decodedBodySize": 329826,
+      "duration": 33.69999999925494
+    },
+    {
+      "name": "/combat/rendered/nyx.webp",
+      "transferSize": 390676,
+      "encodedBodySize": 390376,
+      "decodedBodySize": 390376,
+      "duration": 35.899999998509884
+    },
+    {
+      "name": "/combat/rendered/echo.webp",
+      "transferSize": 420122,
+      "encodedBodySize": 419822,
+      "decodedBodySize": 419822,
+      "duration": 36.5
+    },
+    {
+      "name": "/combat/rendered/prism.webp",
+      "transferSize": 525996,
+      "encodedBodySize": 525696,
+      "decodedBodySize": 525696,
+      "duration": 38.099999997764826
+    },
+    {
+      "name": "/combat/rendered/atlas.webp",
+      "transferSize": 401116,
+      "encodedBodySize": 400816,
+      "decodedBodySize": 400816,
+      "duration": 38.69999999925494
+    },
+    {
+      "name": "/combat/rendered/flux.webp",
+      "transferSize": 398120,
+      "encodedBodySize": 397820,
+      "decodedBodySize": 397820,
+      "duration": 40
+    },
+    {
+      "name": "/combat/rendered/ember.webp",
+      "transferSize": 423042,
+      "encodedBodySize": 422742,
+      "decodedBodySize": 422742,
+      "duration": 40.30000000074506
+    },
+    {
+      "name": "/combat/rendered/mneme.webp",
+      "transferSize": 583420,
+      "encodedBodySize": 583120,
+      "decodedBodySize": 583120,
+      "duration": 40.69999999925494
+    },
+    {
+      "name": "/combat/blender/aegis-idle.webp",
+      "transferSize": 124438,
+      "encodedBodySize": 124138,
+      "decodedBodySize": 124138,
+      "duration": 6.5
+    },
+    {
+      "name": "/combat/rendered/armadillo.webp",
+      "transferSize": 273886,
+      "encodedBodySize": 273586,
+      "decodedBodySize": 273586,
+      "duration": 7.099999997764826
+    },
+    {
+      "name": "/combat/rendered/phoenix.webp",
+      "transferSize": 573728,
+      "encodedBodySize": 573428,
+      "decodedBodySize": 573428,
+      "duration": 8.099999997764826
+    },
+    {
+      "name": "/combat/blender/armadillo-idle.webp",
+      "transferSize": 58612,
+      "encodedBodySize": 58312,
+      "decodedBodySize": 58312,
+      "duration": 7
+    },
+    {
+      "name": "/combat/rendered/environment.webp",
+      "transferSize": 404330,
+      "encodedBodySize": 404030,
+      "decodedBodySize": 404030,
+      "duration": 47.69999999925494
+    },
+    {
+      "name": "/combat/blender/aegis-guard.webp",
+      "transferSize": 80444,
+      "encodedBodySize": 80144,
+      "decodedBodySize": 80144,
+      "duration": 2.800000000745058
+    },
+    {
+      "name": "/combat/blender/aegis-guard-hit.webp",
+      "transferSize": 124070,
+      "encodedBodySize": 123770,
+      "decodedBodySize": 123770,
+      "duration": 5.099999997764826
+    },
+    {
+      "name": "/combat/blender/aegis-special.webp",
+      "transferSize": 429142,
+      "encodedBodySize": 428842,
+      "decodedBodySize": 428842,
+      "duration": 5.800000000745058
+    },
+    {
+      "name": "/combat/blender/armadillo-special.webp",
+      "transferSize": 122792,
+      "encodedBodySize": 122492,
+      "decodedBodySize": 122492,
+      "duration": 5.5
+    },
+    {
+      "name": "/combat/blender/aegis-hit.webp",
+      "transferSize": 131984,
+      "encodedBodySize": 131684,
+      "decodedBodySize": 131684,
+      "duration": 4.400000002235174
+    },
+    {
+      "name": "/combat/blender/aegis-guard-recovery.webp",
+      "transferSize": 72428,
+      "encodedBodySize": 72128,
+      "decodedBodySize": 72128,
+      "duration": 2.7000000029802322
+    }
+  ],
+  "device": {
+    "cpu": "Apple M3",
+    "ramBytes": 8589934592,
+    "os": "macOS 27.0.1 arm64"
+  }
+}

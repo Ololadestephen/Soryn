@@ -1,0 +1,122 @@
+.move-notice-region {
+  position: absolute;
+  top: var(--hud-bottom);
+  right: max(14px, env(safe-area-inset-right));
+  width: min(290px, 46%);
+  pointer-events: none;
+  z-index: 10;
+}
+.move-notice {
+  padding: 10px 14px;
+  background: #21192ced;
+  color: #ffe2a2;
+  border: 1px solid #efba6977;
+  border-radius: 10px;
+  font: 800 16px var(--font-display);
+  animation: move-notice 3s both;
+}
+@keyframes move-notice {
+  0% {
+    opacity: 0;
+    translate: 0 -12px;
+  }
+  7%,
+  91% {
+    opacity: 1;
+    translate: 0;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+.battle-stage .combat-result {
+  position: absolute;
+  z-index: 15;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  width: min(440px, calc(100% - 32px));
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #fff4e6;
+  background: #21192cf5;
+  border: 1px solid #efba69;
+  box-shadow: 0 16px 60px #21192c99;
+}
+.battle-stage .combat-result h2 {
+  color: #ffe2a2;
+  font: 900 40px var(--font-display);
+}
+.battle-stage .combat-result .button-row {
+  justify-content: center;
+  gap: 8px;
+}
+.battle-stage .combat-result button {
+  font-size: 14px;
+  padding: 10px 14px;
+}
+.battle-error {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  translate: -50% 0;
+  width: min(460px, 90%);
+  background: #39232c;
+  color: var(--ink);
+  padding: 16px;
+  z-index: 20;
+  border-radius: 12px;
+}
+.battle-error button {
+  margin: 4px;
+}
+.battle-panel {
+  width: min(620px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  overflow: auto;
+}
+.battle-panel::backdrop {
+  background: #21192c99;
+}
+.battle-panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.battle-panel-heading button {
+  font-size: 24px;
+  padding: 4px 12px;
+}
+.battle-panel p,
+.battle-panel li {
+  font-size: 15px;
+}
+.battle-panel > button {
+  margin: 12px 8px 0 0;
+}
+
+.battle-stage .combat-result .button-row button:not(:first-child) {
+  background: var(--raised);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.battle-stage .combat-result {
+  border-radius: 8px;
+  border-top: 3px solid var(--yellow);
+}
+.battle-panel {
+  border-radius: 8px;
+  box-shadow: var(--panel-shadow);
+}
+.battle-settings {
+  min-width: 44px;
+  min-height: 44px;
+}

@@ -1,0 +1,86 @@
+[
+  {
+    "version": "frame",
+    "crop": "desktop",
+    "timeSeconds": 2.5,
+    "meanChannelDelta": 0.7850282118055556,
+    "changedChannelPercent": 0.39286747685185186
+  },
+  {
+    "version": "frame",
+    "crop": "desktop",
+    "timeSeconds": 5,
+    "meanChannelDelta": 1.7484418402777777,
+    "changedChannelPercent": 2.371853298611111
+  },
+  {
+    "version": "frame",
+    "crop": "desktop",
+    "timeSeconds": 7.5,
+    "meanChannelDelta": 1.2426804832175926,
+    "changedChannelPercent": 0.9082392939814815
+  },
+  {
+    "version": "frame",
+    "crop": "central portrait",
+    "timeSeconds": 2.5,
+    "meanChannelDelta": 0.968960346215781,
+    "changedChannelPercent": 0.626610305958132
+  },
+  {
+    "version": "frame",
+    "crop": "central portrait",
+    "timeSeconds": 5,
+    "meanChannelDelta": 2.0378713768115944,
+    "changedChannelPercent": 2.868760064412238
+  },
+  {
+    "version": "frame",
+    "crop": "central portrait",
+    "timeSeconds": 7.5,
+    "meanChannelDelta": 1.519550120772947,
+    "changedChannelPercent": 1.2025966183574879
+  },
+  {
+    "version": "v2-frame",
+    "crop": "desktop",
+    "timeSeconds": 2.5,
+    "meanChannelDelta": 1.4141941550925925,
+    "changedChannelPercent": 1.4231047453703705
+  },
+  {
+    "version": "v2-frame",
+    "crop": "desktop",
+    "timeSeconds": 5,
+    "meanChannelDelta": 3.4550770399305555,
+    "changedChannelPercent": 10.760054976851851
+  },
+  {
+    "version": "v2-frame",
+    "crop": "desktop",
+    "timeSeconds": 7.5,
+    "meanChannelDelta": 1.9393109809027778,
+    "changedChannelPercent": 2.5524088541666665
+  },
+  {
+    "version": "v2-frame",
+    "crop": "central portrait",
+    "timeSeconds": 2.5,
+    "meanChannelDelta": 2.104440418679549,
+    "changedChannelPercent": 2.898550724637681
+  },
+  {
+    "version": "v2-frame",
+    "crop": "central portrait",
+    "timeSeconds": 5,
+    "meanChannelDelta": 4.457441626409017,
+    "changedChannelPercent": 13.633756038647343
+  },
+  {
+    "version": "v2-frame",
+    "crop": "central portrait",
+    "timeSeconds": 7.5,
+    "meanChannelDelta": 2.7373661433172303,
+    "changedChannelPercent": 4.530797101449275
+  }
+]

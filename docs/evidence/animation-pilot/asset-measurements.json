@@ -1,0 +1,112 @@
+{
+  "note": "RGBA estimates assume full uncompressed 8-bit RGBA; not measured browser heap/GPU allocations",
+  "files": [
+    {
+      "path": "public/combat/rendered/aegis.webp",
+      "encodedBytes": 329826,
+      "width": 1536,
+      "height": 1024,
+      "rgbaDecodedBytes": 6291456
+    },
+    {
+      "path": "public/combat/rendered/armadillo.webp",
+      "encodedBytes": 273586,
+      "width": 2172,
+      "height": 724,
+      "rgbaDecodedBytes": 6290112
+    },
+    {
+      "path": "public/combat/rendered/atlas.webp",
+      "encodedBytes": 400816,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/bolt.webp",
+      "encodedBytes": 458806,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/echo.webp",
+      "encodedBytes": 419822,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/ember.webp",
+      "encodedBytes": 422742,
+      "width": 1536,
+      "height": 1024,
+      "rgbaDecodedBytes": 6291456
+    },
+    {
+      "path": "public/combat/rendered/environment.webp",
+      "encodedBytes": 404030,
+      "width": 1672,
+      "height": 941,
+      "rgbaDecodedBytes": 6293408
+    },
+    {
+      "path": "public/combat/rendered/flux.webp",
+      "encodedBytes": 397820,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/mneme.webp",
+      "encodedBytes": 583120,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/moss.webp",
+      "encodedBytes": 412270,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/nyx.webp",
+      "encodedBytes": 390376,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/patch.webp",
+      "encodedBytes": 435826,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/phoenix.webp",
+      "encodedBytes": 573428,
+      "width": 2172,
+      "height": 724,
+      "rgbaDecodedBytes": 6290112
+    },
+    {
+      "path": "public/combat/rendered/pip.webp",
+      "encodedBytes": 449838,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    },
+    {
+      "path": "public/combat/rendered/prism.webp",
+      "encodedBytes": 525696,
+      "width": 1254,
+      "height": 1254,
+      "rgbaDecodedBytes": 6290064
+    }
+  ],
+  "totalEncodedBytes": 6478002,
+  "totalRgbaBytes": 94357184
+}

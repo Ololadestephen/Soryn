@@ -1,0 +1,23 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/cinematic-readiness/visible-motion.spec.ts tests/e2e/cinematic-readiness/hero.spec.ts tests/e2e/cinematic-readiness/playback-navigation.spec.ts
+
+[WebServer] (node:56514) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 10 tests using 1 worker
+
+(node:56525) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/cinematic-readiness/hero.spec.ts:6:3 › hero desktop: poster, three loops, no scene controls, offscreen, hidden and navigation (35.3s)
+  ✓   2 tests/e2e/cinematic-readiness/hero.spec.ts:6:3 › hero portrait: poster, three loops, no scene controls, offscreen, hidden and navigation (35.7s)
+  ✓   3 tests/e2e/cinematic-readiness/hero.spec.ts:62:1 › reduced motion and data saver remain static (19.7s)
+  ✓   4 tests/e2e/cinematic-readiness/hero.spec.ts:78:1 › autoplay rejection retains the poster without scene controls (3.3s)
+  ✓   5 tests/e2e/cinematic-readiness/hero.spec.ts:97:1 › failed hero request retains poster and Play remains available (4.8s)
+  ✓   6 tests/e2e/cinematic-readiness/hero.spec.ts:120:1 › slow hero request keeps the poster visible and does not hold Play (2.6s)
+  ✓   7 tests/e2e/cinematic-readiness/playback-navigation.spec.ts:5:3 › hero keeps advancing after home links and resumes after scrolling: desktop (3.6s)
+  ✓   8 tests/e2e/cinematic-readiness/playback-navigation.spec.ts:5:3 › hero keeps advancing after home links and resumes after scrolling: portrait (3.6s)
+  ✓   9 tests/e2e/cinematic-readiness/visible-motion.spec.ts:7:3 › visible environmental motion: desktop (21.6s)
+  ✓  10 tests/e2e/cinematic-readiness/visible-motion.spec.ts:7:3 › visible environmental motion: portrait 3x (21.5s)
+
+  10 passed (2.6m)

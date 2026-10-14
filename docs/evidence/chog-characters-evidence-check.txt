@@ -1,0 +1,14 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/characters.spec.ts -g synthetic verified holder
+
+[WebServer] (node:6041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:6042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/characters.spec.ts:68:1 › synthetic verified holder abilities and challenge-only borrowing obey real server boundaries (3.0s)
+
+  1 passed (6.7s)

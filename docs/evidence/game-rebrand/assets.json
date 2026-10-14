@@ -1,0 +1,72 @@
+[
+  {
+    "path": "public/brand/wordmark.svg",
+    "bytes": 937,
+    "sha256": "59f1dc94e2f0c42f4c9a98cf3d7384c093f238480ff7998b800c6612fb7c0bc5"
+  },
+  {
+    "path": "public/brand/emblem.svg",
+    "bytes": 314,
+    "sha256": "0369f59dc7d1b12e10abfd035bdcb9f832326a01eb0cd153da375f1fe9e1f5f3"
+  },
+  {
+    "path": "public/brand/icon-180.png",
+    "bytes": 3911,
+    "sha256": "aeb601b31f5fd226195fee4c74aa91dd49d91e7d22696463ff2be47ed2ae64ad"
+  },
+  {
+    "path": "public/brand/icon-192.png",
+    "bytes": 4181,
+    "sha256": "37b986680ea21341730bd7921789d2a607729fb7c690b3d1c617d1c9ef678c54"
+  },
+  {
+    "path": "public/brand/icon-512.png",
+    "bytes": 15244,
+    "sha256": "382d3b4d87601bb499d6492b8bb5fe84841122b8cd172f9ec521320d710a953b"
+  },
+  {
+    "path": "public/gameplay/pip-v-bolt.mp4",
+    "bytes": 4790323,
+    "sha256": "050bc6e1808e53ab0f680c590482e42fbada04ae5d09949ddcd6461274532363",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 800
+        }
+      ],
+      "format": {
+        "duration": "27.040000",
+        "size": "4790323"
+      }
+    }
+  },
+  {
+    "path": "public/gameplay/pip-v-bolt-poster.webp",
+    "bytes": 132334,
+    "sha256": "e42a90ea08e543155a7ce47c47067fce1b5e1431749a5eb4553b2ab827374fdb"
+  },
+  {
+    "path": "docs/evidence/game-rebrand/after/journey.mp4",
+    "bytes": 6898140,
+    "sha256": "83b6288d755d46d46d203307bc9417b591bd8e6c185f6f7e6df6814a5fa90437",
+    "media": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "h264",
+          "width": 1280,
+          "height": 800
+        }
+      ],
+      "format": {
+        "duration": "29.160000",
+        "size": "6898140"
+      }
+    }
+  }
+]

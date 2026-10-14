@@ -1,0 +1,144 @@
+.museum {
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+.empty-museum {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 24px;
+  align-items: center;
+  border: 1px dashed #827393;
+  border-radius: var(--radius);
+  padding: 28px;
+  background: var(--panel-fill);
+}
+.empty-museum > span {
+  grid-row: span 2;
+  font-size: 64px;
+  line-height: 1;
+  color: var(--purple);
+}
+.empty-museum h3 {
+  font-size: 26px;
+}
+.empty-museum p {
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.empty-museum .action-link {
+  grid-column: 2;
+  justify-self: start;
+  margin-top: 20px;
+}
+.exhibit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.exhibit {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  background: var(--paper);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.exhibit-icon {
+  font-size: 44px;
+  line-height: 1;
+  color: var(--purple);
+  display: block;
+  margin: 24px 0;
+}
+.exhibit h3 {
+  font-size: 26px;
+}
+.exhibit p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.exhibit .eyebrow {
+  color: var(--purple);
+  font-size: 13px;
+}
+.exhibit .button-row {
+  margin-top: 24px;
+}
+.exhibit button {
+  font-size: 14px;
+  padding: 10px 14px;
+}
+.exhibit > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+.museum > .panel {
+  margin-top: 20px;
+}
+.identity {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 60px;
+  padding: 35px 0;
+  border-top: 1px solid var(--line);
+}
+.identity p {
+  font-size: 15px;
+  max-width: 50ch;
+}
+.identity .eyebrow {
+  font-size: 13px;
+}
+.identity-status {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.identity-status .badge {
+  color: var(--ink);
+  background: var(--soft);
+  border-color: var(--line);
+}
+.identity-status h3 {
+  margin-top: 22px;
+}
+.identity-status .muted {
+  font-size: 13px;
+}
+@media (max-width: 1000px) {
+  .exhibit-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 700px) {
+  .identity,
+  .exhibit-grid {
+    grid-template-columns: 1fr;
+  }
+  .identity {
+    gap: 24px;
+  }
+  .museum,
+  .identity {
+    margin-top: 40px;
+  }
+  .empty-museum {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 24px;
+  }
+  .empty-museum > span {
+    grid-row: auto;
+  }
+  .empty-museum .action-link {
+    grid-column: 1;
+  }
+}

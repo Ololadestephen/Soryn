@@ -1,0 +1,25 @@
+/* Skeletal samples own pose motion; these wrappers still travel through the arena. */
+.fighter-facing:has([data-blender-pilot="aegis"]),
+.fighter-motion:has([data-blender-pilot="aegis"]) {
+  animation: none !important;
+  rotate: none !important;
+}
+.companion[data-blender-pilot="armadillo"] {
+  animation: none !important;
+}
+.battle-stage .fighter-style-aegis {
+  transition-duration: 320ms;
+}
+.battle-stage .fighter-style-aegis.move-special {
+  transition-duration: 480ms;
+}
+.pet-phase-action:has([data-blender-pilot="armadillo"]),
+.pet-phase-impact:has([data-blender-pilot="armadillo"]) {
+  translate: calc(var(--facing) * 40vw) 0;
+  transition-duration: 480ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pilot-sprite-image {
+    animation: none !important;
+  }
+}

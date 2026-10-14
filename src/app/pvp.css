@@ -1,0 +1,65 @@
+.pvp-home,
+.pvp-history,
+.pvp-archive,
+.pvp-lobby {
+  display: grid;
+  gap: 16px;
+  max-width: 920px;
+}
+.pvp-home h1,
+.pvp-history h1,
+.pvp-archive h1,
+.pvp-lobby h1 {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 0.9;
+  margin: 0;
+}
+.pvp-share {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.pvp-share input {
+  width: 100%;
+  min-height: 44px;
+  color: var(--ink);
+  background: var(--night);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+.pvp-home button,
+.pvp-lobby .button-row button,
+.pvp-share button {
+  min-height: 44px;
+}
+.pvp-archive ul,
+.pvp-history ul {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.pvp-archive li,
+.pvp-history li {
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.pvp-archive li span,
+.archive-banner {
+  display: block;
+  color: var(--muted);
+}
+.archive-banner {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}

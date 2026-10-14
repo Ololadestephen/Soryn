@@ -1,0 +1,122 @@
+[
+  {
+    "key": "aegis",
+    "visibleRgbRmse": 0.8297104927325084,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "ember",
+    "visibleRgbRmse": 0.8464504267766363,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "armadillo-pet",
+    "visibleRgbRmse": 1.0691150712426383,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "phoenix-pet",
+    "visibleRgbRmse": 1.3913376449552137,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "pip",
+    "visibleRgbRmse": 1.4014073774180273,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "pip-pet",
+    "visibleRgbRmse": 2.216932315600432,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "bolt",
+    "visibleRgbRmse": 1.4314522267889562,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "bolt-pet",
+    "visibleRgbRmse": 1.8172294350143603,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "patch",
+    "visibleRgbRmse": 1.2610684369307754,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "patch-pet",
+    "visibleRgbRmse": 1.5942963504306982,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "moss",
+    "visibleRgbRmse": 1.0166548310573804,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "moss-pet",
+    "visibleRgbRmse": 1.168429514090314,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "nyx",
+    "visibleRgbRmse": 1.1170843197221403,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "nyx-pet",
+    "visibleRgbRmse": 1.412485592338952,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "echo",
+    "visibleRgbRmse": 1.315185863433173,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "echo-pet",
+    "visibleRgbRmse": 1.7457315587227038,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "prism",
+    "visibleRgbRmse": 1.691435240661368,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "prism-pet",
+    "visibleRgbRmse": 1.6499990903652793,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "atlas",
+    "visibleRgbRmse": 1.195878238845508,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "atlas-pet",
+    "visibleRgbRmse": 1.142679943918271,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "flux",
+    "visibleRgbRmse": 1.2011715636594946,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "flux-pet",
+    "visibleRgbRmse": 1.496517702650324,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "mneme",
+    "visibleRgbRmse": 1.6244255340669174,
+    "maximumAlphaDifference": 1
+  },
+  {
+    "key": "mneme-pet",
+    "visibleRgbRmse": 1.3440356168890233,
+    "maximumAlphaDifference": 1
+  }
+]

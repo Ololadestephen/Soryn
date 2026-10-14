@@ -1,0 +1,111 @@
+.impact-feedback {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  --contact-x: calc(var(--fighter-left) + var(--fighter-size) * 0.68);
+}
+.impact-feedback.contact-opponent {
+  --contact-x: calc(100% - var(--fighter-left) - var(--fighter-size) * 0.68);
+}
+.contact-ring {
+  position: absolute;
+  left: var(--contact-x);
+  bottom: calc(var(--fighter-size) * 0.48);
+  translate: -50% 50%;
+  width: 42px;
+  height: 42px;
+  border: 2px solid #fff1c9;
+  border-radius: 50%;
+  opacity: 0.65;
+}
+.impact-special .contact-ring {
+  width: 68px;
+  height: 68px;
+  border-width: 3px;
+  color: #f8c98a;
+}
+.feedback-block .contact-ring {
+  border-color: #bed9e9;
+  border-style: double;
+}
+.impact-feedback i {
+  position: absolute;
+  left: var(--contact-x);
+  bottom: calc(var(--fighter-size) * 0.48);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f8d28f;
+  rotate: calc(var(--particle) * 90deg);
+}
+.energy-gained {
+  color: #cceab5;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .battle-stage .combat-melee {
+    transform: translateX(calc(var(--facing) * var(--attack-reach)));
+  }
+  .contact-ring {
+    animation: contact-ring 180ms ease-out both;
+  }
+  .impact-special .contact-ring {
+    animation-duration: 240ms;
+  }
+  .impact-feedback i {
+    animation: contact-spark 220ms ease-out both;
+  }
+  .energy-gained {
+    animation: energy-glow 280ms ease-out;
+  }
+  .battle-stage .combat-ko .fighter-facing {
+    animation: defeated-settle 400ms ease-out both;
+  }
+}
+@keyframes contact-ring {
+  from {
+    scale: 0.5;
+    opacity: 0.65;
+  }
+  to {
+    scale: 1.3;
+    opacity: 0;
+  }
+}
+@keyframes contact-spark {
+  from {
+    translate: 0 0;
+    opacity: 0.75;
+  }
+  to {
+    translate: calc(cos(var(--particle) * 90deg) * 35px)
+      calc(sin(var(--particle) * 90deg) * 35px);
+    opacity: 0;
+  }
+}
+@keyframes energy-glow {
+  50% {
+    color: #e7ffba;
+  }
+}
+@keyframes defeated-settle {
+  from {
+    translate: 0 -5px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .impact-feedback i {
+    display: none;
+  }
+  .contact-ring {
+    opacity: 0.4;
+    width: 30px;
+    height: 30px;
+  }
+  .battle-stage .combat-ko .fighter-facing {
+    animation: none;
+  }
+}

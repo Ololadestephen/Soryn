@@ -1,0 +1,279 @@
+.room-progress {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  gap: 12px;
+}
+.room-progress li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 14px;
+  padding: 9px 0;
+  border-bottom: 2px solid var(--line);
+}
+.room-progress li > span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.room-progress [aria-current="step"] {
+  color: var(--ink);
+  font-weight: 700;
+  border-color: var(--purple);
+}
+.room-progress [aria-current="step"] > span {
+  color: var(--gold-ink);
+  background: var(--yellow);
+  border-color: var(--ink);
+}
+.room-progress .completed {
+  color: var(--purple);
+  border-color: var(--purple);
+}
+.play-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  border: 1px solid var(--ink);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: var(--panel-shadow);
+}
+.stage {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  min-width: 0;
+}
+.stage-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 14px 20px;
+  background: var(--raised);
+}
+.stage-art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 720 / 340;
+  display: block;
+  margin: auto 0;
+}
+.stage-caption {
+  background: var(--raised);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: flex-start;
+  padding: 18px 20px;
+  gap: 12px;
+  min-height: 96px;
+}
+.stage-caption p {
+  margin: 0;
+  font-size: 15px;
+}
+.live-dot {
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+  background: var(--purple);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.controls {
+  --muted: #ded5ee;
+  padding: 24px;
+  background: var(--panel-fill);
+  color: var(--ink);
+}
+.controls :focus-visible {
+  outline-color: var(--yellow);
+}
+.race-opponent {
+  border-left: 3px solid var(--yellow);
+  padding: 0 0 0 14px;
+  margin: 20px 0;
+}
+.race-opponent h4 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+.race-opponent p {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.race-opponent small {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #6f637f;
+  margin-bottom: 22px;
+}
+.stats div {
+  display: flex;
+  flex-direction: column;
+}
+.stats strong {
+  font-size: 32px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.stats strong small {
+  font-size: 17px;
+  color: var(--muted);
+}
+.stats span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.controls .eyebrow {
+  color: var(--yellow);
+  font-size: 13px;
+}
+.controls h3 {
+  font-size: 24px;
+}
+.controls > p {
+  font-size: 15px;
+}
+.controls > .muted {
+  font-size: 13px;
+  margin-top: 20px;
+}
+.start-button {
+  margin-top: 22px;
+  width: 100%;
+}
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 20px;
+}
+.choice {
+  min-height: 64px;
+  padding: 11px 14px;
+  color: var(--ink);
+  border: 1px solid transparent;
+  background: var(--raised);
+  text-align: left;
+  font-size: 15px;
+}
+.choice > span {
+  display: block;
+}
+.choice small {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.patrol {
+  border-left: 3px solid var(--yellow);
+  padding-left: 12px;
+  color: var(--yellow);
+}
+.clue {
+  color: var(--gold-ink);
+  background: var(--yellow);
+  border: 1px solid var(--yellow);
+  border-radius: 8px;
+  padding: 14px;
+}
+.controls > button {
+  margin-top: 20px;
+}
+.error {
+  border: 1px solid #b77f80;
+  background: #39232c;
+  color: var(--danger);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 24px;
+}
+.error p {
+  margin: 0 0 12px;
+}
+@media (hover: hover) {
+  .choice:hover:not(:disabled) {
+    color: var(--gold-ink);
+    background: var(--yellow);
+  }
+}
+@media (max-width: 900px) {
+  .play-grid {
+    grid-template-columns: 1.1fr 1fr;
+  }
+  .controls {
+    padding: 20px;
+  }
+}
+@media (max-width: 700px) {
+  .play-grid {
+    grid-template-columns: 1fr;
+  }
+  .stage-caption {
+    min-height: 0;
+    padding: 16px 18px;
+  }
+  .stage-top {
+    padding: 12px 18px;
+  }
+  .controls {
+    padding: 22px;
+  }
+  .room-progress {
+    gap: 8px;
+  }
+  .room-progress li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+@media (max-width: 360px) {
+  .controls {
+    padding: 18px;
+  }
+  .stats {
+    gap: 12px;
+  }
+}
+@media (forced-colors: active) {
+  .controls :focus-visible {
+    outline-color: Highlight;
+  }
+  .controls {
+    background: Canvas;
+    color: CanvasText;
+    --muted: CanvasText;
+  }
+  .controls .eyebrow,
+  .patrol {
+    color: CanvasText;
+  }
+}
+
+.choice:hover:not(:disabled) small {
+  color: inherit;
+}

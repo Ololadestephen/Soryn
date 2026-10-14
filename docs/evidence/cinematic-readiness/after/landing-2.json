@@ -1,0 +1,152 @@
+{
+  "stage": "after",
+  "target": "landing",
+  "sample": 2,
+  "browser": "155.0.8059.41",
+  "conditions": "M3/8GiB;390×844 DPR3;6xCPU;1.6Mbps down/750kbps up;150ms;cache disabled;warm Node",
+  "marks": {
+    "landingUsable": 2171
+  },
+  "navigationBytes": 7316,
+  "resources": [
+    {
+      "path": "/brand/wordmark.svg",
+      "start": 164.10000000149012,
+      "end": 318.1000000014901,
+      "duration": 154,
+      "ttfb": 0.5,
+      "transfer": 1237,
+      "body": 937
+    },
+    {
+      "path": "/_next/static/css/7b1471a462c4a853.css",
+      "start": 165.20000000298023,
+      "end": 619.7999999970198,
+      "duration": 454.59999999403954,
+      "ttfb": 1.2999999970197678,
+      "transfer": 14912,
+      "body": 14612
+    },
+    {
+      "path": "/_next/static/chunks/webpack-a874a5bae3a90b83.js",
+      "start": 166.29999999701977,
+      "end": 460.8999999985099,
+      "duration": 294.6000000014901,
+      "ttfb": 0.8000000044703484,
+      "transfer": 4571,
+      "body": 4271
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "start": 166.60000000149012,
+      "end": 499.29999999701977,
+      "duration": 332.69999999552965,
+      "ttfb": 0.6000000014901161,
+      "transfer": 827,
+      "body": 527
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "start": 166.60000000149012,
+      "end": 723.7999999970198,
+      "duration": 557.1999999955297,
+      "ttfb": 1,
+      "transfer": 3559,
+      "body": 3259
+    },
+    {
+      "path": "/_next/static/chunks/8437-6e083d946181c622.js",
+      "start": 166.60000000149012,
+      "end": 926.1000000014901,
+      "duration": 759.5,
+      "ttfb": 0.8999999985098839,
+      "transfer": 5832,
+      "body": 5532
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "start": 166.60000000149012,
+      "end": 1278.8999999985099,
+      "duration": 1112.2999999970198,
+      "ttfb": 1.3999999985098839,
+      "transfer": 25150,
+      "body": 24850
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "start": 166.60000000149012,
+      "end": 1646.5,
+      "duration": 1479.8999999985099,
+      "ttfb": 1.5,
+      "transfer": 64363,
+      "body": 64063
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "start": 166.60000000149012,
+      "end": 1691.2000000029802,
+      "duration": 1524.6000000014901,
+      "ttfb": 0.9000000059604645,
+      "transfer": 67184,
+      "body": 66884
+    },
+    {
+      "path": "/_next/static/chunks/app/page-271b2e1a37b48938.js",
+      "start": 166.70000000298023,
+      "end": 1234.7000000029802,
+      "duration": 1068,
+      "ttfb": 1.3000000044703484,
+      "transfer": 12570,
+      "body": 12270
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "start": 166.70000000298023,
+      "end": 2134,
+      "duration": 1967.2999999970198,
+      "ttfb": 0.30000000447034836,
+      "transfer": 156534,
+      "body": 156234
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "start": 687.7000000029802,
+      "end": 1122.3999999985099,
+      "duration": 434.69999999552965,
+      "ttfb": 1.2000000029802322,
+      "transfer": 614,
+      "body": 314
+    }
+  ],
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 696
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 696
+    }
+  ],
+  "decode": [
+    {
+      "path": "http://127.0.0.1:3100/brand/emblem.svg",
+      "start": 1914.6000000014901,
+      "end": 1915.7999999970198
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1914.6000000014901,
+      "end": 1915.7999999970198
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1914.7000000029802,
+      "end": 1915.7999999970198
+    }
+  ],
+  "longTasks": [
+    84,
+    154
+  ]
+}

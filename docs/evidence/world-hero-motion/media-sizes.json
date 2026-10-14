@@ -1,0 +1,35 @@
+{
+  "durationSeconds": 10,
+  "fps": 24,
+  "audio": false,
+  "overscanScale": 1.07,
+  "travelPixels": {
+    "x": 18,
+    "y": 6
+  },
+  "minimumCoverageMarginPixels": {
+    "x": 26.8,
+    "y": 19.2
+  },
+  "lastToFirstFrameMeanGrayscaleDelta": 4.352567274305556,
+  "exports": [
+    {
+      "variant": "desktop",
+      "width": 1280,
+      "height": 720,
+      "compressedBytes": 2119766,
+      "previousCompressedBytes": 592457,
+      "rgbaFrameBytes": 3686400,
+      "yuv420FrameBytes": 1382400
+    },
+    {
+      "variant": "mobile",
+      "width": 540,
+      "height": 844,
+      "compressedBytes": 787207,
+      "previousCompressedBytes": 321905,
+      "rgbaFrameBytes": 1823040,
+      "yuv420FrameBytes": 683640
+    }
+  ]
+}

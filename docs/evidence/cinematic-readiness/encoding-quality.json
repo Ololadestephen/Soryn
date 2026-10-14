@@ -1,0 +1,218 @@
+[
+  {
+    "key": "aegis",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 35.17445096083935,
+    "dimensions": [
+      1506,
+      876
+    ]
+  },
+  {
+    "key": "ember",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 32.875976745924206,
+    "dimensions": [
+      1548,
+      852
+    ]
+  },
+  {
+    "key": "armadillo-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 37.87595278335491,
+    "dimensions": [
+      2412,
+      494
+    ]
+  },
+  {
+    "key": "phoenix-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.966116840219186,
+    "dimensions": [
+      2772,
+      730
+    ]
+  },
+  {
+    "key": "pip",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 35.453994164067865,
+    "dimensions": [
+      1245,
+      806
+    ]
+  },
+  {
+    "key": "pip-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 36.41856674934741,
+    "dimensions": [
+      1251,
+      407
+    ]
+  },
+  {
+    "key": "bolt",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 33.3081964177522,
+    "dimensions": [
+      1332,
+      836
+    ]
+  },
+  {
+    "key": "bolt-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 32.16640548845155,
+    "dimensions": [
+      1266,
+      344
+    ]
+  },
+  {
+    "key": "patch",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.20209091536306,
+    "dimensions": [
+      1122,
+      854
+    ]
+  },
+  {
+    "key": "patch-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 33.3636486180075,
+    "dimensions": [
+      1029,
+      332
+    ]
+  },
+  {
+    "key": "moss",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.5044286718292,
+    "dimensions": [
+      1176,
+      722
+    ]
+  },
+  {
+    "key": "moss-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.4048537861923,
+    "dimensions": [
+      990,
+      303
+    ]
+  },
+  {
+    "key": "nyx",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 33.81398322668319,
+    "dimensions": [
+      1152,
+      702
+    ]
+  },
+  {
+    "key": "nyx-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.46706535960724,
+    "dimensions": [
+      1266,
+      300
+    ]
+  },
+  {
+    "key": "echo",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 33.883300978352196,
+    "dimensions": [
+      1290,
+      724
+    ]
+  },
+  {
+    "key": "echo-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 35.336069000376405,
+    "dimensions": [
+      1263,
+      319
+    ]
+  },
+  {
+    "key": "prism",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 32.47360010539428,
+    "dimensions": [
+      1266,
+      800
+    ]
+  },
+  {
+    "key": "prism-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 30.464638045644836,
+    "dimensions": [
+      1266,
+      299
+    ]
+  },
+  {
+    "key": "atlas",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 35.35927867903274,
+    "dimensions": [
+      1056,
+      666
+    ]
+  },
+  {
+    "key": "atlas-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 36.12024740862771,
+    "dimensions": [
+      1068,
+      272
+    ]
+  },
+  {
+    "key": "flux",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.00646978665239,
+    "dimensions": [
+      1158,
+      818
+    ]
+  },
+  {
+    "key": "flux-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 30.519885457032224,
+    "dimensions": [
+      987,
+      296
+    ]
+  },
+  {
+    "key": "mneme",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.81464380040449,
+    "dimensions": [
+      1146,
+      680
+    ]
+  },
+  {
+    "key": "mneme-pet",
+    "alphaChanges": 0,
+    "opaqueRgbPsnr": 34.72514928080512,
+    "dimensions": [
+      1164,
+      351
+    ]
+  }
+]

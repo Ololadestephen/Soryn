@@ -1,0 +1,57 @@
+.battle-stage .combat-controls {
+  position: absolute;
+  inset: auto auto max(14px, env(safe-area-inset-bottom)) 50%;
+  translate: -50% 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(480px, calc(100% - 28px));
+  gap: 10px;
+  margin: 0;
+  z-index: 8;
+}
+.battle-stage .combat-controls button {
+  display: block;
+  padding: 8px;
+  border: 1px solid #d4b98a;
+  border-radius: 16px;
+  background: linear-gradient(#423448, #21192cef);
+  color: #fff4e6;
+  text-align: center;
+  min-height: 86px;
+  box-shadow: 0 4px 14px #21192c77;
+}
+.battle-stage .combat-controls button:last-child {
+  border-color: #efba69;
+}
+.battle-stage .combat-controls button:disabled {
+  opacity: 0.75;
+  color: #d8cdd8;
+}
+.battle-stage .combat-controls span {
+  font: 800 17px var(--font-display);
+}
+.battle-stage .combat-controls .move-icon {
+  font:
+    27px Arial,
+    sans-serif;
+  height: 32px;
+}
+.battle-stage .combat-controls small {
+  font-size: 11px;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+.battle-settings {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  z-index: 10;
+  background: #21192c;
+  color: #fff4e6;
+  border: 1px solid #d4b98a;
+  font-size: 24px;
+}

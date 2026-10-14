@@ -1,0 +1,22 @@
+[
+  {
+    "label": "initial automatic playback",
+    "time": 0.30457,
+    "paused": false
+  },
+  {
+    "label": "home click 1",
+    "time": 0.374185,
+    "paused": false
+  },
+  {
+    "label": "home click 2",
+    "time": 0.423289,
+    "paused": false
+  },
+  {
+    "label": "returned into view",
+    "time": 0.96943,
+    "paused": false
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-10T12:25:11.481Z",
+  "endpoint": "https://rpc.monad.xyz",
+  "tokenId": "276",
+  "observations": [
+    {
+      "owner": "0x881924048114cc2a22ae2c0a67a6c4bcb74571d6",
+      "block": {
+        "number": "0x6afc1f6",
+        "hash": "0x36bf8a1623a92577060d302cef0d03df609f863de95b5d5e7f458474e4ddeb9f",
+        "timestamp": "0x6aca2ea2"
+      },
+      "changed": false,
+      "pendingTransfer": false,
+      "checkedAt": 1791635109257
+    },
+    {
+      "owner": "0x881924048114cc2a22ae2c0a67a6c4bcb74571d6",
+      "block": {
+        "number": "0x6afc1fd",
+        "hash": "0x5efc15b1705a6b4a4c8b0c862d89fa6c36a0689b67402b585879ca7da7a31443",
+        "timestamp": "0x6aca2ea4"
+      },
+      "changed": false,
+      "pendingTransfer": false,
+      "checkedAt": 1791635111481
+    }
+  ],
+  "readOnly": true
+}

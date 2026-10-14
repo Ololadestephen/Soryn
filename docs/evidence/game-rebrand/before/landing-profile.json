@@ -1,0 +1,87 @@
+{
+  "stage": "before",
+  "target": "landing",
+  "browser": "155.0.8059.41",
+  "host": "Apple M3 / 8 GiB; emulation, not physical phone",
+  "viewport": "390×844 / DPR3",
+  "cpuSlowdown": 6,
+  "downloadBitsPerSecond": 1600000,
+  "uploadBitsPerSecond": 750000,
+  "latencyMs": 150,
+  "coldCache": true,
+  "readyMs": 2223,
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 868
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 868
+    }
+  ],
+  "resources": [
+    {
+      "path": "/_next/static/css/09d86088419f05c1.css",
+      "transferBytes": 14651,
+      "bodyBytes": 14351,
+      "ms": 490.30000000074506
+    },
+    {
+      "path": "/_next/static/chunks/webpack-8da6ca1e9e29b07b.js",
+      "transferBytes": 4577,
+      "bodyBytes": 4277,
+      "ms": 273.6000000014901
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "transferBytes": 64363,
+      "bodyBytes": 64063,
+      "ms": 1465.0999999996275
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "transferBytes": 67184,
+      "bodyBytes": 66884,
+      "ms": 1502.199999999255
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "transferBytes": 827,
+      "bodyBytes": 527,
+      "ms": 210.09999999962747
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "transferBytes": 3559,
+      "bodyBytes": 3259,
+      "ms": 473.3999999985099
+    },
+    {
+      "path": "/_next/static/chunks/5772-5431e976776fd064.js",
+      "transferBytes": 5910,
+      "bodyBytes": 5610,
+      "ms": 795.1999999992549
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "transferBytes": 25150,
+      "bodyBytes": 24850,
+      "ms": 1044
+    },
+    {
+      "path": "/_next/static/chunks/app/page-66d5c511338ef65f.js",
+      "transferBytes": 9753,
+      "bodyBytes": 9453,
+      "ms": 922.7999999988824
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "transferBytes": 156534,
+      "bodyBytes": 156234,
+      "ms": 1942.9000000003725
+    }
+  ],
+  "navigationBytes": 7403,
+  "totalTransferredBytes": 359911
+}

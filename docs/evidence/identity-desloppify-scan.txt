@@ -1,0 +1,100 @@
+
+Desloppify Scan (typescript)
+
+  Plan: 20 subjective dimension(s) queued for review.
+  Scan complete
+  ──────────────────────────────────────────────────
+  -1 resolved · ↻1 reopened
+  Scores: overall 20.4/100  objective 81.7/100 (+0.1)  strict 20.2/100  verified 81.7/100 (+0.1)
+  ⚠ 20 subjective dimensions are unassessed (scored as 0). The strict score currently reflects only mechanical detectors (25% of score weight). Run `desloppify review --prepare` to assess.
+  Score guide:
+    overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+    objective = mechanical detectors only (no subjective review)
+    strict   = like overall, but wontfix counts against you  <-- your north star
+    verified = strict, but only credits scan-verified fixes
+  Strict 20.2 (target: 85.0)
+  * 36 issues hidden (showing 10/detector). Use `desloppify show <detector>` to see all.
+  Scorecard dimensions (matches scorecard.png):
+  File health        ███████████████ 100.0%  (strict 100.0%)
+  Code quality       ███████████████  97.3%  (strict  95.3%)
+  Duplication        ███████████████ 100.0%  (strict 100.0%)
+  Security           ███████████████ 100.0%  (strict  97.7%)
+  Test health        ███████░░░░░░░░  44.7%  (strict  44.7%)
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 81.7% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Moved:
+    Test health            44.5% → 44.7%  (+0.2%)  strict: 44.5→44.7% (+0.2%)
+
+  Coverage reduced (next_lint): next lint tooling unavailable (parser_error) Repercussion: Detector results may be under-reported for this scan. Fix: Install/fix the tool command and rerun scan.
+
+  → All T1 and T2 items cleared!
+  Run `desloppify next` for the highest-priority item.
+  Run `desloppify plan` to see the updated living plan.
+  Run `desloppify status` for the full dashboard.
+
+────────────────────────────────────────────────────────────
+INSTRUCTIONS FOR LLM
+IMPORTANT: ALWAYS present ALL scores to the user after a scan.
+Show overall health (lenient + strict), ALL dimension scores,
+AND all subjective dimension scores in a markdown table.
+The goal is to maximize strict scores. Never skip the scores.
+
+LIVING PLAN ACTIVE: 20 ordered, 0 skipped.
+The plan is the single source of truth for work order.
+Use `desloppify next` which respects the plan.
+Use `desloppify plan` to view and update it.
+
+Overall score:   20.4/100
+Objective score: 81.7/100
+Strict score:    20.2/100
+Verified score:  81.7/100
+Score guide:
+  overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+  objective = mechanical detectors only (no subjective review)
+  strict   = like overall, but wontfix counts against you  <-- your north star
+  verified = strict, but only credits scan-verified fixes
+
+| Dimension | Health | Strict | Issues | Tier | Action |
+|-----------|--------|--------|--------|------|--------|
+| Code quality | 97.3% | 95.3% | 16 | T3 | autofix |
+| Duplication | 100.0% | 100.0% | 0 | T3 | refactor |
+| File health | 100.0% | 100.0% | 0 | T3 | refactor |
+| Security | 100.0% | 97.7% | 0 | T4 | move |
+| Test health | 44.7% | 44.7% | 22 | T4 | autofix |
+
+Biggest score drags (fixing these dimensions has the most impact):
+  - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+Total issues: 92 | Open: 67 | Fixed: 0 | Wontfix: 0
+
+
+Follow the living plan: `desloppify next` for your next execution task,
+`desloppify backlog` for broader backlog discovery, and `desloppify plan` for plan details.
+Current status: All T1 and T2 items cleared!
+Strategy: 4 independent workstreams, safe to parallelize. Rescan after each phase to verify.
+Top action: `desloppify show orphaned --status open` — 1 orphaned issues — delete dead files or relocate with `desloppify move`
+
+────────────────────────────────────────────────────────────
+
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  Hey — please follow the living plan. Run `desloppify    │
+  │  next` for your next execution task. No need to reply,   │
+  │  just continue.                                          │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+No skill document found. Install globally for better workflow guidance: desloppify setup

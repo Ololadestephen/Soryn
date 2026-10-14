@@ -1,0 +1,20 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/animation-pilot.spec.ts tests/e2e/arena-3d.spec.ts --grep current-notices|portrait-ground|aegis-ember|arena-mobile|arena-viewports
+
+[WebServer] (node:17071) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 5 tests using 1 worker
+
+(node:17072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/animation-pilot.spec.ts:30:1 › current-notices · latest executed move replaces old notice, resets expiry and clears on result/refresh/rematch (23.3s)
+  ✓  2 tests/e2e/animation-pilot.spec.ts:111:1 › portrait-ground · signed Aegis/Ember share ground, cooldown meaning, HUD bounds and observed playback (8.1s)
+(node:17322) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/e2e/arena-3d.spec.ts:22:1 › aegis-ember · authenticated synthetic holder visual slice, special, counter and result history (27.5s)
+  ✓  4 tests/e2e/arena-3d.spec.ts:148:1 › arena-mobile · viewport, compact notices, focus and recovery (6.8s)
+  ✓  5 tests/e2e/arena-3d.spec.ts:261:1 › arena-viewports · desktop, narrow portrait and landscape keep controls, HUD and full bodies in bounds (1.3s)
+
+  5 passed (1.2m)

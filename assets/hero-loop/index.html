@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sanctuary · ten-second loop</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #372949;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      #sanctuary {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .world {
+        position: absolute;
+        inset: 0;
+        transform-origin: center;
+      }
+      .painting,
+      .layer {
+        position: absolute;
+        inset: 0;
+        background: url("environment.webp") center/100% 100% no-repeat;
+      }
+      .clouds {
+        clip-path: polygon(41% 0, 54% 0, 55% 6%, 51% 15%, 45% 13%, 41% 6%);
+        mask-image: linear-gradient(
+          transparent,
+          black 10%,
+          black 70%,
+          transparent
+        );
+      }
+      .mist {
+        position: absolute;
+        left: 32%;
+        top: 36%;
+        width: 46%;
+        height: 24%;
+        background:
+          radial-gradient(ellipse at 30% 65%, #d4b8e36b, transparent 48%),
+          radial-gradient(ellipse at 74% 40%, #eed8ef59, transparent 48%);
+        filter: blur(9px);
+      }
+      .mist-far {
+        left: 38%;
+        top: 29%;
+        width: 40%;
+        height: 25%;
+        background: radial-gradient(ellipse, #ecd1e570, transparent 65%);
+      }
+      .mist-near {
+        left: 26%;
+        top: 66%;
+        width: 55%;
+        height: 23%;
+        background:
+          radial-gradient(ellipse at 30% 45%, #cfb0db61, transparent 46%),
+          radial-gradient(ellipse at 70% 60%, #e8c7d954, transparent 43%);
+      }
+      .vine-left {
+        clip-path: polygon(20% 6%, 22% 7%, 25% 17%, 25% 23%, 23% 24%, 22% 17%);
+        transform-origin: 21% 7%;
+      }
+      .vine-right {
+        clip-path: polygon(84% 0, 87% 0, 89% 9%, 89% 23%, 87% 23%, 86% 11%);
+        transform-origin: 86% 0;
+      }
+      .light {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 85% 25%,
+          #ffcd8530,
+          transparent 58%
+        );
+        mix-blend-mode: screen;
+      }
+      .mote {
+        position: absolute;
+        border-radius: 50%;
+        width: 3.5px;
+        height: 3.5px;
+        background: #ffe2a8;
+        box-shadow: 0 0 8px 2px #ffe2a877;
+      }
+      .petal {
+        position: absolute;
+        width: 6px;
+        height: 10px;
+        border-radius: 70% 15% 70% 25%;
+        background: linear-gradient(120deg, #f3c0dc, #b787c2 60%, #795d98);
+        box-shadow: inset 1px 0 1px #ffe1bb88;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="sanctuary"
+      data-composition-id="sanctuary"
+      data-width="1280"
+      data-height="720"
+      data-duration="10"
+      data-no-timeline
+    >
+      <div class="world">
+        <div class="painting"></div>
+        <div class="layer clouds"></div>
+        <div class="mist"></div>
+        <div class="mist mist-far"></div>
+        <div class="mist mist-near"></div>
+        <div class="layer vine-left"></div>
+        <div class="layer vine-right"></div>
+        <div class="light"></div>
+        <div id="motes"></div>
+      </div>
+    </div>
+    <script>
+      window.__timelines = {};
+      const duration = 10000;
+      // One rigid world glide keeps buildings/cliffs coherent. Fixed overscan
+      // covers the 18px horizontal / 6px vertical travel without exposed edges.
+      const camera = document.querySelector(".world").animate(
+        Array.from({ length: 101 }, (_, step) => {
+          const phase = ((step % 100) / 100) * Math.PI * 2;
+          return {
+            transform: `translate(${-18 * Math.cos(phase)}px,${-6 * Math.sin(phase)}px) scale(1.07)`,
+            offset: step / 100,
+          };
+        }),
+        { duration, iterations: 1, fill: "both", easing: "linear" },
+      );
+      camera.pause();
+      function motion(selector, frames) {
+        document.querySelectorAll(selector).forEach((el) => {
+          const a = el.animate(frames, {
+            duration,
+            iterations: 1,
+            fill: "both",
+            easing: "ease-in-out",
+          });
+          a.pause();
+        });
+      }
+      motion(".clouds", [
+        { transform: "translateX(0)" },
+        { transform: "translateX(18px)" },
+        { transform: "translateX(0)" },
+      ]);
+      motion(".mist:not(.mist-far):not(.mist-near)", [
+        { transform: "translate(-46px,8px)", opacity: 0.55 },
+        { transform: "translate(46px,-8px)", opacity: 0.95 },
+        { transform: "translate(-46px,8px)", opacity: 0.55 },
+      ]);
+      motion(".mist-far", [
+        { transform: "translateX(38px)", opacity: 0.85 },
+        { transform: "translateX(-38px)", opacity: 0.35 },
+        { transform: "translateX(38px)", opacity: 0.85 },
+      ]);
+      motion(".mist-near", [
+        { transform: "translate(-64px,-6px)", opacity: 0.35 },
+        { transform: "translate(64px,6px)", opacity: 0.8 },
+        { transform: "translate(-64px,-6px)", opacity: 0.35 },
+      ]);
+      motion(".vine-left", [
+        { transform: "rotate(-.15deg)" },
+        { transform: "rotate(.4deg)" },
+        { transform: "rotate(-.15deg)" },
+      ]);
+      motion(".vine-right", [
+        { transform: "rotate(.2deg)" },
+        { transform: "rotate(-.35deg)" },
+        { transform: "rotate(.2deg)" },
+      ]);
+      motion(".light", [{ opacity: 0.1 }, { opacity: 0.55 }, { opacity: 0.1 }]);
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement("span");
+        el.className = "mote";
+        // The central group survives the narrow portrait crop.
+        el.style.left = `${i < 16 ? 36 + ((i * 7) % 28) : 12 + ((i * 37) % 78)}%`;
+        el.style.top = `${42 + ((i * 19) % 46)}%`;
+        document.getElementById("motes").append(el);
+        const direction = i % 2 ? 1 : -1;
+        // Sample a periodic path: staggered particles are already moving at t=0.
+        // The wrap occurs fully transparent, and t=10s exactly matches t=0.
+        const frames = Array.from({ length: 101 }, (_, step) => {
+          const phase = ((step % 100) / 100 + i / 24) % 1;
+          return {
+            transform: `translate(${direction * 40 * phase}px,${-120 * phase}px)`,
+            opacity: Math.min(1, phase / 0.12, (1 - phase) / 0.2) * 0.9,
+            offset: step / 100,
+          };
+        });
+        const a = el.animate(frames, { duration, iterations: 1, fill: "both" });
+        a.pause();
+      }
+      // Sparse fallen petals make the breeze legible against the dark landing shade.
+      for (let i = 0; i < 7; i++) {
+        const el = document.createElement("span");
+        el.className = "petal";
+        el.style.left = `${38 + ((i * 11) % 24)}%`;
+        el.style.top = `${12 + ((i * 23) % 48)}%`;
+        document.getElementById("motes").append(el);
+        const frames = Array.from({ length: 101 }, (_, step) => {
+          const phase = ((step % 100) / 100 + i / 7) % 1;
+          return {
+            transform: `translate(${Math.sin(phase * Math.PI * 2) * 24 + phase * 28}px,${phase * 210}px) rotate(${phase * 150 + i * 37}deg)`,
+            opacity: Math.min(1, phase / 0.1, (1 - phase) / 0.15) * 0.85,
+            offset: step / 100,
+          };
+        });
+        const a = el.animate(frames, { duration, iterations: 1, fill: "both" });
+        a.pause();
+      }
+    </script>
+  </body>
+</html>

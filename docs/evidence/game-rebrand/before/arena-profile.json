@@ -1,0 +1,171 @@
+{
+  "stage": "before",
+  "target": "arena",
+  "browser": "155.0.8059.41",
+  "host": "Apple M3 / 8 GiB; emulation, not physical phone",
+  "viewport": "390×844 / DPR3",
+  "cpuSlowdown": 6,
+  "downloadBitsPerSecond": 1600000,
+  "uploadBitsPerSecond": 750000,
+  "latencyMs": 150,
+  "coldCache": true,
+  "readyMs": 13039,
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 724
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 724
+    }
+  ],
+  "resources": [
+    {
+      "path": "/_next/static/css/09d86088419f05c1.css",
+      "transferBytes": 14651,
+      "bodyBytes": 14351,
+      "ms": 418.7000000011176
+    },
+    {
+      "path": "/_next/static/chunks/webpack-8da6ca1e9e29b07b.js",
+      "transferBytes": 4577,
+      "bodyBytes": 4277,
+      "ms": 259.59999999962747
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "transferBytes": 64363,
+      "bodyBytes": 64063,
+      "ms": 1196.4000000003725
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "transferBytes": 827,
+      "bodyBytes": 527,
+      "ms": 183.60000000149012
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "transferBytes": 3559,
+      "bodyBytes": 3259,
+      "ms": 274.5
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "transferBytes": 25150,
+      "bodyBytes": 24850,
+      "ms": 881
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "transferBytes": 67184,
+      "bodyBytes": 66884,
+      "ms": 1218.7000000011176
+    },
+    {
+      "path": "/_next/static/chunks/5772-5431e976776fd064.js",
+      "transferBytes": 5910,
+      "bodyBytes": 5610,
+      "ms": 551.1999999992549
+    },
+    {
+      "path": "/_next/static/chunks/6936-b1fa8e267edb9c3f.js",
+      "transferBytes": 4718,
+      "bodyBytes": 4418,
+      "ms": 572.2000000011176
+    },
+    {
+      "path": "/_next/static/chunks/app/arena/page-65f2d03f9926f4dd.js",
+      "transferBytes": 2384,
+      "bodyBytes": 2084,
+      "ms": 776.3000000007451
+    },
+    {
+      "path": "/_next/static/chunks/3804-c067055607e5f56f.js",
+      "transferBytes": 14609,
+      "bodyBytes": 14309,
+      "ms": 888.3000000007451
+    },
+    {
+      "path": "/api/battle",
+      "transferBytes": 2283,
+      "bodyBytes": 1983,
+      "ms": 169.80000000074506
+    },
+    {
+      "path": "/",
+      "transferBytes": 463,
+      "bodyBytes": 163,
+      "ms": 175
+    },
+    {
+      "path": "/play",
+      "transferBytes": 490,
+      "bodyBytes": 190,
+      "ms": 180.7000000011176
+    },
+    {
+      "path": "/journal",
+      "transferBytes": 497,
+      "bodyBytes": 197,
+      "ms": 187.09999999962747
+    },
+    {
+      "path": "/museum",
+      "transferBytes": 495,
+      "bodyBytes": 195,
+      "ms": 193.09999999962747
+    },
+    {
+      "path": "/combat/crisp/pip.webp",
+      "transferBytes": 657628,
+      "bodyBytes": 657328,
+      "ms": 10422.400000000373
+    },
+    {
+      "path": "/combat/crisp/pip-pet.webp",
+      "transferBytes": 301068,
+      "bodyBytes": 300768,
+      "ms": 6850.699999999255
+    },
+    {
+      "path": "/combat/crisp/bolt-pet.webp",
+      "transferBytes": 275908,
+      "bodyBytes": 275608,
+      "ms": 6468.5999999996275
+    },
+    {
+      "path": "/combat/crisp/bolt.webp",
+      "transferBytes": 752632,
+      "bodyBytes": 752332,
+      "ms": 10901.200000001118
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "transferBytes": 156534,
+      "bodyBytes": 156234,
+      "ms": 4105.4000000003725
+    },
+    {
+      "path": "/character",
+      "transferBytes": 497,
+      "bodyBytes": 197,
+      "ms": 195
+    },
+    {
+      "path": "/",
+      "transferBytes": 939,
+      "bodyBytes": 639,
+      "ms": 383.3999999985099
+    },
+    {
+      "path": "/play",
+      "transferBytes": 959,
+      "bodyBytes": 659,
+      "ms": 572.9000000003725
+    }
+  ],
+  "navigationBytes": 3522,
+  "totalTransferredBytes": 2361847
+}

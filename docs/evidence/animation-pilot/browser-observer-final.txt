@@ -1,0 +1,15 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/animation-pilot.spec.ts
+
+[WebServer] (node:17848) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:17850) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/animation-pilot.spec.ts:30:1 › current-notices · latest executed move replaces old notice, resets expiry and clears on result/refresh/rematch (25.1s)
+  ✓  2 tests/e2e/animation-pilot.spec.ts:111:1 › portrait-ground · signed Aegis/Ember share ground, cooldown meaning, HUD bounds and observed playback (7.4s)
+
+  2 passed (38.0s)

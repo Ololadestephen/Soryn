@@ -1,0 +1,134 @@
+  Excluding (from config): node_modules, .next, test-results, playwright-report, coverage, out, dist, build, .cache, .worktrees, data/local
+  Zones: script: 8, test: 1
+  [1/17] Unused (ruff)...
+         0 instances -> 0 issues
+  [2/17] Structural analysis...
+         -> 0 structural issues
+  [3/17] Responsibility cohesion...
+  [4/17] Coupling + cycles + orphaned...
+         single-use: 0 found, 0 suppressed (50-200 LOC)
+         -> 0 coupling/structural issues total
+  [5/17] Uncalled functions...
+  [6/17] Test coverage...
+         test coverage: 6 issues (92 production files)
+  [7/17] Signature analysis...
+  [8/17] Code smells...
+         -> 5 smell issues
+  [9/17] Mutable state...
+  [10/17] Security...
+         security: clean (8 files scanned)
+  [11/17] Private imports...
+         private imports: clean (8 files scanned)
+  [12/17] Layer violations...
+  [13/17] Dict key flow...
+         -> 0 dict key issues
+  [14/17] Unused enums...
+  [15/17] Subjective review...
+         subjective review: 20 issues (20 dimensions)
+  [16/17] Boilerplate duplication...
+  [17/17] Duplicates...
+         zones: 12 functions excluded (non-production)
+         0 clusters, 0 suppressed (<10 LOC)
+
+  Total: 31 issues
+  → query.json updated
+
+Desloppify Scan (python)
+
+  ℹ Excluded directory 'test-results' has 0 references from scanned code — may be stale
+  ℹ Excluded directory 'data/local' has 0 references from scanned code — may be stale
+  Plan: 20 subjective dimension(s) queued for review.
+  Scan complete
+  ──────────────────────────────────────────────────
+  No changes since last scan
+  Scores: overall 16.7/100 (+0.1)  objective 66.7/100 (+0.1)  strict 16.6/100  verified 66.7/100 (+0.1)
+  ⚠ 20 subjective dimensions are unassessed (scored as 0). The strict score currently reflects only mechanical detectors (25% of score weight). Run `desloppify review --prepare` to assess.
+  Score guide:
+    overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+    objective = mechanical detectors only (no subjective review)
+    strict   = like overall, but wontfix counts against you  <-- your north star
+    verified = strict, but only credits scan-verified fixes
+  Strict 16.6 (target: 85.0)
+  * 10 issues hidden (showing 10/detector). Use `desloppify show <detector>` to see all.
+  Scorecard dimensions (matches scorecard.png):
+  File health        ███████████████ 100.0%  (strict  88.8%)
+  Code quality       ███████████████  97.8%  (strict  91.6%)
+  Duplication        ███████████████ 100.0%  (strict 100.0%)
+  Security           ███████████████ 100.0%  (strict 100.0%)
+  Test health        ███░░░░░░░░░░░░  17.8%  (strict  23.2%)
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 66.7% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Test health: -8.18 pts (score 17.8%, 39.8% of mechanical pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Moved:
+    Test health            16.9% → 17.8%  (+0.9%)  strict: 22.3→23.2% (+0.9%)
+
+  → All T1 and T2 items cleared!
+  Run `desloppify next` for the highest-priority item.
+  Run `desloppify plan` to see the updated living plan.
+  Run `desloppify status` for the full dashboard.
+
+────────────────────────────────────────────────────────────
+INSTRUCTIONS FOR LLM
+IMPORTANT: ALWAYS present ALL scores to the user after a scan.
+Show overall health (lenient + strict), ALL dimension scores,
+AND all subjective dimension scores in a markdown table.
+The goal is to maximize strict scores. Never skip the scores.
+
+LIVING PLAN ACTIVE: 20 ordered, 0 skipped.
+The plan is the single source of truth for work order.
+Use `desloppify next` which respects the plan.
+Use `desloppify plan` to view and update it.
+
+Overall score:   16.7/100
+Objective score: 66.7/100
+Strict score:    16.6/100
+Verified score:  66.7/100
+Score guide:
+  overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+  objective = mechanical detectors only (no subjective review)
+  strict   = like overall, but wontfix counts against you  <-- your north star
+  verified = strict, but only credits scan-verified fixes
+
+| Dimension | Health | Strict | Issues | Tier | Action |
+|-----------|--------|--------|--------|------|--------|
+| Code quality | 97.8% | 91.6% | 3 | T3 | autofix |
+| Duplication | 100.0% | 100.0% | 0 | T3 | refactor |
+| File health | 100.0% | 88.8% | 0 | T3 | refactor |
+| Security | 100.0% | 100.0% | 0 | T4 | move |
+| Test health | 17.8% | 23.2% | 6 | T4 | autofix |
+
+Biggest score drags (fixing these dimensions has the most impact):
+  - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Test health: -8.18 pts (score 17.8%, 39.8% of mechanical pool)
+  - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+Total issues: 46 | Open: 31 | Fixed: 0 | Wontfix: 0
+
+
+Follow the living plan: `desloppify next` for your next execution task,
+`desloppify backlog` for broader backlog discovery, and `desloppify plan` for plan details.
+Current status: All T1 and T2 items cleared!
+Strategy: Try a different dimension to break the plateau.
+Top action: `desloppify next` — 6 test_coverage issues in 2 cluster(s) — run `desloppify next`
+
+────────────────────────────────────────────────────────────
+
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  Hey — please follow the living plan. Run `desloppify    │
+  │  next` for your next execution task. No need to reply,   │
+  │  just continue.                                          │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+No skill document found. Install globally for better workflow guidance: desloppify setup

@@ -1,0 +1,17 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/arena_milestone.spec.ts
+
+[WebServer] (node:64333) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:64334) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/arena_milestone.spec.ts:55:3 › sanctuary-complete · actual attacks, defence, specials, result and persistence (1.1m)
+  ✓  2 tests/e2e/arena_milestone.spec.ts:55:3 › grove-complete · actual attacks, defence, specials, result and persistence (48.0s)
+  ✓  3 tests/e2e/arena_milestone.spec.ts:55:3 › foundry-complete · actual attacks, defence, specials, result and persistence (59.6s)
+  ✓  4 tests/e2e/arena_milestone.spec.ts:55:3 › sky-complete · actual attacks, defence, specials, result and persistence (47.5s)
+
+  4 passed (3.7m)

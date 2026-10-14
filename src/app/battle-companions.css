@@ -1,0 +1,117 @@
+.arena-companion {
+  display: none;
+}
+.battle-stage .arena-companion {
+  display: block;
+  position: absolute;
+  width: min(13vw, 22dvh, 30cqh);
+  height: min(13vw, 22dvh, 30cqh);
+  bottom: 10px;
+  z-index: 3;
+  pointer-events: none;
+  --facing: 1;
+}
+.companion-side-player {
+  left: 7%;
+}
+.companion-side-opponent {
+  right: 7%;
+  --facing: -1 !important;
+}
+.companion-facing,
+.companion {
+  width: 100%;
+  height: 100%;
+}
+.companion-side-opponent .companion-facing {
+  transform: scaleX(-1);
+}
+.companion {
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 6px 3px #21192c77);
+}
+.battle-stage .arena-companion:has(.companion-ember) {
+  bottom: min(30vw, 70cqh);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .arena-companion {
+    transition: translate 220ms ease-out;
+  }
+  .pet-phase-anticipation {
+    translate: calc(var(--facing) * -12px) 0;
+  }
+  .pet-phase-action,
+  .pet-phase-impact {
+    translate: calc(var(--facing) * 40vw) -8px;
+  }
+  .pet-phase-action:has(.companion-ember),
+  .pet-phase-impact:has(.companion-ember) {
+    translate: calc(var(--facing) * 36vw) 30px;
+  }
+  .pet-phase-action:has(.companion-aegis) .companion {
+    animation: shell-roll 260ms ease-out;
+  }
+  .pet-phase-idle:has(
+      .companion-ember,
+      .companion-pip,
+      .companion-mneme,
+      .companion-flux
+    )
+    .companion {
+    animation: companion-hover 3s ease-in-out infinite;
+  }
+  .pet-phase-action:has(.companion-patch, .companion-moss, .companion-prism),
+  .pet-phase-impact:has(.companion-patch, .companion-moss, .companion-prism) {
+    translate: 0 -10px;
+  }
+  .pet-phase-action:has(.companion-nyx),
+  .pet-phase-impact:has(.companion-nyx) {
+    translate: calc(var(--facing) * 35vw) -25px;
+  }
+  .pet-phase-action:has(.companion-echo),
+  .pet-phase-impact:has(.companion-echo) {
+    translate: calc(var(--facing) * 35vw) -40px;
+  }
+  .pet-phase-action:has(.companion-atlas),
+  .pet-phase-impact:has(.companion-atlas) {
+    translate: calc(var(--facing) * 30vw) 0;
+  }
+}
+@keyframes shell-roll {
+  from {
+    rotate: -100deg;
+  }
+  to {
+    rotate: 260deg;
+  }
+}
+@keyframes companion-hover {
+  0%,
+  100% {
+    translate: 0;
+  }
+  50% {
+    translate: 0 -5px;
+  }
+}
+@media (max-width: 700px) and (min-height: 501px) {
+  .battle-stage .arena-companion {
+    width: min(24vw, 30cqh);
+    height: min(24vw, 30cqh);
+  }
+  .companion-side-player {
+    left: 3%;
+  }
+  .companion-side-opponent {
+    right: 3%;
+  }
+  .battle-stage .companion-side-opponent:has(.companion-ember) {
+    bottom: min(40vw, 70cqh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .battle-stage .arena-companion {
+    transition: none;
+    translate: 0;
+  }
+}

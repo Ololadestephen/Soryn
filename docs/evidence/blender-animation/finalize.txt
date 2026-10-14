@@ -1,0 +1,9 @@
+00:00.812  blend            | Read blend: "/Users/apple/Desktop/chogsnft/assets/combat/blender/animation-pilot/aegis-armadillo-rigged.blend"
+00:00.848  reports          | WARNING Library file, loading empty scene
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+BlenderMCP addon registered
+Info: Saved as "aegis-armadillo-rigged.blend"
+Finalized normal project with active scene: Chog_Aegis_AnimationPilot
+BlenderMCP addon unregistered
+
+Blender quit

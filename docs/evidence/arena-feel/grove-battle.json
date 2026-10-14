@@ -1,0 +1,2850 @@
+{
+  "fixture": "Disposable synthetic holder; actual engine/API battle",
+  "session": {
+    "battle": {
+      "id": "c02f514e-48c2-42f0-a459-352478fac83b",
+      "arena": "grove",
+      "mode": "official",
+      "tokenId": "276",
+      "snapshot": {
+        "definitions": "combat-fighters/1",
+        "moves": "combat-moves/1",
+        "rules": "combat-rules/1",
+        "tie": 0,
+        "player": {
+          "id": "pip",
+          "health": 84,
+          "armour": 0,
+          "speed": 5,
+          "shield": 10,
+          "passive": "Basic gains 2 damage against low-energy foes.",
+          "moves": {
+            "basic": {
+              "name": "Pebble precision",
+              "cost": 1,
+              "damage": 12,
+              "hits": 1,
+              "initiative": 0,
+              "cooldown": 0,
+              "treatment": "ranged",
+              "rule": "12 damage. +2 against a foe with ≤2 energy after lock."
+            },
+            "special": {
+              "name": "Survey Shot",
+              "cost": 3,
+              "damage": 16,
+              "hits": 1,
+              "initiative": 0,
+              "cooldown": 2,
+              "treatment": "ranged",
+              "rule": "16 damage; expose for 2 future rounds on health damage. Reveal already-public armour/cooldown."
+            },
+            "guard": {
+              "name": "Pip's guard",
+              "cost": 0,
+              "damage": 0,
+              "hits": 1,
+              "initiative": 0,
+              "cooldown": 0,
+              "treatment": "guard",
+              "rule": "Prepare 10 shield before either attack. Basic gains 2 damage against low-energy foes."
+            }
+          }
+        },
+        "opponent": {
+          "id": "bolt",
+          "health": 80,
+          "armour": 0,
+          "speed": 8,
+          "shield": 6,
+          "passive": "Fast basic. Guard recovers 1 extra energy.",
+          "moves": {
+            "basic": {
+              "name": "Quick jab",
+              "cost": 1,
+              "damage": 10,
+              "hits": 1,
+              "initiative": 2,
+              "cooldown": 0,
+              "treatment": "melee",
+              "rule": "10 damage. +2 initiative."
+            },
+            "special": {
+              "name": "Express Delivery",
+              "cost": 3,
+              "damage": 8,
+              "hits": 2,
+              "initiative": 2,
+              "cooldown": 2,
+              "treatment": "melee",
+              "rule": "Two 8-damage hits. +2 initiative."
+            },
+            "guard": {
+              "name": "Bolt's guard",
+              "cost": 0,
+              "damage": 0,
+              "hits": 1,
+              "initiative": 0,
+              "cooldown": 0,
+              "treatment": "guard",
+              "rule": "Prepare 6 shield before either attack. Fast basic. Guard recovers 1 extra energy."
+            }
+          }
+        },
+        "policy": "combat-opponent/2",
+        "difficulty": "medium"
+      },
+      "state": {
+        "round": 9,
+        "player": {
+          "health": 16,
+          "energy": 4,
+          "cooldown": 2,
+          "effects": {
+            "exposed": 0,
+            "disrupt": 0,
+            "burn": 0,
+            "decoy": 0,
+            "focus": 0
+          },
+          "lastMove": "basic"
+        },
+        "opponent": {
+          "health": 0,
+          "energy": 4,
+          "cooldown": 2,
+          "effects": {
+            "exposed": 2,
+            "disrupt": 0,
+            "burn": 0,
+            "decoy": 0,
+            "focus": 0
+          },
+          "lastMove": "special"
+        },
+        "outcome": "victory"
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "player": "special",
+          "opponent": "special",
+          "reason": "Medium: Special is legal and energy is sufficient for this fighter's preferred tactic.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 84,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 4,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 84,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: Opponent acting.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 84,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 76,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery finished; return to stance.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: Your fighter acting.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 80,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: 16 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "opponent: exposed for 2 future rounds.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "Recon: opponent armour 0, special cooldown 2. Public information only.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot finished; return to stance.",
+              "state": {
+                "round": 1,
+                "player": {
+                  "health": 68,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 1,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": null
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "player": "guard",
+          "opponent": "basic",
+          "reason": "Medium: Basic is legal while the special rests.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "guard",
+              "message": "Pip's guard locked. 10 shield prepared; 0 energy spent.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: Opponent acting.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: 0 damage; shield 10, decoy 0.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab finished; return to stance.",
+              "state": {
+                "round": 2,
+                "player": {
+                  "health": 68,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 68,
+                  "energy": 5,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "player": "basic",
+          "opponent": "basic",
+          "reason": "Medium: Basic is legal while the special rests.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 68,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 68,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: Opponent acting.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 68,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: 10 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 58,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab finished; return to stance.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 58,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: Your fighter acting.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 58,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 64,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: 12 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 58,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision finished; return to stance.",
+              "state": {
+                "round": 3,
+                "player": {
+                  "health": 58,
+                  "energy": 4,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 3,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 58,
+                  "energy": 6,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 5,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 4,
+          "player": "special",
+          "opponent": "special",
+          "reason": "Medium: Special is legal and energy is sufficient for this fighter's preferred tactic.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 58,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 5,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 58,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: Opponent acting.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 58,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 50,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery finished; return to stance.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: Your fighter acting.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 52,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: 16 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "opponent: exposed for 2 future rounds.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "Recon: opponent armour 0, special cooldown 2. Public information only.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot finished; return to stance.",
+              "state": {
+                "round": 4,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 2,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 5,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 5,
+          "player": "basic",
+          "opponent": "guard",
+          "reason": "Medium: Prepare defence after the opponent's completed attack pattern.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "guard",
+              "message": "Bolt's guard locked. 2 shield prepared; 0 energy spent.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: Your fighter acting.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 36,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: 10 damage; shield 2, decoy 0.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision finished; return to stance.",
+              "state": {
+                "round": 5,
+                "player": {
+                  "health": 42,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 6,
+          "player": "guard",
+          "opponent": "basic",
+          "reason": "Medium: Basic is legal while the special rests.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "guard",
+              "message": "Pip's guard locked. 10 shield prepared; 0 energy spent.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 5,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: Opponent acting.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 5,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: 0 damage; shield 10, decoy 0.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 5,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab finished; return to stance.",
+              "state": {
+                "round": 6,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 5,
+                  "cooldown": 1,
+                  "effects": {
+                    "exposed": 1,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 42,
+                  "energy": 6,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 6,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 7,
+          "player": "special",
+          "opponent": "special",
+          "reason": "Medium: Special is legal and energy is sufficient for this fighter's preferred tactic.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 6,
+                  "cooldown": 0,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery locked. 0 shield prepared; 3 energy spent.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: Opponent acting.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 42,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 34,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery: 8 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "special",
+              "message": "Express Delivery finished; return to stance.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: Your fighter acting.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot: 16 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "opponent: exposed for 2 future rounds.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "status",
+              "side": "player",
+              "move": "special",
+              "message": "Recon: opponent armour 0, special cooldown 2. Public information only.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "special",
+              "message": "Survey Shot finished; return to stance.",
+              "state": {
+                "round": 7,
+                "player": {
+                  "health": 26,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "guard"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 3,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "recovery",
+              "side": null,
+              "move": null,
+              "message": "Round complete. Recover energy; cooldowns and old effects progress.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 26,
+                  "energy": 5,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 5,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            }
+          ]
+        },
+        {
+          "round": 8,
+          "player": "basic",
+          "opponent": "basic",
+          "reason": "Medium: Basic is legal while the special rests.",
+          "events": [
+            {
+              "kind": "prepare",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 26,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 5,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "prepare",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab locked. 0 shield prepared; 1 energy spent.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 26,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "melee",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: Opponent acting.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 26,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab: 10 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "opponent",
+              "move": "basic",
+              "message": "Quick jab finished; return to stance.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "ranged",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: Your fighter acting.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 10,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "impact",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision: 10 damage; shield 0, decoy 0.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 0,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "return",
+              "side": "player",
+              "move": "basic",
+              "message": "Pebble precision finished; return to stance.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "opponent": {
+                  "health": 0,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": null
+              }
+            },
+            {
+              "kind": "knockout",
+              "side": "opponent",
+              "move": "basic",
+              "message": "opponent knocked out.",
+              "state": {
+                "round": 8,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 0,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": "victory"
+              }
+            },
+            {
+              "kind": "result",
+              "side": null,
+              "move": null,
+              "message": "Battle victory.",
+              "state": {
+                "round": 9,
+                "player": {
+                  "health": 16,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 0,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "basic"
+                },
+                "opponent": {
+                  "health": 0,
+                  "energy": 4,
+                  "cooldown": 2,
+                  "effects": {
+                    "exposed": 2,
+                    "disrupt": 0,
+                    "burn": 0,
+                    "decoy": 0,
+                    "focus": 0
+                  },
+                  "lastMove": "special"
+                },
+                "outcome": "victory"
+              }
+            }
+          ]
+        }
+      ],
+      "legal": []
+    },
+    "history": [
+      {
+        "id": "c02f514e-48c2-42f0-a459-352478fac83b",
+        "arena": "grove",
+        "fighter": "Pip",
+        "outcome": "victory",
+        "rounds": 8,
+        "difficulty": "medium"
+      },
+      {
+        "id": "3e9ae052-4b7e-40e5-92a1-35f85ef7c04c",
+        "arena": "sanctuary",
+        "fighter": "Aegis",
+        "outcome": "victory",
+        "rounds": 7,
+        "difficulty": "easy"
+      },
+      {
+        "id": "1d257b21-b029-4ac3-8f15-eb0959b32344",
+        "arena": "sanctuary",
+        "fighter": "Aegis",
+        "outcome": "victory",
+        "rounds": 10,
+        "difficulty": "easy"
+      }
+    ]
+  }
+}

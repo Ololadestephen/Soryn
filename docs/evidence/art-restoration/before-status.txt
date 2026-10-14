@@ -1,0 +1,62 @@
+
+  Scores: overall 22.4/100 · objective 89.6/100 · strict 21.3/100 · verified 89.6/100
+  Score guide: overall (lenient) · objective (mechanical only) · strict (penalizes wontfix) · verified (scan-confirmed only)
+  Strict 21.3 (target: 85.0) — run `desloppify next` to find the next improvement
+  Queue: 1 item (1 subjective)
+  Start planning: `desloppify plan`
+  199 files · 20K LOC · 41 dirs · Last scan: 2026-10-13T16:09:05+00:00
+  open (in-scope): 161 · open (out-of-scope carried): 0 · open (global): 161
+
+  Dimension               Checks  Health  Strict  Bar                    Tier  Action
+  ──────────────────────────────────────────────────────────────────────────────────────
+  Code quality             1,137   98.3%   96.4%  ████████████████████  T3  autofix  
+  Security                   323  100.0%   98.4%  ████████████████████  T4  move  
+  File health                150  100.0%  100.0%  ████████████████████  T3  refactor  
+  Duplication                230  100.0%   99.9%  ████████████████████  T3  refactor  
+  Test health              1,187   44.6%   24.4%  █████████░░░░░░░░░░░  T4  autofix ←
+  Health = open penalized | Strict = open + wontfix penalized
+  Action: fix=auto-fixer | move=reorganize | refactor=manual rewrite | manual=review & fix
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 89.6% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Focus: Test health (24.4%) — fix 86 items
+
+
+  ── Structural Debt by Area ──
+  Create a task doc for each area → farm to sub-agents for decomposition
+
+Area                                        Items   Tiers       Open   Debt   Weight 
+─────────────────────────────────────────────────────────────────────────────────────
+src/components                              60      T3:60 T4:0  60     0      180    
+src/domain                                  28      T3:28 T4:0  28     0      84     
+(unknown)                                   20      T3:0 T4:20  20     0      80     
+tests/integration                           17      T3:17 T4:0  17     0      51     
+src/server                                  17      T3:17 T4:0  17     0      51     
+src/app                                     7       T3:7 T4:0   7      0      21     
+tests/e2e                                   5       T3:5 T4:0   5      0      15     
+playwright.config.ts                        3       T3:3 T4:0   3      0      9      
+tests/unit                                  2       T3:2 T4:0   2      0      6      
+tests/browser-support                       1       T3:1 T4:0   1      0      3      
+
+  Workflow:
+    1. desloppify show <area> --status wontfix --top 50
+    2. Create tasks/<date>-<area-name>.md with decomposition plan
+    3. Farm each task doc to a sub-agent for implementation
+
+
+  1 resolved issue uncommitted — `desloppify plan commit-log` to review
+  AGENT PLAN (use `desloppify next` to see your next task):
+  Living plan active: Queue: 0 items
+  Next command: `desloppify next`
+  View plan: `desloppify plan`
+  -> Score plateaued at 21.3 for 20 scans. Abstraction fit (0.0%) is where the breakthrough is.
+
+

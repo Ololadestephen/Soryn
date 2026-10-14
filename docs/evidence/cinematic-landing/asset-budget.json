@@ -1,0 +1,17 @@
+{
+  "desktop": {
+    "images": 5,
+    "compressedBytes": 946866,
+    "decodedRgbaBytes": 9526736
+  },
+  "portrait": {
+    "images": 5,
+    "compressedBytes": 617250,
+    "decodedRgbaBytes": 5499256
+  },
+  "catalogueThumbnails": {
+    "images": 12,
+    "compressedBytes": 106808,
+    "decodedRgbaBytes": 786432
+  }
+}

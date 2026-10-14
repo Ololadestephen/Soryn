@@ -1,0 +1,245 @@
+.site-wrap {
+  max-width: 1240px;
+  margin: auto;
+  padding: 0 40px;
+}
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.game-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  vertical-align: middle;
+}
+.game-brand img:first-child:not(:last-child) {
+  width: 34px;
+  height: 34px;
+}
+.game-brand img:last-child {
+  display: block;
+  width: 146px;
+  height: auto;
+}
+.game-brand-hero {
+  display: block;
+}
+.game-brand-hero img:last-child {
+  width: 100%;
+  max-width: 575px;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+.site-wrap > main {
+  min-width: 0;
+}
+.app-content {
+  min-height: 65vh;
+  padding-bottom: 40px;
+}
+.app-content .official-identity .identity {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+nav a[aria-current="page"] {
+  background: var(--raised);
+  color: var(--yellow);
+  text-decoration: underline;
+}
+.page-intro {
+  padding: 36px 0 32px;
+  max-width: 800px;
+}
+.page-intro h1 {
+  font-size: clamp(30px, 3.4vw, 42px);
+}
+.app-content > .museum,
+.app-content > .journal,
+.app-content > .official-identity {
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 0;
+}
+.museum-journal-link {
+  margin: 0 0 48px;
+}
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 11px 20px;
+  border: 1px solid #c99a52;
+  border-radius: 8px;
+  background: var(--yellow);
+  color: var(--gold-ink);
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+.action-link.secondary {
+  color: var(--ink);
+  background: transparent;
+}
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.section-heading .eyebrow {
+  margin-bottom: 6px;
+}
+.small-label {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+  max-width: 230px;
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  border-top: 1px solid var(--line);
+  padding: 25px 0 32px;
+  color: var(--muted);
+}
+footer > span {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+footer p {
+  margin: 0;
+  text-align: right;
+  font-size: 13px;
+  max-width: 660px;
+}
+footer i {
+  font-style: normal;
+  color: var(--purple);
+}
+@media (hover: hover) {
+  nav a:hover {
+    background: var(--raised);
+  }
+}
+@media (max-width: 900px) {
+  .site-wrap {
+    padding: 0 24px;
+  }
+}
+@media (max-width: 700px) {
+  .site-wrap {
+    padding: 0 18px;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 15px 0;
+  }
+  .wordmark {
+    font-size: 22px;
+  }
+  .topbar .badge {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+  nav {
+    order: 3;
+    width: 100%;
+    gap: 6px;
+  }
+  nav a {
+    padding: 7px 10px;
+    font-size: 14px;
+  }
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .small-label {
+    max-width: none;
+    text-align: left;
+  }
+  footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+  footer p {
+    text-align: left;
+  }
+}
+@media (max-width: 360px) {
+  .wordmark {
+    font-size: 19px;
+    gap: 5px;
+  }
+  .wordmark i {
+    font-size: 24px;
+  }
+  .topbar .badge {
+    font-size: 11px;
+  }
+}
+
+.topbar {
+  border-bottom-color: var(--line);
+}
+.topbar > .badge {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--muted);
+}
+.page-intro {
+  border-left: 3px solid var(--yellow);
+  padding-left: 20px;
+  margin: 28px 0;
+  padding-block: 8px;
+}
+footer .game-brand img:first-child {
+  display: none;
+}
+@media (max-width: 700px) {
+  .topbar .badge {
+    margin-left: auto;
+  }
+  .site-wrap {
+    padding-inline: max(18px, env(safe-area-inset-left));
+  }
+  .page-intro {
+    margin-block: 24px;
+  }
+  .topbar nav a {
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "pip": {
+    "fighter": {
+      "path": "/combat/crisp/pip-idle.webp",
+      "width": 415,
+      "height": 403,
+      "offset": [3, 9],
+      "canvas": [418, 432]
+    },
+    "companion": {
+      "path": "/landing/pip-companion.webp",
+      "width": 417,
+      "height": 407,
+      "offset": [1, 65],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/pip-thumb.webp"
+  },
+  "bolt": {
+    "fighter": {
+      "path": "/combat/crisp/bolt-idle.webp",
+      "width": 444,
+      "height": 418,
+      "offset": [-13, -4],
+      "canvas": [418, 430]
+    },
+    "companion": {
+      "path": "/landing/bolt-companion.webp",
+      "width": 422,
+      "height": 344,
+      "offset": [9, 54],
+      "canvas": [418, 417]
+    },
+    "thumbnail": "/landing/bolt-thumb.webp"
+  },
+  "patch": {
+    "fighter": {
+      "path": "/combat/crisp/patch-idle.webp",
+      "width": 374,
+      "height": 427,
+      "offset": [34, -20],
+      "canvas": [418, 422]
+    },
+    "companion": {
+      "path": "/landing/patch-companion.webp",
+      "width": 343,
+      "height": 332,
+      "offset": [45, 72],
+      "canvas": [418, 416]
+    },
+    "thumbnail": "/landing/patch-thumb.webp"
+  },
+  "moss": {
+    "fighter": {
+      "path": "/combat/crisp/moss-idle.webp",
+      "width": 392,
+      "height": 361,
+      "offset": [26, 43],
+      "canvas": [418, 418]
+    },
+    "companion": {
+      "path": "/landing/moss-companion.webp",
+      "width": 330,
+      "height": 303,
+      "offset": [46, 95],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/moss-thumb.webp"
+  },
+  "aegis": {
+    "fighter": {
+      "path": "/combat/crisp/aegis-idle.webp",
+      "width": 502,
+      "height": 438,
+      "offset": [12, 51],
+      "canvas": [512, 512]
+    },
+    "companion": {
+      "path": "/landing/aegis-companion.webp",
+      "width": 512,
+      "height": 315,
+      "offset": [15.283582089552239, 123.54228855721392],
+      "canvas": [526.0099502487562, 461.0547263681592]
+    },
+    "thumbnail": "/landing/aegis-thumb.webp"
+  },
+  "nyx": {
+    "fighter": {
+      "path": "/combat/crisp/nyx-idle.webp",
+      "width": 384,
+      "height": 351,
+      "offset": [22, 51],
+      "canvas": [418, 418]
+    },
+    "companion": {
+      "path": "/landing/nyx-companion.webp",
+      "width": 422,
+      "height": 300,
+      "offset": [-1, 109],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/nyx-thumb.webp"
+  },
+  "echo": {
+    "fighter": {
+      "path": "/combat/crisp/echo-idle.webp",
+      "width": 430,
+      "height": 362,
+      "offset": [-9, 71],
+      "canvas": [419, 450]
+    },
+    "companion": {
+      "path": "/landing/echo-companion.webp",
+      "width": 421,
+      "height": 319,
+      "offset": [7, 56],
+      "canvas": [419, 390]
+    },
+    "thumbnail": "/landing/echo-thumb.webp"
+  },
+  "prism": {
+    "fighter": {
+      "path": "/combat/crisp/prism-idle.webp",
+      "width": 422,
+      "height": 400,
+      "offset": [-11, 19],
+      "canvas": [418, 436]
+    },
+    "companion": {
+      "path": "/landing/prism-companion.webp",
+      "width": 422,
+      "height": 299,
+      "offset": [-11, 107],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/prism-thumb.webp"
+  },
+  "atlas": {
+    "fighter": {
+      "path": "/combat/crisp/atlas-idle.webp",
+      "width": 352,
+      "height": 333,
+      "offset": [41, 66],
+      "canvas": [418, 418]
+    },
+    "companion": {
+      "path": "/landing/atlas-companion.webp",
+      "width": 356,
+      "height": 272,
+      "offset": [39, 129],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/atlas-thumb.webp"
+  },
+  "flux": {
+    "fighter": {
+      "path": "/combat/crisp/flux-idle.webp",
+      "width": 386,
+      "height": 409,
+      "offset": [19, -8],
+      "canvas": [418, 419]
+    },
+    "companion": {
+      "path": "/landing/flux-companion.webp",
+      "width": 329,
+      "height": 296,
+      "offset": [57, 112],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/flux-thumb.webp"
+  },
+  "ember": {
+    "fighter": {
+      "path": "/combat/crisp/ember-idle.webp",
+      "width": 516,
+      "height": 426,
+      "offset": [0, 64],
+      "canvas": [512, 512]
+    },
+    "companion": {
+      "path": "/landing/ember-companion.webp",
+      "width": 512,
+      "height": 405,
+      "offset": [-91.42857142857143, -19.393939393939394],
+      "canvas": [328.5887445887446, 401.1774891774892]
+    },
+    "thumbnail": "/landing/ember-thumb.webp"
+  },
+  "mneme": {
+    "fighter": {
+      "path": "/combat/crisp/mneme-idle.webp",
+      "width": 382,
+      "height": 340,
+      "offset": [30, 66],
+      "canvas": [418, 418]
+    },
+    "companion": {
+      "path": "/landing/mneme-companion.webp",
+      "width": 388,
+      "height": 351,
+      "offset": [15, 66],
+      "canvas": [418, 418]
+    },
+    "thumbnail": "/landing/mneme-thumb.webp"
+  }
+}

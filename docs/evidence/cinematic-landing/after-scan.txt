@@ -1,0 +1,153 @@
+  Excluding (from config): node_modules, .next, test-results, playwright-report, coverage, out, dist, build, .cache, .worktrees, data/local
+  Zones: config: 2, production: 175, test: 63
+  [1/16] Logs...
+         0 instances → 0 issues
+  [2/16] Unused (tsc)...
+         0 instances -> 0 issues
+  [3/16] Dead exports...
+         0 instances → 0 issues
+  [4/16] Deprecated...
+         0 instances → 0 issues (properties suppressed)
+  [5/16] Structural analysis...
+         1 complexity-only files below threshold (< 50)
+         -> 0 structural issues
+         flat dirs: 2 overloaded directories (files/subdirs/combined)
+  [6/16] Coupling + single-use + patterns + naming...
+         single-use: 72 found, 69 suppressed (50-200 LOC, 20 co-located)
+         orphaned: 1 files with zero importers
+         → 9 coupling/structural issues total
+  [7/16] Responsibility cohesion...
+  [8/16] Signature analysis...
+  [9/16] Test coverage...
+         test coverage: 98 issues (1385 production files)
+  [10/16] Code smells...
+         -> 61 smell issues
+  [11/16] Next.js framework smells...
+  [12/16] next lint...
+  [13/16] Security...
+         security: clean (175 files scanned)
+  [14/16] Subjective review...
+         subjective review: 20 issues (20 dimensions)
+  [15/16] Boilerplate duplication...
+         zones: 312 boilerplate clusters excluded
+  [16/16] Duplicates...
+         zones: 53 functions excluded (non-production)
+         0 clusters, 0 suppressed (<10 LOC)
+
+  Total: 190 issues
+  → query.json updated
+
+Desloppify Scan (typescript)
+
+  Plan: 20 refreshed subjective dimension(s) removed from queue.
+  Scan complete
+  ──────────────────────────────────────────────────
+  -1 resolved
+  ⚠ Skipped auto-resolve for: signature (returned 0 — likely transient)
+  ==================================================
+  SCORE UPDATE — Queue cycle complete!
+  Plan-start: strict 21.4/100
+  Updated:    strict 21.5/100 (+0.1)
+  Target:     85.0 (+63.5 to go)
+  ==================================================
+  Scores: overall 22.6/100 (+0.1)  objective 90.3/100 (+0.1)  strict 21.5/100 (+0.1)  verified 90.3/100 (+0.1)
+  ⚠ 20 subjective dimensions are unassessed (scored as 0). The strict score currently reflects only mechanical detectors (25% of score weight). Run `desloppify review --prepare` to assess.
+  Score guide:
+    overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+    objective = mechanical detectors only (no subjective review)
+    strict   = like overall, but wontfix counts against you  <-- your north star
+    verified = strict, but only credits scan-verified fixes
+  Strict 21.5 (target: 85.0)
+  * 149 issues hidden (showing 10/detector). Use `desloppify show <detector>` to see all.
+  Scorecard dimensions (matches scorecard.png):
+  File health        ███████████████ 100.0%  (strict 100.0%)
+  Code quality       ███████████████  98.0%  (strict  95.9%)
+  Duplication        ███████████████ 100.0%  (strict  99.9%)
+  Security           ███████████████ 100.0%  (strict  98.6%)
+  Test health        ███████░░░░░░░░  46.2%  (strict  24.6%)
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 90.3% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Moved:
+    Test health            45.5% → 46.2%  (+0.7%)  strict: 23.8→24.6% (+0.8%)
+
+  ⟳ 1 chronic reopener — run `desloppify show --chronic` to see them.
+  Coverage reduced (next_lint): next lint tooling unavailable (parser_error) Repercussion: Detector results may be under-reported for this scan. Fix: Install/fix the tool command and rerun scan.
+
+  → Score plateaued at 21.5 for 20 scans. Abstraction fit (0.0%) is where the breakthrough is.
+  Run `desloppify next` for the highest-priority item.
+  Run `desloppify plan` to see the updated living plan.
+  Run `desloppify status` for the full dashboard.
+
+  Scorecard → scorecard.png
+  💡 Ask the user if they'd like to add it to their README with:
+     <img src="scorecard.png" width="100%">
+     (disable: --no-badge | move: --badge-path <path>)
+────────────────────────────────────────────────────────────
+INSTRUCTIONS FOR LLM
+IMPORTANT: ALWAYS present ALL scores to the user after a scan.
+Show overall health (lenient + strict), ALL dimension scores,
+AND all subjective dimension scores in a markdown table.
+The goal is to maximize strict scores. Never skip the scores.
+
+LIVING PLAN ACTIVE: 0 ordered, 0 skipped.
+The plan is the single source of truth for work order.
+Use `desloppify next` which respects the plan.
+Use `desloppify plan` to view and update it.
+
+Overall score:   22.6/100
+Objective score: 90.3/100
+Strict score:    21.5/100
+Verified score:  90.3/100
+Score guide:
+  overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+  objective = mechanical detectors only (no subjective review)
+  strict   = like overall, but wontfix counts against you  <-- your north star
+  verified = strict, but only credits scan-verified fixes
+
+| Dimension | Health | Strict | Issues | Tier | Action |
+|-----------|--------|--------|--------|------|--------|
+| Code quality | 98.0% | 95.9% | 45 | T3 | autofix |
+| Duplication | 100.0% | 99.9% | 0 | T3 | refactor |
+| File health | 100.0% | 100.0% | 0 | T3 | refactor |
+| Security | 100.0% | 98.6% | 0 | T4 | move |
+| Test health | 46.2% | 24.6% | 98 | T4 | autofix |
+
+Biggest score drags (fixing these dimensions has the most impact):
+  - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+Total issues: 309 | Open: 191 | Fixed: 1 | Wontfix: 0
+
+
+Follow the living plan: `desloppify next` for your next execution task,
+`desloppify backlog` for broader backlog discovery, and `desloppify plan` for plan details.
+Current status: Score plateaued at 21.5 for 20 scans. Abstraction fit (0.0%) is where the breakthrough is.
+Strategy: 5 independent workstreams, safe to parallelize. Rescan after each phase to verify.
+Top action: `desloppify show orphaned --status open` — 1 orphaned issues — delete dead files or relocate with `desloppify move`
+
+A scorecard image was saved to `scorecard.png`.
+Let the user know they can view it, and suggest adding it
+to their README: `<img src="scorecard.png" width="100%">`
+────────────────────────────────────────────────────────────
+
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  Hey — please follow the living plan. Run `desloppify    │
+  │  next` for your next execution task. No need to reply,   │
+  │  just continue.                                          │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+No skill document found. Install globally for better workflow guidance: desloppify setup

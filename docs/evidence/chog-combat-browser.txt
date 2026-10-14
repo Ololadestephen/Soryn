@@ -1,0 +1,42 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs
+
+[WebServer] (node:22171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 29 tests using 1 worker
+
+(node:22172) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/characters.spec.ts:6:1 › Pip and Patch have real scene actions, persistent charges and selectable original silhouettes (4.9s)
+  ✓   2 tests/e2e/characters.spec.ts:68:1 › synthetic verified holder abilities and challenge-only borrowing obey real server boundaries (2.4s)
+  ✓   3 tests/e2e/characters.spec.ts:269:3 › Bolt's complete loadout works through a synthetic-holder publication and real guest challenge (1.4s)
+  ✓   4 tests/e2e/characters.spec.ts:269:3 › Moss's complete loadout works through a synthetic-holder publication and real guest challenge (1.2s)
+  ✓   5 tests/e2e/characters.spec.ts:269:3 › Nyx's complete loadout works through a synthetic-holder publication and real guest challenge (1.0s)
+  ✓   6 tests/e2e/characters.spec.ts:269:3 › Prism's complete loadout works through a synthetic-holder publication and real guest challenge (1.2s)
+  ✓   7 tests/e2e/characters.spec.ts:269:3 › Atlas's complete loadout works through a synthetic-holder publication and real guest challenge (1.1s)
+  ✓   8 tests/e2e/characters.spec.ts:269:3 › Flux's complete loadout works through a synthetic-holder publication and real guest challenge (1.2s)
+  ✓   9 tests/e2e/characters.spec.ts:269:3 › Ember's complete loadout works through a synthetic-holder publication and real guest challenge (1.1s)
+  ✓  10 tests/e2e/characters.spec.ts:269:3 › Mneme's complete loadout works through a synthetic-holder publication and real guest challenge (1.6s)
+  ✓  11 tests/e2e/characters.spec.ts:373:1 › synthetic owner/RPC failures grant no holder power and leave starter play available (670ms)
+  ✓  12 tests/e2e/combat.spec.ts:6:1 › Pip battle visibly resolves attack, defence, special, result and persisted rematch (13.3s)
+  ✓  13 tests/e2e/combat.spec.ts:85:1 › lost combat round reply retries the same intent without a second hit (1.3s)
+  ✓  14 tests/e2e/combat.spec.ts:117:1 › leaving during a visible action restores the resolved round without restarting it (1.3s)
+  ✓  15 tests/e2e/combat.spec.ts:136:1 › narrow keyboard combat and original full-body selection remain readable (1.5s)
+  ✓  16 tests/e2e/combat.spec.ts:170:1 › labelled synthetic holder battle rejects forged stats, RPC failure and revoked generation (621ms)
+  ✓  17 tests/e2e/game.spec.ts:4:1 › a real failure, replay, consent and cross-browser challenge (3.0s)
+  ✓  18 tests/e2e/game.spec.ts:123:1 › mobile layout, keyboard play and reduced motion (631ms)
+  ✓  19 tests/e2e/game.spec.ts:158:1 › design stays accessible at narrow widths and enlarged text (1.0s)
+  ✓  20 tests/e2e/game.spec.ts:224:1 › a lost response retries the persisted turn without double spending (586ms)
+  ✓  21 tests/e2e/game.spec.ts:253:1 › a guest rematch races the previous version with a keyboard-controlled clock (2.5s)
+  ✓  22 tests/e2e/identity.spec.ts:4:1 › Privy configuration state is honest and leaves guest adventures playable (1.2s)
+  ✓  23 tests/e2e/identity.spec.ts:40:1 › public token history requires no Privy login and protected APIs fail closed (757ms)
+  ✓  24 tests/e2e/journal.spec.ts:16:1 › private journal reopens older chapters and recovers a selected ghost race after a lost reply (3.9s)
+  ✓  25 tests/e2e/journal.spec.ts:155:1 › museum progress keeps cohorts separate and removes withdrawn opponents (3.3s)
+  ✓  26 tests/e2e/pages.spec.ts:4:1 › landing introduces the loop without opening a guest session or wallet (1.0s)
+  ✓  27 tests/e2e/pages.spec.ts:83:1 › dedicated pages preserve active play through navigation, back, refresh and home (819ms)
+  ✓  28 tests/e2e/pages.spec.ts:142:1 › legacy bookmarks and challenge links resolve to the new pages (1.2s)
+  ✓  29 tests/e2e/pages.spec.ts:190:1 › a lost turn response remains recoverable on another app page (674ms)
+
+  29 passed (1.2m)

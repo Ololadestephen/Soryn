@@ -1,0 +1,162 @@
+[
+  {
+    "id": "sanctuary",
+    "master": "assets/combat/rendered/environment.png",
+    "masterDimensions": [
+      1672,
+      941
+    ],
+    "variants": [
+      {
+        "variant": "desktop",
+        "path": "public/combat/arenas/sanctuary-desktop.webp",
+        "dimensions": [
+          1672,
+          941
+        ],
+        "compressedBytes": 485850,
+        "rgbaBytes": 6293408
+      },
+      {
+        "variant": "portrait",
+        "path": "public/combat/arenas/sanctuary-portrait.webp",
+        "dimensions": [
+          602,
+          941
+        ],
+        "compressedBytes": 156234,
+        "rgbaBytes": 2265928
+      },
+      {
+        "variant": "preview",
+        "path": "public/combat/arenas/sanctuary-preview.webp",
+        "dimensions": [
+          240,
+          160
+        ],
+        "compressedBytes": 11586,
+        "rgbaBytes": 153600
+      }
+    ]
+  },
+  {
+    "id": "grove",
+    "master": "assets/combat/arenas/grove.png",
+    "masterDimensions": [
+      1536,
+      1024
+    ],
+    "variants": [
+      {
+        "variant": "desktop",
+        "path": "public/combat/arenas/grove-desktop.webp",
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "compressedBytes": 536324,
+        "rgbaBytes": 6291456
+      },
+      {
+        "variant": "portrait",
+        "path": "public/combat/arenas/grove-portrait.webp",
+        "dimensions": [
+          655,
+          1024
+        ],
+        "compressedBytes": 195822,
+        "rgbaBytes": 2682880
+      },
+      {
+        "variant": "preview",
+        "path": "public/combat/arenas/grove-preview.webp",
+        "dimensions": [
+          240,
+          160
+        ],
+        "compressedBytes": 10508,
+        "rgbaBytes": 153600
+      }
+    ]
+  },
+  {
+    "id": "foundry",
+    "master": "assets/combat/arenas/foundry.png",
+    "masterDimensions": [
+      1536,
+      1024
+    ],
+    "variants": [
+      {
+        "variant": "desktop",
+        "path": "public/combat/arenas/foundry-desktop.webp",
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "compressedBytes": 372612,
+        "rgbaBytes": 6291456
+      },
+      {
+        "variant": "portrait",
+        "path": "public/combat/arenas/foundry-portrait.webp",
+        "dimensions": [
+          655,
+          1024
+        ],
+        "compressedBytes": 139738,
+        "rgbaBytes": 2682880
+      },
+      {
+        "variant": "preview",
+        "path": "public/combat/arenas/foundry-preview.webp",
+        "dimensions": [
+          240,
+          160
+        ],
+        "compressedBytes": 8676,
+        "rgbaBytes": 153600
+      }
+    ]
+  },
+  {
+    "id": "sky",
+    "master": "assets/combat/arenas/sky.png",
+    "masterDimensions": [
+      1536,
+      1024
+    ],
+    "variants": [
+      {
+        "variant": "desktop",
+        "path": "public/combat/arenas/sky-desktop.webp",
+        "dimensions": [
+          1536,
+          1024
+        ],
+        "compressedBytes": 352904,
+        "rgbaBytes": 6291456
+      },
+      {
+        "variant": "portrait",
+        "path": "public/combat/arenas/sky-portrait.webp",
+        "dimensions": [
+          655,
+          1024
+        ],
+        "compressedBytes": 138926,
+        "rgbaBytes": 2682880
+      },
+      {
+        "variant": "preview",
+        "path": "public/combat/arenas/sky-preview.webp",
+        "dimensions": [
+          240,
+          160
+        ],
+        "compressedBytes": 8852,
+        "rgbaBytes": 153600
+      }
+    ]
+  }
+]

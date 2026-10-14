@@ -1,0 +1,16 @@
+00:00.363  blend            | Read blend: "/Users/apple/Desktop/chogsnft/assets/combat/blender/animation-pilot/aegis-armadillo-rigged.blend"
+test_both_real_skeletons_and_saved_action_channels (__main__.RigAnimationTests.test_both_real_skeletons_and_saved_action_channels) ... ok
+test_every_vertex_is_bound_to_a_real_deform_bone (__main__.RigAnimationTests.test_every_vertex_is_bound_to_a_real_deform_bone) ... ok
+test_idle_guard_and_hit_keep_feet_planted (__main__.RigAnimationTests.test_idle_guard_and_hit_keep_feet_planted) ... ok
+test_knockout_finishes_in_the_same_defeated_hold (__main__.RigAnimationTests.test_knockout_finishes_in_the_same_defeated_hold) ... ok
+test_special_curls_then_recovers_without_an_instant_model_swap (__main__.RigAnimationTests.test_special_curls_then_recovers_without_an_instant_model_swap) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.251s
+
+OK
+BlenderMCP addon registered
+BlenderMCP addon unregistered
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:49:19)
+
+Blender quit

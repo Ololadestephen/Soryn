@@ -1,0 +1,69 @@
+{
+  "initialBytes": 366139,
+  "deferredVideoBytes": 208546,
+  "initial": [
+    {
+      "path": "/brand/wordmark.svg",
+      "bytes": 1242
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "bytes": 156518
+    },
+    {
+      "path": "/",
+      "bytes": 7478
+    },
+    {
+      "path": "/_next/static/css/a212ebc38cee41c4.css",
+      "bytes": 14948
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "bytes": 874
+    },
+    {
+      "path": "/_next/static/chunks/webpack-a874a5bae3a90b83.js",
+      "bytes": 4668
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "bytes": 3655
+    },
+    {
+      "path": "/_next/static/chunks/8437-6e083d946181c622.js",
+      "bytes": 5929
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "bytes": 25263
+    },
+    {
+      "path": "/_next/static/chunks/app/page-74c52f2f9f874ff5.js",
+      "bytes": 12498
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "bytes": 64500
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "bytes": 67328
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "bytes": 619
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "bytes": 619
+    }
+  ],
+  "media": [
+    {
+      "path": "/hero/sanctuary-mobile.mp4",
+      "bytes": 208546
+    }
+  ],
+  "conditions": "Chrome CDP loadingFinished wire bytes; cold disabled cache; unthrottled; no scrolling"
+}

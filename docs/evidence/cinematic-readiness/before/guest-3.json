@@ -1,0 +1,260 @@
+{
+  "stage": "before",
+  "target": "guest",
+  "sample": 3,
+  "browser": "155.0.8059.41",
+  "conditions": "M3/8GiB;390×844 DPR3;6xCPU;1.6Mbps down/750kbps up;150ms;cache disabled;warm Node",
+  "marks": {
+    "battleUsable": 13304,
+    "moveClick": 13757,
+    "animationComplete": 17297
+  },
+  "navigationBytes": 3584,
+  "resources": [
+    {
+      "path": "/_next/static/css/2721d9e440758220.css",
+      "start": 172.5,
+      "end": 592.8999999985099,
+      "duration": 420.3999999985099,
+      "ttfb": 2.100000001490116,
+      "transfer": 14815,
+      "body": 14515
+    },
+    {
+      "path": "/_next/static/chunks/webpack-daf2b84f7d4f4531.js",
+      "start": 173.10000000149012,
+      "end": 428.19999999925494,
+      "duration": 255.09999999776483,
+      "ttfb": 1.8999999985098839,
+      "transfer": 4572,
+      "body": 4272
+    },
+    {
+      "path": "/_next/static/chunks/4bd1b696-543997be30908275.js",
+      "start": 173.19999999925494,
+      "end": 1402.699999999255,
+      "duration": 1229.5,
+      "ttfb": 2.5,
+      "transfer": 64363,
+      "body": 64063
+    },
+    {
+      "path": "/_next/static/chunks/3794-11c564358045c889.js",
+      "start": 173.19999999925494,
+      "end": 1425.8999999985099,
+      "duration": 1252.699999999255,
+      "ttfb": 2.5,
+      "transfer": 67184,
+      "body": 66884
+    },
+    {
+      "path": "/_next/static/chunks/main-app-009d8abf0069ea90.js",
+      "start": 174.69999999925494,
+      "end": 360.6000000014901,
+      "duration": 185.90000000223517,
+      "ttfb": 1.3999999985098839,
+      "transfer": 827,
+      "body": 527
+    },
+    {
+      "path": "/_next/static/chunks/8500-63a4afbeacab3b52.js",
+      "start": 174.69999999925494,
+      "end": 443.80000000074506,
+      "duration": 269.1000000014901,
+      "ttfb": 1.2000000029802322,
+      "transfer": 3559,
+      "body": 3259
+    },
+    {
+      "path": "/_next/static/chunks/8437-6e083d946181c622.js",
+      "start": 174.80000000074506,
+      "end": 727.1999999992549,
+      "duration": 552.3999999985099,
+      "ttfb": 1.8999999985098839,
+      "transfer": 5832,
+      "body": 5532
+    },
+    {
+      "path": "/_next/static/chunks/6936-b1fa8e267edb9c3f.js",
+      "start": 174.80000000074506,
+      "end": 742.6000000014901,
+      "duration": 567.8000000007451,
+      "ttfb": 1.699999999254942,
+      "transfer": 4718,
+      "body": 4418
+    },
+    {
+      "path": "/_next/static/chunks/app/arena/page-8ab8030c2ee5af18.js",
+      "start": 174.80000000074506,
+      "end": 952.6999999992549,
+      "duration": 777.8999999985099,
+      "ttfb": 1.300000000745058,
+      "transfer": 2617,
+      "body": 2317
+    },
+    {
+      "path": "/_next/static/chunks/8064-c0e3c81a7d00666e.js",
+      "start": 174.80000000074506,
+      "end": 1073.699999999255,
+      "duration": 898.8999999985099,
+      "ttfb": 3.099999997764826,
+      "transfer": 25150,
+      "body": 24850
+    },
+    {
+      "path": "/_next/static/chunks/3767-d561ccf7f4e9a475.js",
+      "start": 174.80000000074506,
+      "end": 1125.8999999985099,
+      "duration": 951.0999999977648,
+      "ttfb": 2.399999998509884,
+      "transfer": 16538,
+      "body": 16238
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "start": 646.5,
+      "end": 937.1999999992549,
+      "duration": 290.69999999925494,
+      "ttfb": 0.8999999985098839,
+      "transfer": 614,
+      "body": 314
+    },
+    {
+      "path": "/brand/wordmark.svg",
+      "start": 646.5,
+      "end": 1110.699999999255,
+      "duration": 464.19999999925494,
+      "ttfb": 1,
+      "transfer": 1237,
+      "body": 937
+    },
+    {
+      "path": "/brand/emblem.svg",
+      "start": 1645.6000000014901,
+      "end": 1799.800000000745,
+      "duration": 154.19999999925494,
+      "ttfb": 0.6000000014901161,
+      "transfer": 614,
+      "body": 314
+    },
+    {
+      "path": "/api/battle",
+      "start": 1677.8999999985099,
+      "end": 1844.800000000745,
+      "duration": 166.90000000223517,
+      "ttfb": 2.599999997764826,
+      "transfer": 2283,
+      "body": 1983
+    },
+    {
+      "path": "/combat/crisp/pip-pet.webp",
+      "start": 1867.8999999985099,
+      "end": 8700.89999999851,
+      "duration": 6833,
+      "ttfb": 1.699999999254942,
+      "transfer": 301068,
+      "body": 300768
+    },
+    {
+      "path": "/combat/crisp/pip.webp",
+      "start": 1867.8999999985099,
+      "end": 12271.199999999255,
+      "duration": 10403.300000000745,
+      "ttfb": 1.699999999254942,
+      "transfer": 657628,
+      "body": 657328
+    },
+    {
+      "path": "/combat/crisp/bolt.webp",
+      "start": 1867.8999999985099,
+      "end": 12750.10000000149,
+      "duration": 10882.20000000298,
+      "ttfb": 1.6000000014901161,
+      "transfer": 752632,
+      "body": 752332
+    },
+    {
+      "path": "/combat/crisp/bolt-pet.webp",
+      "start": 1868,
+      "end": 8317.89999999851,
+      "duration": 6449.89999999851,
+      "ttfb": 1.5,
+      "transfer": 275908,
+      "body": 275608
+    },
+    {
+      "path": "/combat/arenas/sanctuary-portrait.webp",
+      "start": 1868.1000000014901,
+      "end": 5955.199999999255,
+      "duration": 4087.099999997765,
+      "ttfb": 1.5,
+      "transfer": 156534,
+      "body": 156234
+    },
+    {
+      "path": "/api/battle",
+      "start": 13796.39999999851,
+      "end": 13994.800000000745,
+      "duration": 198.40000000223517,
+      "ttfb": 15.899999998509884,
+      "transfer": 6046,
+      "body": 5746
+    }
+  ],
+  "paint": [
+    {
+      "name": "first-paint",
+      "ms": 660
+    },
+    {
+      "name": "first-contentful-paint",
+      "ms": 660
+    }
+  ],
+  "decode": [
+    {
+      "path": "http://127.0.0.1:3100/brand/emblem.svg",
+      "start": 1666.6000000014901,
+      "end": 1667.6000000014901
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1666.6000000014901,
+      "end": 1667.6000000014901
+    },
+    {
+      "path": "http://127.0.0.1:3100/brand/wordmark.svg",
+      "start": 1667.5,
+      "end": 1667.6000000014901
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/arenas/sanctuary-portrait.webp",
+      "start": 5957.89999999851,
+      "end": 5963.699999999255
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/bolt-pet.webp",
+      "start": 8319.300000000745,
+      "end": 8324.10000000149
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/pip-pet.webp",
+      "start": 8701.39999999851,
+      "end": 8706.89999999851
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/pip.webp",
+      "start": 12272.60000000149,
+      "end": 12283.89999999851
+    },
+    {
+      "path": "http://127.0.0.1:3100/combat/crisp/bolt.webp",
+      "start": 12752.89999999851,
+      "end": 12771.39999999851
+    }
+  ],
+  "longTasks": [
+    170,
+    263
+  ]
+}

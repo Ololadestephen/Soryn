@@ -1,0 +1,61 @@
+
+  Scores: overall 20.4/100 · objective 81.7/100 · strict 20.2/100 · verified 81.7/100
+  Score guide: overall (lenient) · objective (mechanical only) · strict (penalizes wontfix) · verified (scan-confirmed only)
+  Strict 20.2 (target: 85.0) — run `desloppify next` to find the next improvement
+  Queue: 20 items (20 planned)
+  Details: `desloppify plan queue` · Skip: `desloppify plan skip <id>`
+
+  Objective queue complete (plan-start was 20.2). 20 non-objective items remain.
+  Run `desloppify next` for remaining work, then `desloppify scan` to finalize.
+  53 files · 6,096 LOC · 15 dirs · Last scan: 2026-10-10T15:39:54+00:00
+  open (in-scope): 67 · open (out-of-scope carried): 0 · open (global): 67
+
+  Dimension               Checks  Health  Strict  Bar                    Tier  Action
+  ──────────────────────────────────────────────────────────────────────────────────────
+  Code quality               332   97.3%   95.3%  ███████████████████░  T3  autofix  
+  Security                    91  100.0%   97.7%  ████████████████████  T4  move  
+  File health                 42  100.0%  100.0%  ████████████████████  T3  refactor  
+  Duplication                 59  100.0%  100.0%  ████████████████████  T3  refactor  
+  Test health                357   44.7%   44.7%  █████████░░░░░░░░░░░  T4  autofix ←
+  Health = open penalized | Strict = open + wontfix penalized
+  Action: fix=auto-fixer | move=reorganize | refactor=manual rewrite | manual=review & fix
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 81.7% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Type safety: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  Focus: Test health (44.7%) — fix 22 items
+
+
+  ── Structural Debt by Area ──
+  Create a task doc for each area → farm to sub-agents for decomposition
+
+Area                                        Items   Tiers       Open   Debt   Weight 
+─────────────────────────────────────────────────────────────────────────────────────
+(unknown)                                   20      T3:0 T4:20  20     0      80     
+src/components                              23      T3:23 T4:0  23     0      69     
+src/server                                  10      T3:10 T4:0  10     0      30     
+tests/integration                           8       T3:8 T4:0   8      0      24     
+playwright.config.ts                        3       T3:3 T4:0   3      0      9      
+src/app                                     1       T3:1 T4:0   1      0      3      
+tests/e2e                                   1       T3:1 T4:0   1      0      3      
+src/domain                                  1       T3:1 T4:0   1      0      3      
+
+  Workflow:
+    1. desloppify show <area> --status wontfix --top 50
+    2. Create tasks/<date>-<area-name>.md with decomposition plan
+    3. Farm each task doc to a sub-agent for implementation
+
+  AGENT PLAN (use `desloppify next` to see your next task):
+  Living plan active: Queue: 20 items (20 planned)
+  Next command: `desloppify next`
+  View plan: `desloppify plan`
+  -> All T1 and T2 items cleared!
+
+

@@ -1,0 +1,62 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/blender-pilot.spec.ts tests/e2e/arena-3d.spec.ts --grep aegis-victory|aegis-fallback|aegis-ember
+
+[WebServer] (node:37221) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:37222) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/arena-3d.spec.ts:22:1 › aegis-ember · authenticated synthetic holder visual slice, special, counter and result history (28.8s)
+(node:37306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/e2e/blender-pilot.spec.ts:22:1 › aegis-victory · real basic, guard, special and full outcome, refresh and reduced rematch (53.6s)
+(node:37372) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/e2e/blender-pilot.spec.ts:112:1 › aegis-fallback · unavailable animation assets preserve real guest combat (5.4s)
+
+
+  1) tests/e2e/blender-pilot.spec.ts:22:1 › aegis-victory · real basic, guard, special and full outcome, refresh and reduced rematch 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('region', { name: 'Battle result' })
+    Expected substring: "Victory"
+    Received string:    "DrawMedium · 9 roundsRematchChange setupView battle history"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" getByRole('region', { name: 'Battle result' }) with timeout 5000ms
+      - waiting for getByRole('region', { name: 'Battle result' })
+        14 × locator resolved to <div role="region" class="combat-result" aria-label="Battle result">…</div>
+           - unexpected value "DrawMedium · 9 roundsRematchChange setupView battle history"
+
+
+      93 |   await expect(
+      94 |     page.getByRole("region", { name: "Battle result" }),
+    > 95 |   ).toContainText("Victory");
+         |     ^
+      96 |   await page.screenshot({
+      97 |     path: "docs/evidence/blender-animation/victory.png",
+      98 |   });
+        at /Users/apple/Desktop/chogsnft/tests/e2e/blender-pilot.spec.ts:95:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/blender-pilot-aegis-victor-3899c-refresh-and-reduced-rematch/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/blender-pilot-aegis-victor-3899c-refresh-and-reduced-rematch/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/blender-pilot-aegis-victor-3899c-refresh-and-reduced-rematch/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/blender-pilot-aegis-victor-3899c-refresh-and-reduced-rematch/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/e2e/blender-pilot.spec.ts:22:1 › aegis-victory · real basic, guard, special and full outcome, refresh and reduced rematch 
+  2 passed (1.8m)

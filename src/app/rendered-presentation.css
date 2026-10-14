@@ -1,0 +1,55 @@
+/* Source poses own body posture. Wrappers retain event-bound lunges and returns. */
+.battle-stage .combat-field {
+  overflow: clip;
+}
+.battle-stage .fighter-facing,
+.battle-stage .fighter-motion {
+  transform-origin: 50% 94%;
+  filter: none;
+  opacity: 1;
+  rotate: none;
+}
+.battle-stage .fighter-style-aegis {
+  transition-duration: 220ms;
+}
+.battle-stage .companion[data-settled="true"] {
+  animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .battle-stage .combat-anticipate .fighter-facing {
+    animation: art-anticipation 160ms ease-out both;
+  }
+  .battle-stage .phase-action.visual-aegis-special .fighter-motion {
+    animation: none;
+  }
+  .battle-stage .combat-defend .fighter-facing {
+    animation: art-brace 180ms ease-out both;
+  }
+  .battle-stage .combat-hit:not(.combat-ko) .fighter-facing {
+    animation: art-hit 240ms ease-out;
+  }
+  .battle-stage .combat-ko .fighter-facing,
+  .battle-stage .combat-ko .fighter-motion {
+    animation: none;
+    rotate: none;
+  }
+}
+@keyframes art-anticipation {
+  to {
+    translate: calc(var(--facing) * -6px) 0;
+  }
+}
+@keyframes art-brace {
+  to {
+    translate: calc(var(--facing) * -3px) 0;
+  }
+}
+@keyframes art-hit {
+  0%,
+  100% {
+    translate: 0;
+  }
+  35% {
+    translate: calc(var(--facing) * -12px) 0;
+  }
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "label": "aegis original full-body fighter",
+    "viewBox": "0 0 512 512",
+    "image": "/combat/rendered/aegis.webp",
+    "width": 486.390625,
+    "height": 486.390625,
+    "x": 102.390625,
+    "y": 200.421875,
+    "density": 2,
+    "filter": "none",
+    "opacity": "1",
+    "transform": "none",
+    "facingTransform": "none"
+  },
+  {
+    "label": "ember original full-body fighter",
+    "viewBox": "0 0 512 512",
+    "image": "/combat/rendered/ember.webp",
+    "width": 486.390625,
+    "height": 486.390625,
+    "x": 691.21875,
+    "y": 200.421875,
+    "density": 2,
+    "filter": "none",
+    "opacity": "1",
+    "transform": "none",
+    "facingTransform": "matrix(-1, 0, 0, 1, 0, 0)"
+  }
+]

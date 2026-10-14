@@ -1,0 +1,15 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/art-sharpness.spec.ts
+
+[WebServer] (node:48449) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:48450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/e2e/art-sharpness.spec.ts:17:5 › desktop › art comparison · desktop same framing and density (27.2s)
+  ✓  2 tests/e2e/art-sharpness.spec.ts:17:5 › portrait › art comparison · portrait same framing and density (26.5s)
+
+  2 passed (1.0m)

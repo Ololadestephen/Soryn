@@ -1,0 +1,41 @@
+
+> chog-deja-vu@0.1.0 test:e2e
+> node tests/browser-support/run.mjs tests/e2e/cinematic-readiness
+
+[WebServer] (node:50133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 26 tests using 1 worker
+
+(node:50134) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/e2e/cinematic-readiness/hero.spec.ts:6:3 › hero desktop: poster, three loops, explicit pause, offscreen, hidden and navigation (35.5s)
+  ✓   2 tests/e2e/cinematic-readiness/hero.spec.ts:6:3 › hero portrait: poster, three loops, explicit pause, offscreen, hidden and navigation (34.0s)
+  ✓   3 tests/e2e/cinematic-readiness/hero.spec.ts:71:1 › reduced motion and data saver remain static (17.5s)
+  ✓   4 tests/e2e/cinematic-readiness/hero.spec.ts:87:1 › autoplay rejection retains the poster and failure retry (2.1s)
+  ✓   5 tests/e2e/cinematic-readiness/hero.spec.ts:104:1 › failed hero request retains poster and Play remains available (2.4s)
+  ✓   6 tests/e2e/cinematic-readiness/hero.spec.ts:126:1 › slow hero request keeps the poster visible and does not hold Play (2.2s)
+  ✓   7 tests/e2e/cinematic-readiness/loading.spec.ts:2:1 › stable selection prepares only its pair, cancels obsolete work and refresh retains the chosen match (5.1s)
+  ✓   8 tests/e2e/cinematic-readiness/loading.spec.ts:43:1 › total actor failure locks moves; retry recovers the same saved battle without another start (774ms)
+  ✓   9 tests/e2e/cinematic-readiness/loading.spec.ts:77:1 › delivery encoding failure uses the preserved original complete pose atlas (4.4s)
+  ✓  10 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › landing sample 1 (3.0s)
+  ✓  11 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › landing sample 2 (2.3s)
+  ✓  12 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › landing sample 3 (2.5s)
+  ✓  13 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › journey sample 1 (14.9s)
+  ✓  14 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › journey sample 2 (14.8s)
+  ✓  15 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › journey sample 3 (14.7s)
+  ✓  16 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › guest sample 1 (13.0s)
+  ✓  17 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › guest sample 2 (13.9s)
+  ✓  18 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › guest sample 3 (13.0s)
+  ✓  19 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › heavy sample 1 (24.8s)
+  ✓  20 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › heavy sample 2 (24.7s)
+  ✓  21 tests/e2e/cinematic-readiness/performance.spec.ts:11:5 › heavy sample 3 (24.4s)
+  ✓  22 tests/e2e/cinematic-readiness/quality.spec.ts:13:5 › desktop quality › matched original/delivery artwork at DPR2 desktop (13.8s)
+  ✓  23 tests/e2e/cinematic-readiness/quality.spec.ts:13:5 › portrait quality › matched original/delivery artwork at DPR3 portrait (13.6s)
+  ✓  24 tests/e2e/cinematic-readiness/transfer.spec.ts:4:3 › separate initial and deferred desktop transfer (3.7s)
+  ✓  25 tests/e2e/cinematic-readiness/transfer.spec.ts:4:3 › separate initial and deferred mobile transfer (3.7s)
+(node:51034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  26 tests/e2e/cinematic-readiness/recording.spec.ts:40:1 › record landing to setup, battle, result and rematch (40.9s)
+
+  26 passed (5.8m)

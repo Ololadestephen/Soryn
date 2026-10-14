@@ -1,0 +1,242 @@
+[
+  {
+    "fighter": "pip",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.2013888888889,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      432
+    ]
+  },
+  {
+    "fighter": "bolt",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.1316860465116,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      430
+    ]
+  },
+  {
+    "fighter": "patch",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.43631516587675,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      422
+    ]
+  },
+  {
+    "fighter": "moss",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.29515550239233,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      418
+    ]
+  },
+  {
+    "fighter": "aegis",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.111328125,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      512,
+      512
+    ]
+  },
+  {
+    "fighter": "nyx",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.29515550239233,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      418
+    ]
+  },
+  {
+    "fighter": "echo",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.2475,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      419,
+      450
+    ]
+  },
+  {
+    "fighter": "prism",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.338876146789,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      436
+    ]
+  },
+  {
+    "fighter": "atlas",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.29515550239233,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      418
+    ]
+  },
+  {
+    "fighter": "flux",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.3306980906921,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      419
+    ]
+  },
+  {
+    "fighter": "ember",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.111328125,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      512,
+      512
+    ]
+  },
+  {
+    "fighter": "mneme",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "density": 3,
+    "bounds": {
+      "x": -27,
+      "y": 269.1875,
+      "width": 249,
+      "height": 249
+    },
+    "ground": 503.29515550239233,
+    "enemyGround": 503.1316860465116,
+    "canvas": [
+      418,
+      418
+    ]
+  }
+]

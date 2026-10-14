@@ -1,0 +1,49 @@
+.official-identity .identity {
+  border-bottom: 1px solid var(--line);
+}
+.official-identity .identity-status {
+  min-width: 0;
+}
+.identity-status button {
+  margin-top: 16px;
+}
+.identity-status label {
+  display: block;
+  margin-top: 16px;
+}
+.identity-status select {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 6px;
+  padding: 10px;
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--ink);
+  background: var(--paper);
+}
+.wallet-address,
+.sign-in-message pre {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.sign-in-message pre {
+  white-space: pre-wrap;
+  font-size: 13px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--soft);
+}
+.official-publication {
+  margin: 24px 0;
+}
+.official-publication .share-link {
+  display: block;
+}
+.public-chapters {
+  margin: 36px 0;
+}
+.public-chapters > .panel {
+  margin-top: 16px;
+}

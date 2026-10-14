@@ -1,0 +1,138 @@
+  ⚠ State file missing (state-python.json); attempting recovery from plan.json.
+  Excluding (from config): node_modules, .next, test-results, playwright-report, coverage, out, dist, build, .cache, .worktrees, data/local
+  Zones: script: 5
+  [1/17] Unused (ruff)...
+         0 instances -> 0 issues
+  [2/17] Structural analysis...
+         1 complexity-only files below threshold (< 50)
+         -> 3 structural issues
+  [3/17] Responsibility cohesion...
+  [4/17] Coupling + cycles + orphaned...
+         single-use: 0 found, 0 suppressed (50-200 LOC)
+         -> 0 coupling/structural issues total
+  [5/17] Uncalled functions...
+  [6/17] Test coverage...
+         test coverage: 5 issues (59 production files)
+  [7/17] Signature analysis...
+  [8/17] Code smells...
+         -> 7 smell issues
+  [9/17] Mutable state...
+  [10/17] Security...
+         security: clean (5 files scanned)
+  [11/17] Private imports...
+         private imports: clean (5 files scanned)
+  [12/17] Layer violations...
+  [13/17] Dict key flow...
+         -> 0 dict key issues
+  [14/17] Unused enums...
+  [15/17] Subjective review...
+         subjective review: 20 issues (20 dimensions)
+  [16/17] Boilerplate duplication...
+  [17/17] Duplicates...
+         0 clusters, 0 suppressed (<10 LOC)
+
+  Total: 35 issues
+  → query.json updated
+
+Desloppify Scan (python)
+
+  * Coverage preflight: bandit is not installed — Python-specific security checks will be skipped.
+    Repercussion: Python-specific security coverage is reduced; clean security output may miss shell injection, unsafe deserialization, and risky SQL/subprocess patterns.
+    Fix: Install Bandit: pip install bandit
+  ℹ Excluded directory 'test-results' has 0 references from scanned code — may be stale
+  ℹ Excluded directory 'data/local' has 0 references from scanned code — may be stale
+  Plan: 20 subjective dimension(s) queued for review.
+  Scan complete
+  ──────────────────────────────────────────────────
+  +37 new
+  Scores: overall 14.8/100 (+14.8)  objective 59.1/100 (+59.1)  strict 14.8/100 (+14.8)  verified 59.1/100 (+59.1)
+  ⚠ 20 subjective dimensions are unassessed (scored as 0). The strict score currently reflects only mechanical detectors (25% of score weight). Run `desloppify review --prepare` to assess.
+  Score guide:
+    overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+    objective = mechanical detectors only (no subjective review)
+    strict   = like overall, but wontfix counts against you  <-- your north star
+    verified = strict, but only credits scan-verified fixes
+  Strict 14.8 (target: 85.0)
+  * 10 issues hidden (showing 10/detector). Use `desloppify show <detector>` to see all.
+  Scorecard dimensions (matches scorecard.png):
+  File health        ████████████░░░  82.0%  (strict  82.0%)
+  Code quality       █████████████░░  88.7%  (strict  88.7%)
+  Duplication        ███████████████ 100.0%  (strict 100.0%)
+  Security           ███████████████ 100.0%  (strict 100.0%)
+  Test health        ░░░░░░░░░░░░░░░   0.0%  (strict   0.0%)
+
+  Score recipe:
+    overall = 25% mechanical + 75% subjective
+    Pool averages: mechanical 59.1% · subjective 0.0%
+    Biggest weighted drags:
+      - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+      - Test health: -9.28 pts (score 0.0%, 37.1% of mechanical pool)
+      - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+      - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+  37 new issues with few resolutions — likely cascading.
+  Coverage reduced (security): bandit is not installed — Python-specific security checks will be skipped. Repercussion: Python-specific security coverage is reduced; clean security output may miss shell injection, unsafe deserialization, and risky SQL/subprocess patterns. Fix: Install Bandit: pip install bandit
+
+  → First scan complete. 35 open issues across 3 dimensions.
+  Run `desloppify next` for the highest-priority item.
+  Run `desloppify plan` to see the updated living plan.
+  Run `desloppify status` for the full dashboard.
+
+────────────────────────────────────────────────────────────
+INSTRUCTIONS FOR LLM
+IMPORTANT: ALWAYS present ALL scores to the user after a scan.
+Show overall health (lenient + strict), ALL dimension scores,
+AND all subjective dimension scores in a markdown table.
+The goal is to maximize strict scores. Never skip the scores.
+
+LIVING PLAN ACTIVE: 20 ordered, 0 skipped.
+The plan is the single source of truth for work order.
+Use `desloppify next` which respects the plan.
+Use `desloppify plan` to view and update it.
+
+Overall score:   14.8/100
+Objective score: 59.1/100
+Strict score:    14.8/100
+Verified score:  59.1/100
+Score guide:
+  overall  = 25% mechanical + 75% subjective (lenient — ignores wontfix)
+  objective = mechanical detectors only (no subjective review)
+  strict   = like overall, but wontfix counts against you  <-- your north star
+  verified = strict, but only credits scan-verified fixes
+
+| Dimension | Health | Strict | Issues | Tier | Action |
+|-----------|--------|--------|--------|------|--------|
+| Code quality | 88.7% | 88.7% | 7 | T3 | autofix |
+| Duplication | 100.0% | 100.0% | 0 | T3 | refactor |
+| File health | 82.0% | 82.0% | 3 | T3 | refactor |
+| Security | 100.0% | 100.0% | 0 | T4 | move |
+| Test health | 0.0% | 0.0% | 5 | T4 | autofix |
+
+Biggest score drags (fixing these dimensions has the most impact):
+  - High elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Mid elegance: -13.41 pts (score 0.0%, 17.9% of subjective pool)
+  - Test health: -9.28 pts (score 0.0%, 37.1% of mechanical pool)
+  - Contracts: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+  - Low elegance: -7.32 pts (score 0.0%, 9.8% of subjective pool)
+
+Total issues: 35 | Open: 35 | Fixed: 0 | Wontfix: 0
+
+
+Follow the living plan: `desloppify next` for your next execution task,
+`desloppify backlog` for broader backlog discovery, and `desloppify plan` for plan details.
+Current status: First scan complete. 35 open issues across 3 dimensions.
+Strategy: 3 independent workstreams, safe to parallelize. Rescan after each phase to verify.
+Top action: `desloppify show structural --status open` — 3 structural work items — review large files — split only when responsibilities are clearly separable
+
+────────────────────────────────────────────────────────────
+
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  Hey — please follow the living plan. Run `desloppify    │
+  │  next` for your next execution task. No need to reply,   │
+  │  just continue.                                          │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+No skill document found. Install globally for better workflow guidance: desloppify setup

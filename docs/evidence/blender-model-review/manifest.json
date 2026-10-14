@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-13",
+  "stage": "editable model v05, user requested continuation after neutral previews",
+  "connection": "Verified Blender MCP, 5.2.2 LTS, addon 1.8/protocol 13",
+  "provenance": "Original procedural geometry/materials authored here with AI assistance from approved original Aegis/armadillo rendered references; no third-party model imports or paid generators",
+  "reproduction_geometry_equal": true,
+  "geometry": {
+    "scene": "Chog_Aegis_ModelReview_v05",
+    "blender": "5.2.2 LTS",
+    "view_transform": "AgX",
+    "mesh_parts": 227,
+    "vertices": 75668,
+    "polygons": 77781,
+    "bounds": {
+      "Aegis": {
+        "minimum": [
+          -1.7447845935821533,
+          -0.7490000128746033,
+          0.0
+        ],
+        "maximum": [
+          1.308203935623169,
+          0.7466562986373901,
+          4.542091369628906
+        ]
+      },
+      "Armadillo": {
+        "minimum": [
+          1.0470000505447388,
+          -1.1177499294281006,
+          0.00019999966025352478
+        ],
+        "maximum": [
+          2.1130001544952393,
+          1.03141188621521,
+          0.8615058064460754
+        ]
+      }
+    },
+    "armatures": 0,
+    "animated_objects": 0,
+    "stage": "editable model draft, pending visual review; not rig-ready approval"
+  },
+  "files": [
+    {
+      "path": "assets/combat/blender/review-v05/aegis-armadillo-model-review.blend",
+      "bytes": 4279278,
+      "sha256": "2b19081922849a3ed28718d0b0491c4b530d8017bcad99686ab94bb6d211cb6b"
+    },
+    {
+      "path": "assets/combat/blender/review-v05/neutral-front.png",
+      "bytes": 1811189,
+      "sha256": "2e1eb915f975c8b8f6983e112331ceee77a1a0d3248c4d433c919be0cef7146f"
+    },
+    {
+      "path": "assets/combat/blender/review-v05/neutral-pair.png",
+      "bytes": 1883060,
+      "sha256": "6e60f99e2d9d1804b2d3411729c585957625b7f6fb9deb9351c236f82c1c2574"
+    },
+    {
+      "path": "assets/combat/blender/review-v05/neutral-pet-profile.png",
+      "bytes": 1793260,
+      "sha256": "e2f7f2dd9df3f7e3a1c09bc7e7546c9ab7139500e298fb564eb42c518d226109"
+    },
+    {
+      "path": "assets/combat/blender/review-v05/neutral-pet.png",
+      "bytes": 1825301,
+      "sha256": "d1142e6531d3474dc894772f06aaf72959e31a27e0c414e6a75f82c185f10a0f"
+    },
+    {
+      "path": "assets/combat/blender/review-v05/neutral-profile.png",
+      "bytes": 1742188,
+      "sha256": "8140dcd042f16ca2b601cb4c7e45c8ec03bf9c9f90c920095a42b3b302ef6b3a"
+    }
+  ]
+}

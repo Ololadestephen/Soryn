@@ -1,0 +1,698 @@
+{
+  "aegis": {
+    "path": "/combat/crisp/aegis.webp",
+    "width": 1506,
+    "height": 876,
+    "canvas": [512, 512],
+    "offset": [12, 51],
+    "baseline": 481,
+    "cells": [
+      [0, 0, 502, 438],
+      [502, 0, 502, 438],
+      [1004, 0, 502, 438],
+      [0, 438, 502, 438],
+      [502, 438, 502, 438],
+      [1004, 438, 502, 438]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/aegis.webp",
+      "width": 1536,
+      "height": 1024,
+      "cells": [
+        [0, 0, 512, 512],
+        [512, 0, 512, 512],
+        [1024, 0, 512, 512],
+        [0, 512, 512, 512],
+        [512, 512, 512, 512],
+        [1024, 512, 512, 512]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/aegis-idle.webp",
+      "width": 502,
+      "height": 438,
+      "cells": [[0, 0, 502, 438]]
+    }
+  },
+  "ember": {
+    "path": "/combat/crisp/ember.webp",
+    "width": 1548,
+    "height": 852,
+    "canvas": [512, 512],
+    "offset": [0, 64],
+    "baseline": 481,
+    "cells": [
+      [0, 0, 516, 426],
+      [516, 0, 516, 426],
+      [1032, 0, 516, 426],
+      [0, 426, 516, 426],
+      [516, 426, 516, 426],
+      [1032, 426, 516, 426]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/ember.webp",
+      "width": 1536,
+      "height": 1024,
+      "cells": [
+        [0, 0, 512, 512],
+        [512, 0, 516, 512],
+        [1028, 0, 508, 512],
+        [0, 512, 512, 512],
+        [512, 512, 516, 512],
+        [1028, 512, 508, 512]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/ember-idle.webp",
+      "width": 516,
+      "height": 426,
+      "cells": [[0, 0, 516, 426]]
+    }
+  },
+  "armadillo-pet": {
+    "path": "/combat/crisp/armadillo-pet.webp",
+    "width": 2412,
+    "height": 494,
+    "canvas": [826, 724],
+    "offset": [24, 194],
+    "baseline": 681,
+    "cells": [
+      [0, 0, 804, 494],
+      [804, 0, 804, 494],
+      [1608, 0, 804, 494]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/armadillo.webp",
+      "width": 2172,
+      "height": 724,
+      "cells": [
+        [0, 0, 826, 724],
+        [826, 0, 622, 724],
+        [1448, 0, 724, 724]
+      ]
+    }
+  },
+  "phoenix-pet": {
+    "path": "/combat/crisp/phoenix-pet.webp",
+    "width": 2772,
+    "height": 730,
+    "canvas": [593, 724],
+    "offset": [-165, -35],
+    "baseline": 681,
+    "cells": [
+      [0, 0, 924, 730],
+      [924, 0, 924, 730],
+      [1848, 0, 924, 730]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/phoenix.webp",
+      "width": 2172,
+      "height": 724,
+      "cells": [
+        [0, 0, 593, 724],
+        [593, 0, 920, 724],
+        [1513, 0, 659, 724]
+      ]
+    }
+  },
+  "pip": {
+    "path": "/combat/crisp/pip.webp",
+    "width": 1245,
+    "height": 806,
+    "canvas": [418, 432],
+    "offset": [3, 9],
+    "baseline": 406,
+    "cells": [
+      [0, 0, 415, 403],
+      [415, 0, 415, 403],
+      [830, 0, 415, 403],
+      [0, 403, 415, 403],
+      [415, 403, 415, 403],
+      [830, 403, 415, 403]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/pip.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 432],
+        [418, 0, 418, 432],
+        [836, 0, 418, 432],
+        [0, 432, 418, 404],
+        [418, 432, 418, 404],
+        [836, 432, 418, 404]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/pip-idle.webp",
+      "width": 415,
+      "height": 403,
+      "cells": [[0, 0, 415, 403]]
+    }
+  },
+  "pip-pet": {
+    "path": "/combat/crisp/pip-pet.webp",
+    "width": 1251,
+    "height": 407,
+    "canvas": [418, 418],
+    "offset": [1, 65],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 417, 407],
+      [417, 0, 417, 407],
+      [834, 0, 417, 407]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/pip.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 418, 418],
+        [836, 836, 418, 418]
+      ]
+    }
+  },
+  "bolt": {
+    "path": "/combat/crisp/bolt.webp",
+    "width": 1332,
+    "height": 836,
+    "canvas": [418, 430],
+    "offset": [-13, -4],
+    "baseline": 404,
+    "cells": [
+      [0, 0, 444, 418],
+      [444, 0, 444, 418],
+      [888, 0, 444, 418],
+      [0, 418, 444, 418],
+      [444, 418, 444, 418],
+      [888, 418, 444, 418]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/bolt.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 430],
+        [418, 0, 440, 430],
+        [858, 0, 396, 430],
+        [0, 430, 418, 407],
+        [418, 430, 440, 407],
+        [858, 430, 396, 407]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/bolt-idle.webp",
+      "width": 444,
+      "height": 418,
+      "cells": [[0, 0, 444, 418]]
+    }
+  },
+  "bolt-pet": {
+    "path": "/combat/crisp/bolt-pet.webp",
+    "width": 1266,
+    "height": 344,
+    "canvas": [418, 417],
+    "offset": [9, 54],
+    "baseline": 392,
+    "cells": [
+      [0, 0, 422, 344],
+      [422, 0, 422, 344],
+      [844, 0, 422, 344]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/bolt.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 837, 418, 417],
+        [418, 837, 440, 417],
+        [858, 837, 396, 417]
+      ]
+    }
+  },
+  "patch": {
+    "path": "/combat/crisp/patch.webp",
+    "width": 1122,
+    "height": 854,
+    "canvas": [418, 422],
+    "offset": [34, -20],
+    "baseline": 397,
+    "cells": [
+      [0, 0, 374, 427],
+      [374, 0, 374, 427],
+      [748, 0, 374, 427],
+      [0, 427, 374, 427],
+      [374, 427, 374, 427],
+      [748, 427, 374, 427]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/patch.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 422],
+        [418, 0, 418, 422],
+        [836, 0, 418, 422],
+        [0, 422, 418, 416],
+        [418, 422, 418, 416],
+        [836, 422, 418, 416]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/patch-idle.webp",
+      "width": 374,
+      "height": 427,
+      "cells": [[0, 0, 374, 427]]
+    }
+  },
+  "patch-pet": {
+    "path": "/combat/crisp/patch-pet.webp",
+    "width": 1029,
+    "height": 332,
+    "canvas": [418, 416],
+    "offset": [45, 72],
+    "baseline": 391,
+    "cells": [
+      [0, 0, 343, 332],
+      [343, 0, 343, 332],
+      [686, 0, 343, 332]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/patch.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 838, 418, 416],
+        [418, 838, 418, 416],
+        [836, 838, 418, 416]
+      ]
+    }
+  },
+  "moss": {
+    "path": "/combat/crisp/moss.webp",
+    "width": 1176,
+    "height": 722,
+    "canvas": [418, 418],
+    "offset": [26, 43],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 392, 361],
+      [392, 0, 392, 361],
+      [784, 0, 392, 361],
+      [0, 361, 392, 361],
+      [392, 361, 392, 361],
+      [784, 361, 392, 361]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/moss.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 418],
+        [418, 0, 418, 418],
+        [836, 0, 418, 418],
+        [0, 418, 418, 418],
+        [418, 418, 418, 418],
+        [836, 418, 418, 418]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/moss-idle.webp",
+      "width": 392,
+      "height": 361,
+      "cells": [[0, 0, 392, 361]]
+    }
+  },
+  "moss-pet": {
+    "path": "/combat/crisp/moss-pet.webp",
+    "width": 990,
+    "height": 303,
+    "canvas": [418, 418],
+    "offset": [46, 95],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 330, 303],
+      [330, 0, 330, 303],
+      [660, 0, 330, 303]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/moss.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 418, 418],
+        [836, 836, 418, 418]
+      ]
+    }
+  },
+  "nyx": {
+    "path": "/combat/crisp/nyx.webp",
+    "width": 1152,
+    "height": 702,
+    "canvas": [418, 418],
+    "offset": [22, 51],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 384, 351],
+      [384, 0, 384, 351],
+      [768, 0, 384, 351],
+      [0, 351, 384, 351],
+      [384, 351, 384, 351],
+      [768, 351, 384, 351]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/nyx.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 418],
+        [418, 0, 420, 418],
+        [838, 0, 416, 418],
+        [0, 418, 418, 418],
+        [418, 418, 420, 418],
+        [838, 418, 416, 418]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/nyx-idle.webp",
+      "width": 384,
+      "height": 351,
+      "cells": [[0, 0, 384, 351]]
+    }
+  },
+  "nyx-pet": {
+    "path": "/combat/crisp/nyx-pet.webp",
+    "width": 1266,
+    "height": 300,
+    "canvas": [418, 418],
+    "offset": [-1, 109],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 422, 300],
+      [422, 0, 422, 300],
+      [844, 0, 422, 300]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/nyx.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 420, 418],
+        [838, 836, 416, 418]
+      ]
+    }
+  },
+  "echo": {
+    "path": "/combat/crisp/echo.webp",
+    "width": 1290,
+    "height": 724,
+    "canvas": [419, 450],
+    "offset": [-9, 71],
+    "baseline": 423,
+    "cells": [
+      [0, 0, 430, 362],
+      [430, 0, 430, 362],
+      [860, 0, 430, 362],
+      [0, 362, 430, 362],
+      [430, 362, 430, 362],
+      [860, 362, 430, 362]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/echo.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 419, 450],
+        [419, 0, 433, 450],
+        [852, 0, 402, 450],
+        [0, 450, 419, 414],
+        [419, 450, 433, 414],
+        [852, 450, 402, 414]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/echo-idle.webp",
+      "width": 430,
+      "height": 362,
+      "cells": [[0, 0, 430, 362]]
+    }
+  },
+  "echo-pet": {
+    "path": "/combat/crisp/echo-pet.webp",
+    "width": 1263,
+    "height": 319,
+    "canvas": [419, 390],
+    "offset": [7, 56],
+    "baseline": 367,
+    "cells": [
+      [0, 0, 421, 319],
+      [421, 0, 421, 319],
+      [842, 0, 421, 319]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/echo.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 864, 419, 390],
+        [419, 864, 433, 390],
+        [852, 864, 402, 390]
+      ]
+    }
+  },
+  "prism": {
+    "path": "/combat/crisp/prism.webp",
+    "width": 1266,
+    "height": 800,
+    "canvas": [418, 436],
+    "offset": [-11, 19],
+    "baseline": 410,
+    "cells": [
+      [0, 0, 422, 400],
+      [422, 0, 422, 400],
+      [844, 0, 422, 400],
+      [0, 400, 422, 400],
+      [422, 400, 422, 400],
+      [844, 400, 422, 400]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/prism.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 436],
+        [418, 0, 400, 436],
+        [818, 0, 436, 436],
+        [0, 436, 418, 400],
+        [418, 436, 400, 400],
+        [818, 436, 436, 400]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/prism-idle.webp",
+      "width": 422,
+      "height": 400,
+      "cells": [[0, 0, 422, 400]]
+    }
+  },
+  "prism-pet": {
+    "path": "/combat/crisp/prism-pet.webp",
+    "width": 1266,
+    "height": 299,
+    "canvas": [418, 418],
+    "offset": [-11, 107],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 422, 299],
+      [422, 0, 422, 299],
+      [844, 0, 422, 299]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/prism.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 400, 418],
+        [818, 836, 436, 418]
+      ]
+    }
+  },
+  "atlas": {
+    "path": "/combat/crisp/atlas.webp",
+    "width": 1056,
+    "height": 666,
+    "canvas": [418, 418],
+    "offset": [41, 66],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 352, 333],
+      [352, 0, 352, 333],
+      [704, 0, 352, 333],
+      [0, 333, 352, 333],
+      [352, 333, 352, 333],
+      [704, 333, 352, 333]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/atlas.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 418],
+        [418, 0, 418, 418],
+        [836, 0, 418, 418],
+        [0, 418, 418, 418],
+        [418, 418, 418, 418],
+        [836, 418, 418, 418]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/atlas-idle.webp",
+      "width": 352,
+      "height": 333,
+      "cells": [[0, 0, 352, 333]]
+    }
+  },
+  "atlas-pet": {
+    "path": "/combat/crisp/atlas-pet.webp",
+    "width": 1068,
+    "height": 272,
+    "canvas": [418, 418],
+    "offset": [39, 129],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 356, 272],
+      [356, 0, 356, 272],
+      [712, 0, 356, 272]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/atlas.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 418, 418],
+        [836, 836, 418, 418]
+      ]
+    }
+  },
+  "flux": {
+    "path": "/combat/crisp/flux.webp",
+    "width": 1158,
+    "height": 818,
+    "canvas": [418, 419],
+    "offset": [19, -8],
+    "baseline": 394,
+    "cells": [
+      [0, 0, 386, 409],
+      [386, 0, 386, 409],
+      [772, 0, 386, 409],
+      [0, 409, 386, 409],
+      [386, 409, 386, 409],
+      [772, 409, 386, 409]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/flux.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 419],
+        [418, 0, 418, 419],
+        [836, 0, 418, 419],
+        [0, 419, 418, 417],
+        [418, 419, 418, 417],
+        [836, 419, 418, 417]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/flux-idle.webp",
+      "width": 386,
+      "height": 409,
+      "cells": [[0, 0, 386, 409]]
+    }
+  },
+  "flux-pet": {
+    "path": "/combat/crisp/flux-pet.webp",
+    "width": 987,
+    "height": 296,
+    "canvas": [418, 418],
+    "offset": [57, 112],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 329, 296],
+      [329, 0, 329, 296],
+      [658, 0, 329, 296]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/flux.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 418, 418],
+        [836, 836, 418, 418]
+      ]
+    }
+  },
+  "mneme": {
+    "path": "/combat/crisp/mneme.webp",
+    "width": 1146,
+    "height": 680,
+    "canvas": [418, 418],
+    "offset": [30, 66],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 382, 340],
+      [382, 0, 382, 340],
+      [764, 0, 382, 340],
+      [0, 340, 382, 340],
+      [382, 340, 382, 340],
+      [764, 340, 382, 340]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/mneme.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 0, 418, 418],
+        [418, 0, 418, 418],
+        [836, 0, 418, 418],
+        [0, 418, 418, 418],
+        [418, 418, 418, 418],
+        [836, 418, 418, 418]
+      ]
+    },
+    "preview": {
+      "path": "/combat/crisp/mneme-idle.webp",
+      "width": 382,
+      "height": 340,
+      "cells": [[0, 0, 382, 340]]
+    }
+  },
+  "mneme-pet": {
+    "path": "/combat/crisp/mneme-pet.webp",
+    "width": 1164,
+    "height": 351,
+    "canvas": [418, 418],
+    "offset": [15, 66],
+    "baseline": 393,
+    "cells": [
+      [0, 0, 388, 351],
+      [388, 0, 388, 351],
+      [776, 0, 388, 351]
+    ],
+    "fallback": {
+      "path": "/combat/rendered/mneme.webp",
+      "width": 1254,
+      "height": 1254,
+      "cells": [
+        [0, 836, 418, 418],
+        [418, 836, 418, 418],
+        [836, 836, 418, 418]
+      ]
+    }
+  }
+}
