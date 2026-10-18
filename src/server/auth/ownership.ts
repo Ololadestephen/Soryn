@@ -7,6 +7,12 @@ import {
 import { ServiceError } from "../errors";
 import { type OwnershipReader } from "../nft/rpc";
 import { IdentityStore } from "./persistence";
+import type { Store } from "../persistence";
+
+// Share only an in-progress observation in this single-process installation.
+// Completed results are never reused as fresh authorization evidence.
+const observations = new WeakMap<Store, Map<string, Promise<Ownership>>>();
+export const OWNERSHIP_REQUEST_MS = 12_000;
 
 function sameObservation(
   left: Ownership | null,
@@ -30,12 +36,40 @@ export class OwnershipService {
     private chain: OwnershipReader,
     private now = Date.now,
   ) {}
-  async fresh(identity: TokenIdentity): Promise<Ownership> {
+  fresh(identity: TokenIdentity): Promise<Ownership> {
+    let pending = observations.get(this.records.store);
+    if (!pending) {
+      pending = new Map();
+      observations.set(this.records.store, pending);
+    }
+    const key = tokenKey(identity);
+    const existing = pending.get(key);
+    if (existing) return existing;
+    const request = this.observeFresh(identity).finally(() => {
+      if (pending.get(key) === request) pending.delete(key);
+    });
+    pending.set(key, request);
+    return request;
+  }
+  private async observeFresh(identity: TokenIdentity): Promise<Ownership> {
     const previous = this.records.ownership(identity);
-    const observation = await this.chain.observe(
-      identity.tokenId,
-      previous?.block ?? null,
-    );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () =>
+          reject(
+            new ServiceError(
+              503,
+              "Ownership verification is unavailable: the observation timed out.",
+            ),
+          ),
+        OWNERSHIP_REQUEST_MS,
+      );
+    });
+    const observation = await Promise.race([
+      this.chain.observe(identity.tokenId, previous?.block ?? null),
+      timeout,
+    ]).finally(() => clearTimeout(timer));
     return this.records.store.transaction(() => {
       const current = this.records.ownership(identity);
       if (!sameObservation(current, previous))

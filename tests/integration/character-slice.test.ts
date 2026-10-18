@@ -1,11 +1,12 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it, expect } from "vitest";
 import { Store } from "../../src/server/persistence";
-import { RunService } from "../../src/server/runs";
-import { GuestJournal } from "../../src/server/journal";
+import { RunService } from "../../src/server/adventure/runs";
+import { GuestJournal } from "../../src/server/adventure/journal";
 import type { Action } from "../../src/domain/game/contracts";
 import type { OfficialAuthority } from "../../src/domain/identity";
 import { identityFor } from "../../src/domain/identity";
@@ -122,7 +123,9 @@ describe("four-character persisted slice", () => {
       expect(() => journal.race(guest, randomUUID(), borrowed.id)).toThrow(
         "published challenge",
       );
-      expect(runs.view(store.getRun(raced.id, guest)).comparison).toBeNull();
+      expect(
+        runs.view(new AdventureStore(store).getRun(raced.id, guest)).comparison,
+      ).toBeNull();
     } finally {
       store.close();
     }
@@ -144,10 +147,10 @@ describe("four-character persisted slice", () => {
       ]);
       expect(finished.observation.outcome).toBe("escaped");
       expect(finished.ghost?.race.actions).toContain("skill-spare");
-      const saved = store.getRun(id, actor);
+      const saved = new AdventureStore(store).getRun(id, actor);
       if (!saved.tactics) throw new Error("Fixture tactical state missing.");
       saved.tactics.charges = 1;
-      store.saveRun(saved);
+      new AdventureStore(store).saveRun(saved);
       expect(() => runs.session(actor)).toThrow("replay validation");
       const legacy = runs.start(actor, randomUUID(), null);
       expect(legacy.observation).not.toHaveProperty("tactics");

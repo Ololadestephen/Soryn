@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { accessGrantSchema } from "../access/policy";
 import { characterIdSchema } from "../characters/definitions";
 import { addressSchema, identitySchema } from "../identity";
 import {
@@ -23,6 +24,10 @@ export const holderGrantSchema = z
   })
   .nullable()
   .default(null);
+const participantsSchema = z.strictObject({
+  a: holderGrantSchema,
+  b: holderGrantSchema,
+});
 
 const seatSchema = z.strictObject({
   actor: z.uuid(),
@@ -37,6 +42,8 @@ const seatSchema = z.strictObject({
   misses: z.number().int().min(0).max(2),
   notice: z.string().max(160).nullable(),
   holderGrant: holderGrantSchema,
+  access: accessGrantSchema.optional(),
+  cosmetic: z.boolean().optional(),
 });
 export type PvpSeat = z.infer<typeof seatSchema>;
 
@@ -61,8 +68,46 @@ const timersSchema = z.strictObject({
   loadingMs: z.number().int().min(1000).max(120_000),
   lobbyMs: z.number().int().min(60_000).max(86_400_000),
   disconnectMs: z.number().int().min(2000).max(60_000),
+  intermissionMs: z.number().int().min(2_000).max(120_000).default(10_000),
   missedTurns: z.literal(2),
 });
+
+export const SERIES_POLICY = "series/1" as const;
+// At most three wins, each preceded by one non-consecutive draw.
+export const SERIES_MAX_BATTLES = 6;
+
+const seriesOutcomeSchema = z
+  .strictObject({
+    kind: z.enum(["win", "draw", "forfeit", "abandoned", "no-contest"]),
+    winner: seatIdSchema.nullable(),
+    explanation: z.string().min(1).max(200),
+  })
+  .refine(
+    (outcome) => outcome.kind !== "no-contest" || outcome.winner === null,
+    "A no-contest series awards no win.",
+  );
+
+/** First to two battle wins. Absent on matches played before series/1. */
+export const seriesSchema = z
+  .strictObject({
+    policy: z.literal(SERIES_POLICY),
+    id: z.uuid(),
+    battleNumber: z.number().int().min(1).max(SERIES_MAX_BATTLES),
+    wins: z.strictObject({
+      a: z.number().int().min(0).max(2),
+      b: z.number().int().min(0).max(2),
+    }),
+    consecutiveDraws: z.number().int().min(0).max(2),
+    phase: z.enum(["setup", "battle", "intermission", "complete"]),
+    currentMatchId: z.uuid().nullable(),
+    recorded: z.array(z.uuid()).max(SERIES_MAX_BATTLES),
+    deadlineAt: z.number().int().nullable(),
+    outcome: seriesOutcomeSchema.nullable(),
+    participants: participantsSchema.optional(),
+  })
+  .nullable()
+  .default(null);
+export type PvpSeries = NonNullable<z.infer<typeof seriesSchema>>;
 
 const matchSchema = z
   .strictObject({
@@ -78,6 +123,7 @@ const matchSchema = z
     phase: z.enum(["loading", "choose", "present", "complete"]),
     deadlineAt: z.number().int(),
     result: resultSchema.nullable(),
+    participants: participantsSchema.optional(),
   })
   .refine(
     (match) => match.snapshot.policy === "combat-pvp/1",
@@ -109,12 +155,49 @@ export const pvpRoomSchema = z
     match: matchSchema.nullable(),
     completed: z.array(matchSchema).max(40),
     timers: timersSchema,
+    series: seriesSchema,
+    roster: z.enum(["private", "starters", "public-six"]).default("private"),
+    origin: z.enum(["public", "private"]).optional(),
+    ownershipStallSince: z.number().int().nullable().default(null),
+    interruption: z
+      .strictObject({
+        reason: z.enum([
+          "ownership-changed",
+          "generation-invalidated",
+          "verification-unavailable",
+          "reservation-expired",
+        ]),
+        at: z.number().int(),
+        openingGeneration: z.string().nullable(),
+        observedGeneration: z.string().nullable(),
+      })
+      .nullable()
+      .optional(),
   })
   .refine((room) => {
     const actors = [room.seats.a?.actor, room.seats.b?.actor].filter(Boolean);
     return new Set(actors).size === actors.length;
   }, "One browser seat per battle.");
 export type PvpRoom = z.infer<typeof pvpRoomSchema>;
+
+/** Before origin existed, only openMatched wrote the starters-only room contract. */
+export function roomOrigin(room: Pick<PvpRoom, "origin" | "roster">) {
+  return room.origin ?? (room.roster === "starters" ? "public" : "private");
+}
+
+export function roomFinished(room: PvpRoom) {
+  return room.series
+    ? room.series.phase === "complete"
+    : room.match?.phase === "complete";
+}
+
+export function roomTerminal(room: PvpRoom, now: number) {
+  return (
+    room.closedAt !== null ||
+    roomFinished(room) ||
+    (room.ownershipStallSince === null && invitationExpired(room, now))
+  );
+}
 
 export function seatOf(room: PvpRoom, actor: string): SeatId | null {
   if (room.seats.a?.actor === actor) return "a";

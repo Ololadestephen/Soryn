@@ -1,4 +1,5 @@
 "use client";
+import { battleSessionSchema } from "../../domain/combat/responses";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import {
   type BattleSession,
@@ -11,12 +12,18 @@ import { usePlayback } from "./usePlayback";
 import type { ArenaChoice } from "../../domain/combat/arenas";
 import { prepareBattleAssets } from "./loading";
 import { combatAudio } from "./audio/runtime";
+type PlaySession = BattleSession & {
+  authorized?: boolean;
+  interruption?: string | null;
+};
 
 export function useCombat(
   mode: "guest" | "official",
   headers?: () => Promise<Record<string, string>>,
+  officialStory = false,
 ) {
-  const [session, setSession] = useState<BattleSession>({
+  const endpoint = officialStory ? "/api/story" : "/api/battle";
+  const [session, setSession] = useState<PlaySession>({
     battle: null,
     history: [],
   });
@@ -33,8 +40,9 @@ export function useCombat(
     const abort = new AbortController();
     async function load() {
       try {
-        const data = await request<BattleSession>(
-          `/api/battle?mode=${mode}`,
+        const data = await request(
+          `${endpoint}?mode=${mode}`,
+          battleSessionSchema.parse,
           undefined,
           abort.signal,
           await getHeaders(),
@@ -57,7 +65,7 @@ export function useCombat(
       mounted.current = false;
       abort.abort();
     };
-  }, [mode]);
+  }, [mode, endpoint]);
   async function perform(input?: Record<string, unknown>, id?: string) {
     if (lock.current) return;
     lock.current = true;
@@ -66,17 +74,24 @@ export function useCombat(
     if (input) setPending(input);
     try {
       const path = input
-        ? "/api/battle"
-        : `/api/battle?mode=${mode}${id ? `&id=${id}` : ""}`;
-      const next = await request<BattleSession>(
+        ? endpoint
+        : `${endpoint}?mode=${mode}${id ? `&id=${id}` : ""}`;
+      const next = await request(
         path,
-        input,
+        battleSessionSchema.parse,
+        input && officialStory && input.operation === "step"
+          ? { ...input, operation: "move" }
+          : input,
         undefined,
         headers ? await headers() : {},
       );
       if (!mounted.current) return;
       const previous = session.battle;
       setSession(next);
+      if (next.authorized === false)
+        setError(
+          "This official encounter ended without completion. Verify your Chog again before continuing.",
+        );
       setPending(null);
       if (next.battle && input) await prepareBattleAssets(next.battle);
       if (input?.operation === "step" && next.battle)

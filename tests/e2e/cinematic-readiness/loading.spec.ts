@@ -9,19 +9,39 @@ test("stable selection prepares only its pair, cancels obsolete work and refresh
     if (r.url().includes("/combat/delivery/")) paths.push(r.url());
   });
   page.on("requestfailed", (r) => cancelled.push(r.url()));
-  await page.route("**/combat/delivery/*", async (r) => {
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+  let observed!: (url: string) => void;
+  const obsoleteStarted = new Promise<string>((resolve) => {
+    observed = resolve;
+  });
+  let release!: () => void;
+  const deliveryGate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let obsolete = "";
+  await page.route("**/combat/delivery/*", async (route) => {
+    if (!obsolete) {
+      obsolete = route.request().url();
+      observed(obsolete);
+      await deliveryGate;
+    }
     try {
-      await r.continue();
+      await route.continue();
     } catch {
-      /* Selection cleanup may already cancel the request. */
+      /* An obsolete selection's fetch has already been aborted. */
     }
   });
   await page.goto("/arena");
-  await page.waitForTimeout(850);
+  const url = await obsoleteStarted;
+  const failed = page.waitForEvent("requestfailed", {
+    predicate: (request) => request.url() === url,
+  });
   await page.getByLabel("Computer opponent").selectOption("moss");
   await page.getByRole("radio", { name: "Patch / Tinkerer" }).check();
-  await page.waitForTimeout(850);
+  try {
+    await failed;
+  } finally {
+    release();
+  }
   await page.getByRole("button", { name: "Enter guest arena" }).click();
   await expect(page.getByRole("button", { name: /^Basic attack/ })).toBeEnabled(
     { timeout: 30000 },

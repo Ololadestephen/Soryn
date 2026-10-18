@@ -26,11 +26,13 @@ const difficultyDescriptions: Record<Difficulty, string> = {
 
 export function FighterSelection({
   holder = false,
+  allowed,
   busy,
   onStart,
   initialArena,
 }: {
   holder?: boolean;
+  allowed?: CharacterId[];
   busy: boolean;
   initialArena?: ArenaChoice;
   onStart: (
@@ -76,11 +78,6 @@ export function FighterSelection({
           </p>
         </div>
         <div>
-          <p className="eyebrow">
-            {holder
-              ? "Official token fighter"
-              : "Guest practice · starter fighter"}
-          </p>
           <h2>
             {identity.name} / {identity.role}
           </h2>
@@ -158,7 +155,9 @@ export function FighterSelection({
         <legend>Choose your fighter</legend>
         {fighters.map((entry) => {
           const identity = character(entry.id),
-            locked = identity.access === "holder" && !holder;
+            locked = allowed
+              ? !allowed.includes(entry.id)
+              : identity.access === "holder" && !holder;
           return (
             <label
               key={entry.id}
@@ -194,12 +193,11 @@ export function FighterSelection({
           );
         })}
       </fieldset>
-      {!holder && (
+      {!holder && !allowed && (
         <p className="muted">
-          Four starters are available without a wallet. Eight holder fighters
-          are available to verified Chog Genesis holders in{" "}
-          <Link href="/character">My Chog</Link>. Computers may use every class
-          as opponents.
+          Chog Genesis ownership unlocks the locked fighters in{" "}
+          <Link href="/character">My Chog</Link>. Any fighter can be a computer
+          opponent.
         </p>
       )}
     </div>

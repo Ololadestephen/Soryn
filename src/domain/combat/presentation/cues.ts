@@ -88,28 +88,19 @@ function impactCue(
   cue: EventCue,
   side: Side,
 ): EventCue {
-  if (event.message.includes("end-of-round burn"))
+  const detail = event.detail ?? legacyImpactDetails(event);
+  if (detail.type === "burn" || detail.type === "recoil")
     return {
       ...cue,
-      type: "burn",
-      amount: previous[side].health - event.state[side].health,
-    };
-  if (event.message.includes("recoil:"))
-    return {
-      ...cue,
-      type: "recoil",
+      type: detail.type,
       amount: previous[side].health - event.state[side].health,
     };
   const target = other(side),
     amount = previous[target].health - event.state[target].health;
-  if (event.message.includes("dodges the basic hit"))
+  if (detail.type !== "attack") return cue;
+  if (detail.dodged)
     return { ...cue, type: "dodge", target, label: "Dodge · 0 damage" };
-  // Frozen rules/1 emits this exact mitigation grammar; it is replay-validated server text.
-  const match = event.message.match(
-    /: (\d+) damage; shield (\d+), decoy (\d+)\.$/,
-  );
-  const shield = match ? Number(match[2]) : 0,
-    decoy = match ? Number(match[3]) : 0;
+  const { shield, decoy } = detail;
   return {
     ...cue,
     type: amount ? "hit" : decoy ? "decoy" : "block",
@@ -121,4 +112,26 @@ function impactCue(
       ? `−${amount} HP${shield ? ` · shield ${shield}` : ""}${decoy ? ` · decoy ${decoy}` : ""}`
       : `Blocked · 0 HP${shield ? ` · shield ${shield}` : ""}${decoy ? ` · decoy ${decoy}` : ""}`,
   };
+}
+
+/** Frozen combat-rules/1 rounds predating eventFormat2 used this exact grammar. */
+function legacyImpactDetails(
+  event: CombatEvent,
+): NonNullable<CombatEvent["detail"]> {
+  if (event.message.includes("end-of-round burn")) return { type: "burn" };
+  if (event.message.includes("recoil:")) return { type: "recoil" };
+  const match = event.message.match(
+    /: (\d+) damage; shield (\d+), decoy (\d+)\.$/,
+  );
+  return {
+    type: "attack",
+    shield: match ? Number(match[2]) : 0,
+    decoy: match ? Number(match[3]) : 0,
+    dodged: event.message.includes("dodges the basic hit"),
+  };
+}
+export function preparedShield(event: CombatEvent): number {
+  return event.detail?.type === "prepare"
+    ? event.detail.shield
+    : Number(event.message.match(/(\d+) shield prepared/)?.[1] ?? 0);
 }

@@ -1,0 +1,29 @@
+services:
+  app:
+    image: ${SORYN_IMAGE:?Set an immutable locally built image tag}
+    restart: unless-stopped
+    init: true
+    mem_limit: 512m
+    memswap_limit: 768m
+    pids_limit: 128
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    env_file: /etc/soryn/runtime.env
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=256
+      CHOG_DB_PATH: /data/soryn.sqlite
+      SORYN_BUILD_ID: ${SORYN_BUILD_ID:?Set a public build identifier}
+    volumes:
+      - /srv/soryn/data:/data
+      - /srv/soryn/backups:/backups
+    ports:
+      - "127.0.0.1:3000:3000"
+    stop_grace_period: 30s

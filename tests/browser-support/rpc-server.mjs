@@ -16,6 +16,8 @@ let ownerIndex = 0;
 let height = 100;
 let transfers = [];
 let unavailable = false;
+let tokenBalances = [50n * 10n ** 18n, 50n * 10n ** 18n];
+const tokenContract = "0x350035555e10d9afaf1566aaebfced5ba6c27777";
 const collection = "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763";
 const topic =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -73,7 +75,10 @@ const server = createServer(
           height = 100;
           transfers = [];
           unavailable = false;
+          tokenBalances = wallets.map(() => 50n * 10n ** 18n);
         }
+        if (command.operation === "balance")
+          tokenBalances[command.index] = BigInt(command.units);
         if (command.operation === "awayBack") {
           move(1);
           move(0);
@@ -87,8 +92,18 @@ const server = createServer(
       }
       if (request.url === "/privy") {
         const input = JSON.parse(bytes);
+        if (
+          !Number.isInteger(input.index) ||
+          input.index < 0 ||
+          input.index > 31
+        )
+          throw new Error("Unknown fixture wallet");
+        // Independent synthetic principals keep account state isolated between scenarios.
+        while (wallets.length <= input.index) {
+          wallets.push(privateKeyToAccount(generatePrivateKey()));
+          tokenBalances.push(50n * 10n ** 18n);
+        }
         const wallet = wallets[input.index];
-        if (!wallet) throw new Error("Unknown fixture wallet");
         const sub = `did:privy:chog-fixture-${input.index}`;
         const signed = (claims) =>
           new SignJWT(claims)
@@ -136,10 +151,37 @@ const server = createServer(
             : Number(BigInt(params[0])),
         );
       else if (method === "eth_getCode")
-        result = params[0] === collection ? code : "0x";
+        result =
+          params[0].toLowerCase() === collection
+            ? code
+            : params[0].toLowerCase() === tokenContract
+              ? "0x6000"
+              : "0x";
       else if (method === "eth_call") {
         const data = params[0].data;
-        if (data.startsWith("0x01ffc9a7"))
+        if (
+          params[0].to.toLowerCase() === tokenContract &&
+          data === "0x313ce567"
+        )
+          result = word(18);
+        else if (
+          data.startsWith("0x70a08231") &&
+          [tokenContract, collection].includes(params[0].to.toLowerCase())
+        ) {
+          const address = `0x${data.slice(-40)}`.toLowerCase();
+          const index = wallets.findIndex(
+            (wallet) => wallet.address.toLowerCase() === address,
+          );
+          result = word(
+            params[0].to.toLowerCase() === tokenContract
+              ? index < 0
+                ? 0n
+                : tokenBalances[index]
+              : index === ownerIndex
+                ? 1
+                : 0,
+          );
+        } else if (data.startsWith("0x01ffc9a7"))
           result = data.slice(10, 18) === "ffffffff" ? word(0) : word(1);
         else if (data === `0x6352211e${tokenTopic.slice(2)}`)
           result = `0x${wallets[ownerIndex].address.slice(2).toLowerCase().padStart(64, "0")}`;

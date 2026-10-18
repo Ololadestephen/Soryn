@@ -1,13 +1,16 @@
 "use client";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { usePrivy, useWallets, getIdentityToken } from "@privy-io/react-auth";
+import { loginStage } from "./accessTelemetry";
 import { WalletAdapterContext, type WalletAdapter } from "./WalletAdapter";
 import { OfficialExperience } from "../identity/OfficialExperience";
 
 export function PrivyWalletBridge({
   onMuseumChanged,
+  children,
 }: {
-  onMuseumChanged: () => Promise<void>;
+  onMuseumChanged?: () => Promise<void>;
+  children?: React.ReactNode;
 }) {
   const privy = usePrivy();
   const connected = useWallets();
@@ -18,6 +21,13 @@ export function PrivyWalletBridge({
   const selected =
     wallets.find((wallet) => wallet.address.toLowerCase() === selection) ??
     wallets[0];
+  useEffect(() => {
+    if (privy.isModalOpen) loginStage("chooser-visible");
+  }, [privy.isModalOpen]);
+  const activeAddress = selected?.address;
+  useEffect(() => {
+    if (activeAddress && privy.authenticated) loginStage("wallet-selected");
+  }, [activeAddress, privy.authenticated]);
   const adapter: WalletAdapter = {
     ready: privy.ready && connected.ready,
     authenticated: privy.authenticated,
@@ -43,15 +53,25 @@ export function PrivyWalletBridge({
         throw new Error(
           "Privy session or identity token unavailable. Sign in again; identity tokens must be enabled for this app.",
         );
-      return { Authorization: `Bearer ${access}`, "privy-id-token": identity };
+      return {
+        Authorization: `Bearer ${access}`,
+        "privy-id-token": identity,
+        ...(selected
+          ? { "x-soryn-wallet": selected.address.toLowerCase() }
+          : {}),
+      };
     },
   };
   return (
     <WalletAdapterContext value={adapter}>
-      <OfficialExperience
-        key={`${privy.user?.id ?? "anonymous"}:${adapter.address}`}
-        onMuseumChanged={onMuseumChanged}
-      />
+      <Fragment key={`${privy.user?.id ?? "anonymous"}:${adapter.address}`}>
+        {children ?? (
+          <OfficialExperience
+            key={`${privy.user?.id ?? "anonymous"}:${adapter.address}`}
+            onMuseumChanged={onMuseumChanged ?? (async () => {})}
+          />
+        )}
+      </Fragment>
     </WalletAdapterContext>
   );
 }

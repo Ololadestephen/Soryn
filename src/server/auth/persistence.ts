@@ -9,7 +9,8 @@ import {
   type TokenIdentity,
 } from "../../domain/identity";
 import { scenarioSchema, actionSchema } from "../../domain/game/contracts";
-import { Store, profileSchema } from "../persistence";
+import { Store } from "../persistence";
+import { profileSchema } from "../adventure/persistence";
 import { ServiceError } from "../errors";
 import { readStored } from "../storedRecord";
 import type { PublicChapter } from "../../domain/officialViews";
@@ -62,8 +63,9 @@ export class IdentityStore {
       CREATE TABLE IF NOT EXISTS auth_challenges (nonce TEXT PRIMARY KEY, record TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS wallet_sessions (secret_hash TEXT PRIMARY KEY, token TEXT NOT NULL, record TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS token_chapters (id TEXT PRIMARY KEY, run_id TEXT UNIQUE NOT NULL, token TEXT NOT NULL, actor TEXT NOT NULL, record TEXT NOT NULL);
-      PRAGMA user_version=2;
     `);
+    if (Number(store.db.prepare("PRAGMA user_version").get()?.user_version) < 2)
+      store.db.exec("PRAGMA user_version=2");
   }
   ownership(identity: TokenIdentity): Ownership | null {
     const row = this.store.db

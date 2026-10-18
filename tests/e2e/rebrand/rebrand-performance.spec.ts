@@ -49,7 +49,9 @@ for (const target of ["landing", "arena"] as const) {
     });
     if (target === "landing") {
       await expect(
-        page.getByRole("link", { name: "Play now", exact: true }),
+        page
+          .locator(".gateway-hero .gateway-actions")
+          .getByRole("link", { name: "Play now", exact: true }),
       ).toBeVisible({ timeout: 45000 });
       await expect(page.locator("#fighters")).toHaveAttribute(
         "data-ready",

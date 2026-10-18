@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "../../components/site/SiteHeader";
 import { SiteFooter } from "../../components/site/SiteFooter";
 
-export const metadata: Metadata = { title: "Archive · Chog Déjà Vu" };
+export const metadata: Metadata = { title: "Archive · Soryn" };
 
 export default function ArchivePage() {
   return (
@@ -16,9 +16,10 @@ export default function ArchivePage() {
         <p className="eyebrow">Kept, not deleted</p>
         <h1>Earlier adventures</h1>
         <p>
-          Déjà Vu is a battle game. The sandwich adventure, its journal, the
+          Soryn is a battle game. The sandwich adventure, its journal, the
           Museum of Bad Decisions and adventure ghosts are no longer part of the
-          main path. Saved records stay in place. Nothing here was erased.
+          main path. Their records stay here and are not mixed into Story.
+          Nothing was erased.
         </p>
         <ul>
           <li>
@@ -39,7 +40,10 @@ export default function ArchivePage() {
           </li>
         </ul>
         <p>
-          <Link href="/arena">Back to battles</Link>
+          <Link href="/story">Play the new story</Link>
+        </p>
+        <p>
+          <Link href="/arena">Practice</Link>
         </p>
       </main>
       <SiteFooter />

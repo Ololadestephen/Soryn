@@ -1,10 +1,11 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { NextRequest } from "next/server";
 import { afterAll, describe, expect, it } from "vitest";
-import { getGame, postGame } from "../../src/server/http";
+import { getGame, postGame } from "../../src/server/adventure/http";
 import { database } from "../../src/server/database";
 
 const directory = mkdtempSync(join(tmpdir(), "chog-http-"));
@@ -94,7 +95,7 @@ describe("HTTP boundaries", () => {
     const active = start();
     await post(active, cookie);
     const store = database();
-    const backup = store.getRun(prior.id, actor);
+    const backup = new AdventureStore(store).getRun(prior.id, actor);
     store.db.prepare("UPDATE runs SET record='{}' WHERE id=?").run(prior.id);
     try {
       const failed = await post(
@@ -102,7 +103,9 @@ describe("HTTP boundaries", () => {
         cookie,
       );
       expect(failed.status).toBe(503);
-      expect(store.getRun(active.id, actor).actions).toEqual([]);
+      expect(
+        new AdventureStore(store).getRun(active.id, actor).actions,
+      ).toEqual([]);
     } finally {
       store.db
         .prepare("UPDATE runs SET record=? WHERE id=?")
@@ -221,4 +224,18 @@ describe("HTTP boundaries", () => {
     );
     expect(exhibits[0]).toEqual(exhibits[1]);
   });
+});
+
+it("adventure recovery reads cannot spend the mutation quota", async () => {
+  const cookie = await session();
+  for (let index = 0; index < 90; index++)
+    expect(
+      getGame(new NextRequest(`${origin}/api/game`, { headers: { cookie } }))
+        .status,
+    ).toBe(200);
+  expect(
+    getGame(new NextRequest(`${origin}/api/game`, { headers: { cookie } }))
+      .status,
+  ).toBe(429);
+  expect((await post(start(), cookie)).status).toBe(200);
 });

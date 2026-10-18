@@ -1,0 +1,38 @@
+# Install in nginx http context. Replace play.example.invalid and certificate paths.
+# Direct public ingress only: do not trust client-supplied X-Forwarded-For.
+limit_req_zone $binary_remote_addr zone=soryn_api:10m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=soryn_identity:10m rate=1r/s;
+limit_conn_zone $binary_remote_addr zone=soryn_connections:10m;
+server {
+  listen 80;
+  server_name play.example.invalid;
+  return 308 https://play.example.invalid$request_uri;
+}
+server {
+  listen 443 ssl;
+  server_name play.example.invalid;
+  ssl_certificate /etc/letsencrypt/live/play.example.invalid/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/play.example.invalid/privkey.pem;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  add_header Strict-Transport-Security "max-age=31536000" always;
+  client_max_body_size 16k;
+  limit_conn soryn_connections 30;
+  limit_req_status 429;
+  # No access log of token URLs, query strings, addresses or IPs by default.
+  access_log off;
+  location = /api/identity {
+    limit_req zone=soryn_identity burst=10 nodelay;
+    include /etc/nginx/soryn-proxy.conf;
+  }
+  location /api/ {
+    limit_req zone=soryn_api burst=30 nodelay;
+    include /etc/nginx/soryn-proxy.conf;
+  }
+  location /chog/ {
+    limit_req zone=soryn_identity burst=10 nodelay;
+    include /etc/nginx/soryn-proxy.conf;
+  }
+  location / {
+    include /etc/nginx/soryn-proxy.conf;
+  }
+}

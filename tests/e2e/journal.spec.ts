@@ -26,21 +26,17 @@ test("private journal reopens older chapters and recovers a selected ghost race 
   await expect(
     journal.getByRole("heading", { name: "A clean record. Suspicious." }),
   ).toBeVisible();
-  await page
-    .goto("/play");
+  await page.goto("/play");
   await page.getByRole("button", { name: "Start guest adventure" }).click();
   await page.getByRole("button", { name: "Rush the heroic door" }).click();
-  await page
-    .goto("/journal");
+  await page.goto("/journal");
   const firstSession = await (await page.request.get("/api/game")).json();
   const firstVersion = firstSession.journal.chapters[0].ghostVersion as string;
   expect(firstVersion).toBeTruthy();
-  await page
-    .goto("/play");
+  await page.goto("/play");
   await page.getByRole("button", { name: "Start a new adventure" }).click();
   await winLunch(page);
-  await page
-    .goto("/journal");
+  await page.goto("/journal");
   await expect(journal.locator(".chapter-row")).toHaveCount(2);
   const laterSession = await (await page.request.get("/api/game")).json();
   expect(laterSession.journal.chapters[0].ghostVersion).not.toBe(firstVersion);
@@ -56,10 +52,8 @@ test("private journal reopens older chapters and recovers a selected ghost race 
   ).toBeVisible();
   const savedActive = await page.request.get("/api/game");
   expect((await savedActive.json()).run.observation.outcome).toBe("escaped");
-  await page
-    .goto("/museum");
-  await page
-    .goto("/journal");
+  await page.goto("/museum");
+  await page.goto("/journal");
   await expect(
     review.getByRole("heading", { name: "Saved chapter replay" }),
   ).toBeVisible();
@@ -84,8 +78,7 @@ test("private journal reopens older chapters and recovers a selected ghost race 
   await expect(page.locator(".race-opponent")).toContainText(
     firstVersion.slice(0, 12),
   );
-  await page
-    .goto("/journal");
+  await page.goto("/journal");
   await expect(
     oldChapter.getByRole("button", { name: "Race this ghost" }),
   ).toBeDisabled();
@@ -99,11 +92,9 @@ test("private journal reopens older chapters and recovers a selected ghost race 
   const unchanged = await page.request.get("/api/game");
   expect((await unchanged.json()).run.observation.turns).toBe(10);
   await review.getByRole("button", { name: "Close chapter" }).click();
-  await page
-    .goto("/play");
+  await page.goto("/play");
   await winLunch(page);
-  await page
-    .goto("/journal");
+  await page.goto("/journal");
   await expect(journal.locator(".chapter-row")).toHaveCount(3);
   await page.setViewportSize({ width: 320, height: 800 });
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -154,15 +145,13 @@ test("museum progress keeps cohorts separate and removes withdrawn opponents", a
   await challenger
     .getByRole("button", { name: "Rush the heroic door" })
     .click();
-  await challenger
-    .goto("/journal");
+  await challenger.goto("/journal");
   const progress = challenger.getByRole("region", {
     name: "Guest challenge progress",
   });
   await progress.getByRole("button", { name: "Rematch challenge" }).click();
   await winLunch(challenger);
-  await challenger
-    .goto("/journal");
+  await challenger.goto("/journal");
   const cohorts = progress.locator(".cohort-entry");
   await expect(cohorts).toHaveCount(2);
   await expect(cohorts.first()).toContainText("1 saved attempt");

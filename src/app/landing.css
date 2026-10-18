@@ -150,17 +150,14 @@
   margin: 0;
   color: var(--ink);
 }
-.gateway-description {
-  max-width: 440px;
-  font-size: 18px;
-  color: #e4d9ed;
-  margin: 18px 0 28px;
-}
 .gateway-actions {
   display: flex;
   gap: 20px;
   align-items: center;
   flex-wrap: wrap;
+}
+.gateway-copy .gateway-actions {
+  margin-top: 24px;
 }
 .gateway-secondary {
   color: var(--ink);
@@ -171,12 +168,6 @@
   font-size: 15px;
   font-weight: 700;
   background: #181222b8;
-}
-.gateway-note {
-  font-size: 13px;
-  color: #e4d9ed;
-  margin-top: 24px;
-  max-width: 390px;
 }
 .hero-lineup {
   display: flex;
@@ -637,79 +628,7 @@
   font-size: 16px;
   color: var(--muted);
 }
-.landing-holders .holder-lead {
-  font: 800 24px/1.3 var(--font-display);
-  color: var(--ink) !important;
-  margin-top: 8px;
-}
 .landing-holders .world-button {
-  margin-top: 24px;
-}
-.landing-holders .holder-footnote {
-  font-size: 13px !important;
-  max-width: 400px;
-  margin-top: 20px;
-}
-.secondary-intro {
-  max-width: 640px;
-  font-size: 16px;
-  color: var(--muted);
-}
-.secondary-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
-  margin: 36px 0;
-}
-.secondary-links > a {
-  color: var(--ink);
-  border-top: 2px solid var(--line);
-  padding-top: 18px;
-}
-.secondary-links > a > span {
-  font-size: 13px;
-  color: var(--purple);
-}
-.secondary-links strong {
-  font: 800 22px/1.2 var(--font-display);
-  display: block;
-  margin-top: 14px;
-}
-.secondary-links p,
-.landing-secondary details p {
-  font-size: 15px;
-  color: var(--muted);
-}
-.landing-secondary details {
-  border-top: 1px solid var(--line);
-  padding: 10px 0;
-}
-.landing-secondary details p {
-  max-width: 720px;
-}
-.landing-closing {
-  text-align: center;
-  background: var(--panel-fill);
-  color: var(--ink);
-  padding: 72px 24px;
-  border-block: 1px solid var(--line);
-}
-.landing-closing h2 {
-  font-size: clamp(30px, 4vw, 48px);
-  margin-bottom: 28px;
-}
-.landing-closing .gateway-actions {
-  justify-content: center;
-}
-.closing-holder {
-  color: var(--ink);
-  font-size: 15px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-}
-.landing-closing > p:last-child {
-  font-size: 13px;
-  color: var(--muted);
   margin-top: 24px;
 }
 .cinematic-landing > footer {
@@ -760,9 +679,6 @@
     justify-content: flex-end;
     flex-wrap: wrap;
   }
-  .landing-nav nav a:not(.nav-play) {
-    display: none;
-  }
   .landing-nav .nav-play {
     padding: 10px 20px;
     min-height: 44px;
@@ -783,11 +699,6 @@
     font-size: 24px;
     max-width: 14ch;
   }
-  .gateway-description {
-    font-size: 16px;
-    max-width: 300px;
-    margin-block: 18px 24px;
-  }
   .gateway-actions {
     gap: 12px;
   }
@@ -795,17 +706,10 @@
   .gateway-secondary {
     padding: 13px 18px;
   }
-  .gateway-note {
-    max-width: 280px;
-    font-size: 13px;
-  }
   .hero-lineup {
     gap: 8px 16px;
     max-width: 310px;
     line-height: 1.5;
-  }
-  .gateway-world .landing-environment img {
-    object-position: 52% center;
   }
   .gateway-shade {
     background:
@@ -894,10 +798,6 @@
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  .secondary-links {
-    grid-template-columns: 1fr;
-    gap: 24px;
-  }
   .cinematic-landing > footer {
     padding: 28px 20px;
   }
@@ -925,7 +825,7 @@
     font-size: 13px;
   }
 }
-@media (max-height: 500px) and (min-width: 701px) {
+@media (max-height: 500px) and (orientation: landscape) {
   .gateway-copy {
     padding-block: 28px;
   }
@@ -935,13 +835,6 @@
   }
   .gateway-genre {
     font-size: 22px;
-  }
-  .gateway-description {
-    margin: 12px 0 16px;
-    font-size: 15px;
-  }
-  .gateway-note {
-    margin-top: 16px;
   }
   .hero-lineup {
     display: none;
@@ -996,13 +889,23 @@
   object-fit: cover;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 700ms ease;
 }
 .hero-film[data-ready="true"] {
   opacity: 1;
+  transition: opacity 120ms ease;
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-film {
     transition: none;
+  }
+}
+@media (max-width: 700px) {
+  .landing-nav .wordmark-svg {
+    width: 104px;
+  }
+}
+@media (max-width: 380px) {
+  .landing-nav .wordmark-svg {
+    width: 90px;
   }
 }

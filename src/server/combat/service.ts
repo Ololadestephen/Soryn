@@ -1,3 +1,4 @@
+import { grantedFighter, type AccessGrant } from "../../domain/access/policy";
 import {
   character,
   type CharacterId,
@@ -52,6 +53,7 @@ export function verifyBattle(record: BattleRecord) {
       round.player,
       pending.move,
       pending.reason,
+      round.eventFormat ?? 1,
     );
     if (!same(round, replay.round))
       throw new ServiceError(503, "Battle replay mismatch.");
@@ -68,6 +70,19 @@ export function verifyBattle(record: BattleRecord) {
   )
     throw new ServiceError(503, "Battle state or pending policy mismatch.");
 }
+export interface BattleStartOptions {
+  actor: string;
+  id: string;
+  player: CharacterId;
+  opponent: CharacterId;
+  authority?: OfficialAuthority | null;
+  difficulty?: Difficulty;
+  arenaChoice?: ArenaChoice;
+  origin?: "practice" | "story";
+  access?: AccessGrant;
+  cosmetic?: boolean;
+}
+
 export class BattleService {
   constructor(readonly records: BattleStore) {}
   view(record: BattleRecord): BattleView {
@@ -77,6 +92,8 @@ export class BattleService {
       arena: record.arena ?? "sanctuary",
       mode: record.mode,
       tokenId: record.authority?.identity.tokenId ?? null,
+      accessKind: record.access?.kind,
+      cosmetic: record.cosmetic,
       snapshot: record.snapshot,
       state: record.state,
       rounds: record.rounds,
@@ -91,10 +108,11 @@ export class BattleService {
     const history = this.records.history(actor, mode);
     const latest = history.find(
       (record) =>
-        !scope ||
-        (record.authority?.generation === scope.generation &&
-          record.authority &&
-          tokenKey(record.authority.identity) === tokenKey(scope.identity)),
+        record.origin !== "story" &&
+        (!scope ||
+          (record.authority?.generation === scope.generation &&
+            record.authority &&
+            tokenKey(record.authority.identity) === tokenKey(scope.identity))),
     );
     return {
       battle: latest ? this.view(latest) : null,
@@ -114,6 +132,11 @@ export class BattleService {
     };
   }
   private authorize(record: BattleRecord, authority: OfficialAuthority | null) {
+    if (record.interruption)
+      throw new ServiceError(
+        409,
+        "This encounter was interrupted and cannot resume. Start a new encounter after verification.",
+      );
     if (record.mode === "guest") {
       if (authority)
         throw new ServiceError(403, "Guest and official battles are separate.");
@@ -128,17 +151,29 @@ export class BattleService {
         "Battle needs its current ownership-generation grant.",
       );
   }
-  start(
-    actor: string,
-    id: string,
-    player: CharacterId,
-    opponent: CharacterId,
-    authority: OfficialAuthority | null = null,
-    difficulty?: Difficulty,
-    arenaChoice: ArenaChoice = "sanctuary",
-  ) {
+  start({
+    actor,
+    id,
+    player,
+    opponent,
+    authority = null,
+    difficulty,
+    arenaChoice = "sanctuary",
+    origin = "practice",
+    access,
+    cosmetic = false,
+  }: BattleStartOptions) {
     return this.records.store.transaction(() => {
-      if (!authority && character(player).access === "holder")
+      if (access && access.actor !== actor)
+        throw new ServiceError(
+          403,
+          "This admission belongs to another player.",
+        );
+      if (
+        !authority &&
+        !grantedFighter(player, access) &&
+        character(player).access === "holder"
+      )
         throw new ServiceError(
           403,
           "Choose a starter for guest practice; holder fighters require verified ownership.",
@@ -152,6 +187,7 @@ export class BattleService {
           record.snapshot.player.id !== player ||
           record.snapshot.opponent.id !== opponent ||
           record.mode !== mode ||
+          (record.origin ?? "practice") !== origin ||
           (record.snapshot.policy === "combat-opponent/2"
             ? record.snapshot.difficulty
             : undefined) !== difficulty
@@ -167,6 +203,7 @@ export class BattleService {
         .find(
           (record) =>
             !record.state.outcome &&
+            !record.interruption &&
             (mode === "guest" ||
               (record.authority?.generation === authority?.generation &&
                 record.authority &&
@@ -175,7 +212,12 @@ export class BattleService {
                   tokenKey(authority.identity))),
         );
       if (active)
-        throw new ServiceError(409, "Finish your active battle first.");
+        throw new ServiceError(
+          409,
+          active.origin === "story"
+            ? "Continue Story to finish your active chapter battle first."
+            : "Finish your active practice battle first.",
+        );
       const snapshot = difficulty
           ? difficultySnapshot(player, opponent, difficulty, 0)
           : combatSnapshot(player, opponent, 0),
@@ -184,7 +226,9 @@ export class BattleService {
         id,
         actor,
         mode,
+        origin,
         authority,
+        ...(access ? { access, cosmetic } : {}),
         snapshot,
         arenaChoice,
         arena:

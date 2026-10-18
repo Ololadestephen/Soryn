@@ -1,3 +1,4 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -12,9 +13,9 @@ import {
 import { Store } from "../../src/server/persistence";
 import { IdentityStore } from "../../src/server/auth/persistence";
 import { AuthService } from "../../src/server/auth/service";
-import { OfficialService } from "../../src/server/official";
-import { RunService } from "../../src/server/runs";
-import { GuestJournal } from "../../src/server/journal";
+import { OfficialService } from "../../src/server/adventure/official";
+import { RunService } from "../../src/server/adventure/runs";
+import { GuestJournal } from "../../src/server/adventure/journal";
 import { ServiceError } from "../../src/server/errors";
 import type { OwnershipReader } from "../../src/server/nft/rpc";
 
@@ -198,7 +199,9 @@ describe("wallet authentication and transfer-safe token chapters", () => {
     await expect(ctx.auth.authorize(outsider.secret)).rejects.toMatchObject({
       status: 403,
     });
-    expect(ctx.store.history(outsider.session.actor)).toEqual([]);
+    expect(
+      new AdventureStore(ctx.store).history(outsider.session.actor),
+    ).toEqual([]);
     ctx.chain.contractWallet = true;
     await expect(
       ctx.auth.challenge(randomUUID(), alice.address, identity),
@@ -219,7 +222,9 @@ describe("wallet authentication and transfer-safe token chapters", () => {
     expect(() =>
       ctx.official.step(auth.session, auth.authority, run.id, 0, "door"),
     ).toThrow("ownership generation");
-    expect(ctx.store.getRun(run.id, old.session.actor).actions).toEqual([]);
+    expect(
+      new AdventureStore(ctx.store).getRun(run.id, old.session.actor).actions,
+    ).toEqual([]);
     expect(ctx.official.session(fresh.session).run).toBeNull();
   });
   it("rejects transfers during signing, reorg generations and pending transfers", async () => {
@@ -327,7 +332,7 @@ describe("wallet authentication and transfer-safe token chapters", () => {
     );
     ctx.official.withdraw(ctx.auth.session(signed.secret), failure.id); // Original author retains consent revocation.
     expect(ctx.records.chapters(identity)).toEqual([]);
-    expect(ctx.store.museum()).toEqual([]);
+    expect(new AdventureStore(ctx.store).museum()).toEqual([]);
   });
   it("fails closed on RPC outage without changing private actions or public chapters", async () => {
     const ctx = setup();
@@ -337,7 +342,10 @@ describe("wallet authentication and transfer-safe token chapters", () => {
     await expect(
       step(ctx, signed.secret, run.id, 0, "door"),
     ).rejects.toMatchObject({ status: 503 });
-    expect(ctx.store.getRun(run.id, signed.session.actor).actions).toEqual([]);
+    expect(
+      new AdventureStore(ctx.store).getRun(run.id, signed.session.actor)
+        .actions,
+    ).toEqual([]);
     expect(ctx.records.chapters(identity)).toEqual([]);
   });
   it("persists checkpoint, hashed session, private/public boundaries and generation across reopen", async () => {
@@ -397,6 +405,6 @@ describe("wallet authentication and transfer-safe token chapters", () => {
       ),
     ).toThrow("fixture failure");
     expect(ctx.records.chapters(identity)).toEqual([]);
-    expect(ctx.store.museum()).toEqual([]);
+    expect(new AdventureStore(ctx.store).museum()).toEqual([]);
   });
 });

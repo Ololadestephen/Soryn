@@ -23,18 +23,27 @@ import "./arena-feel.css";
 import "./arena-setup.css";
 import "./arena-feedback.css";
 import "./pvp.css";
+import "./holder-access.css";
+import "./story-journey.css";
 
 export const metadata: Metadata = {
-  title: "Chog Déjà Vu · Creature battles",
+  metadataBase: new URL(process.env.APP_ORIGIN ?? "http://127.0.0.1:3000"),
+  title: "Soryn · Creature battles",
   description:
-    "Turn-based creature battles. Choose your fighter, time your defence and unleash your companion. Four free starters. No wallet required.",
+    "Soryn is a browser tactical creature battler. Find a public match, challenge a friend, play the story, or practice. Four-starter Practice needs no wallet. Holder access unlocks Story and multiplayer.",
+  openGraph: {
+    title: "Soryn",
+    description:
+      "Public best-of-three battles, private challenges, and The Fractured Sanctuary. Soryn fiction, not official Monad or Chog canon.",
+    images: [{ url: "/brand/soryn-icon-512.png" }],
+  },
   icons: {
     icon: [
-      { url: "/brand/emblem.svg", type: "image/svg+xml" },
-      { url: "/brand/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/brand/icon-512.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.ico?v=soryn-1", sizes: "16x16 32x32 48x48" },
+      { url: "/brand/soryn-icon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/brand/soryn-icon.svg", sizes: "any", type: "image/svg+xml" },
     ],
-    apple: "/brand/icon-180.png",
+    apple: "/brand/soryn-icon-180.png",
   },
 };
 

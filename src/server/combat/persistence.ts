@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { accessGrantSchema } from "../../domain/access/policy";
 import {
   snapshotSchema,
   stateSchema,
@@ -16,7 +17,20 @@ export const battleRecordSchema = z
     id: z.uuid(),
     actor: z.uuid(),
     mode: z.enum(["guest", "official"]),
+    origin: z.enum(["practice", "story"]).optional(),
+    interruption: z
+      .enum([
+        "ownership-changed",
+        "generation-invalidated",
+        "verification-unavailable",
+        "reservation-expired",
+        "legacy-encounter",
+        "cancelled",
+      ])
+      .optional(),
     authority: officialAuthoritySchema.nullable(),
+    access: accessGrantSchema.optional(),
+    cosmetic: z.boolean().optional(),
     snapshot: snapshotSchema,
     arena: arenaSchema.optional(),
     arenaChoice: arenaChoiceSchema.optional(),
@@ -26,6 +40,10 @@ export const battleRecordSchema = z
       .strictObject({ move: moveSchema, reason: z.string().max(240) })
       .nullable(),
   })
+  .refine(
+    (record) => !record.access || record.access.actor === record.actor,
+    "Wallet battle grant belongs to another player.",
+  )
   .refine(
     (record) =>
       record.mode === "guest"

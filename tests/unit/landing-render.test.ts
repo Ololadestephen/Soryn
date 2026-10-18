@@ -7,11 +7,7 @@ import { Hero } from "../../src/components/site/landing/Hero";
 import { Roster } from "../../src/components/site/landing/Roster";
 import { ArenaGallery } from "../../src/components/site/landing/ArenaGallery";
 import { FighterDossier } from "../../src/components/site/landing/FighterDossier";
-import {
-  HolderInvite,
-  Closing,
-  SecondaryExperiences,
-} from "../../src/components/site/landing/LandingSections";
+import { HolderInvite } from "../../src/components/site/landing/LandingSections";
 import SpecialScene from "../../src/components/site/landing/SpecialScene";
 import { character, characters } from "../../src/domain/characters/definitions";
 import { fighter } from "../../src/domain/combat/definitions";
@@ -28,8 +24,13 @@ it("server HTML contains ungated play links, complete readable catalogue and no 
     ),
   );
   expect(html).toContain('href="/arena"');
-  expect(html).toContain("Play now");
-  expect(html).toContain("Déjà Vu");
+  expect(html).toContain('href="/start"');
+  const heroActions = renderToStaticMarkup(createElement(Hero));
+  expect([...heroActions.matchAll(/<a /g)]).toHaveLength(2);
+  expect(heroActions).toContain(">Play now</a>");
+  expect(heroActions).toContain("Watch gameplay");
+  expect(heroActions).not.toContain("Find a Match");
+  expect(html).toContain("SORYN");
   for (const c of characters) expect(html).toContain(`tile-name">${c.name}`);
   expect(html).toContain("Ability preview · silent");
   expect(html).toContain('href="/arena?arena=sanctuary"');
@@ -39,16 +40,14 @@ it("server HTML contains ungated play links, complete readable catalogue and no 
   ].map((m) => m[1]);
   expect(largeImages).toHaveLength(0);
   expect(html).not.toMatch(/[←-⇿▷]/);
-  expect(renderToStaticMarkup(createElement(SiteFooter))).toContain(
-    "/brand/wordmark.svg",
-  );
+  expect(renderToStaticMarkup(createElement(SiteFooter))).toContain("SORYN");
   const hero = renderToStaticMarkup(createElement(Hero));
   expect(hero).toContain("Turn-based creature battles.");
   expect(hero).not.toMatch(
     /gateway-(duel|stone|actor|pet|scroll)|Aegis|Ember|[←-⇿▷]/,
   );
-  expect(hero).toContain("sanctuary-portrait.webp");
-  expect(hero).toContain("sanctuary-desktop.webp");
+  expect(hero).toContain("sanctuary-motion-v4-mobile.webp");
+  expect(hero).toContain("sanctuary-motion-v4-desktop.webp");
 });
 it("each server-rendered dossier keeps actual rules and the correct authority entry", () => {
   for (const c of characters) {
@@ -60,7 +59,7 @@ it("each server-rendered dossier keeps actual rules and the correct authority en
       `href="${character(c.id).access === "starter" ? "/arena" : "/character"}"`,
     );
     expect(html).toContain(
-      c.access === "starter" ? "no wallet required" : "verified Chog required",
+      c.access === "starter" ? "Starter" : "Holder fighter",
     );
   }
 });
@@ -78,26 +77,12 @@ it("a heal preview braces while an attack strikes, without health or result fabr
   expect(strike).not.toMatch(/health|victory|damage-number/);
 });
 
-it("the static narrative preserves private records, real routes and immediate closing play", () => {
-  const html = renderToStaticMarkup(
-    createElement(
-      Fragment,
-      null,
-
-      createElement(HolderInvite),
-      createElement(SecondaryExperiences),
-      createElement(Closing),
-    ),
-  );
-  for (const route of ["/arena", "/character", "/challenge", "/archive"])
-    expect(html).toContain(`href="${route}"`);
-  expect(html).toContain("Private records stay");
-  expect(html).toContain("private");
-  expect(html).toContain("Your first battle");
-  expect(html).toContain("one move away.");
-  expect(html).not.toContain("one arena");
-  expect(html).toContain("no public matchmaking");
-  expect(html).not.toContain("Play as guest");
+it("holder copy preserves the ownership requirement and private-record boundary", () => {
+  const html = renderToStaticMarkup(createElement(HolderInvite));
+  expect(html).toContain('href="/character"');
+  expect(html).toContain("Verified Chog Genesis holders");
+  expect(html).toContain("Private records stay with you");
+  expect(html).not.toMatch(/No wallet required|Guest play is always available/);
 });
 
 it("hero media is decorative and has no initial network source, without an opt-in animation prompt", () => {

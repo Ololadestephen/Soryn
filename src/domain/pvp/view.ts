@@ -6,6 +6,7 @@ import { PvpError } from "./errors";
 import { mirrorBattle } from "./mirror";
 import {
   invitationExpired,
+  roomOrigin,
   otherSeat,
   seatIds,
   seatOf,
@@ -13,6 +14,7 @@ import {
   type PvpResult,
   type PvpRoom,
   type PvpSeat,
+  type PvpSeries,
   type SeatId,
 } from "./types";
 
@@ -24,6 +26,7 @@ export type ViewPhase =
   | "choose"
   | "present"
   | "complete"
+  | "intermission"
   | "expired"
   | "closed";
 
@@ -39,6 +42,7 @@ export interface PvpHistoryRow {
 
 export interface PvpView {
   seated: true;
+  origin: "public" | "private";
   revision: number;
   serverNow: number;
   invite: string;
@@ -46,6 +50,11 @@ export interface PvpView {
   prompt: string;
   detail: string | null;
   you: {
+    accessKind?: "token" | "nft" | "both";
+    fighters?: CharacterId[];
+    cosmetic?: boolean;
+    mode?: "guest" | "official";
+    tokenId?: string | null;
     name: string;
     characterId: CharacterId | null;
     ready: boolean;
@@ -74,12 +83,36 @@ export interface PvpView {
   latestSeq: number;
   notice: string | null;
   history: PvpHistoryRow[];
+  series: {
+    battle: number;
+    you: number;
+    opponent: number;
+    phase: "setup" | "battle" | "intermission" | "complete";
+    draws: number;
+    deadlineAt: number | null;
+    outcome: {
+      kind: "win" | "draw" | "forfeit" | "abandoned" | "no-contest";
+      winner: "you" | "opponent" | null;
+      explanation: string;
+    } | null;
+  } | null;
+  roster: "private" | "starters" | "public-six";
 }
 
 function headline(result: PvpResult, you: SeatId): PvpHistoryRow["headline"] {
   if (result.kind === "abandoned") return "No contest";
   if (!result.winner) return "Draw";
   return result.winner === you ? "Victory" : "Defeat";
+}
+
+function seriesHeadline(
+  outcome: NonNullable<PvpSeries["outcome"]>,
+  you: SeatId,
+): PvpHistoryRow["headline"] {
+  if (outcome.kind === "no-contest" || outcome.kind === "abandoned")
+    return "No contest";
+  if (outcome.winner === null) return "Draw";
+  return outcome.winner === you ? "Victory" : "Defeat";
 }
 
 function battleFor(match: PvpMatch, you: SeatId, mode: "guest" | "official") {
@@ -121,26 +154,24 @@ function lobbyPhase(self: PvpSeat, other: PvpSeat | null) {
   if (!other)
     return {
       phase: "waiting" as const,
-      prompt: "Waiting for your friend",
+      prompt: "Waiting for an opponent",
       detail: null,
     };
   if (self.ready && !other.ready)
     return {
       phase: "ready" as const,
-      prompt: "Waiting for your friend to ready",
+      prompt: "Waiting for opponent",
       detail: null,
     };
   if (!self.ready && other.ready)
     return {
       phase: "joined" as const,
-      prompt: "Your friend is ready",
+      prompt: "Choose your fighter",
       detail: null,
     };
   return {
     phase: "joined" as const,
-    prompt: self.characterId
-      ? "Ready up when you are set"
-      : "Choose your fighter",
+    prompt: self.characterId ? "Ready when you are" : "Choose your fighter",
     detail: null,
   };
 }
@@ -176,6 +207,15 @@ function battlePhase(match: PvpMatch, you: SeatId) {
 }
 
 function phaseOf(room: PvpRoom, you: SeatId, now: number) {
+  // Terminal rooms keep their archived outcome visible after releasing play.
+  if (room.series?.phase === "complete" && room.series.outcome)
+    return {
+      phase: "complete" as const,
+      prompt: seriesHeadline(room.series.outcome, you),
+      detail: room.series.outcome.explanation,
+    };
+  if (!room.series && room.match?.phase === "complete")
+    return battlePhase(room.match, you);
   if (room.closedAt)
     return {
       phase: "closed" as const,
@@ -190,8 +230,53 @@ function phaseOf(room: PvpRoom, you: SeatId, now: number) {
     };
   const self = room.seats[you];
   if (!self) throw new PvpError(409, "This battle is missing a seat.");
-  if (!room.match) return lobbyPhase(self, room.seats[otherSeat(you)]);
+  if (room.series?.phase === "intermission") {
+    const mine = you === "a" ? room.series.wins.a : room.series.wins.b;
+    const theirs = you === "a" ? room.series.wins.b : room.series.wins.a;
+    return {
+      phase: "intermission" as const,
+      prompt: "Next battle",
+      detail: `Series ${mine}–${theirs}. First to two wins.`,
+    };
+  }
+  if (!room.match) {
+    // A completed series whose final battle was discarded (ownership no
+    // contest or bounded stall termination) still shows its outcome.
+    if (room.series?.phase === "complete" && room.series.outcome)
+      return {
+        phase: "complete" as const,
+        prompt: seriesHeadline(room.series.outcome, you),
+        detail: room.series.outcome.explanation,
+      };
+    return lobbyPhase(self, room.seats[otherSeat(you)]);
+  }
   return battlePhase(room.match, you);
+}
+
+function seriesView(room: PvpRoom, you: SeatId) {
+  const series = room.series;
+  if (!series) return null;
+  const winner =
+    series.outcome?.winner == null
+      ? null
+      : series.outcome.winner === you
+        ? ("you" as const)
+        : ("opponent" as const);
+  return {
+    battle: series.battleNumber,
+    you: you === "a" ? series.wins.a : series.wins.b,
+    opponent: you === "a" ? series.wins.b : series.wins.a,
+    phase: series.phase,
+    draws: series.consecutiveDraws,
+    deadlineAt: series.deadlineAt,
+    outcome: series.outcome
+      ? {
+          kind: series.outcome.kind,
+          winner,
+          explanation: series.outcome.explanation,
+        }
+      : null,
+  };
 }
 
 function ownMove(match: PvpMatch | null, you: SeatId) {
@@ -227,6 +312,7 @@ export function presentRoom(
     match.locks[otherId]?.round === match.state.round;
   return {
     seated: true,
+    origin: roomOrigin(room),
     revision: room.revision,
     serverNow: now,
     invite: room.invite,
@@ -234,6 +320,11 @@ export function presentRoom(
     prompt: described.prompt,
     detail: described.detail,
     you: {
+      mode: self.mode,
+      tokenId: self.holderGrant?.identity.tokenId ?? null,
+      accessKind: self.access?.kind,
+      fighters: self.access?.fighters,
+      cosmetic: self.cosmetic,
       name: self.name,
       characterId: self.characterId,
       ready: self.ready,
@@ -252,9 +343,22 @@ export function presentRoom(
       : null,
     arenaChoice: room.arenaChoice,
     arenaName: match ? arenas[match.arena].name : null,
-    deadlineAt: match && match.phase !== "complete" ? match.deadlineAt : null,
+    deadlineAt:
+      room.series?.phase === "intermission"
+        ? room.series.deadlineAt
+        : match && match.phase !== "complete"
+          ? match.deadlineAt
+          : null,
+    series: seriesView(room, you),
+    roster: room.roster,
     expiresAt: room.expiresAt,
-    battle: match ? battleFor(match, you, self.mode) : null,
+    battle: match
+      ? {
+          ...battleFor(match, you, self.mode),
+          accessKind: self.access?.kind,
+          cosmetic: self.cosmetic,
+        }
+      : null,
     result: match?.result
       ? {
           headline: headline(match.result, you),
@@ -271,6 +375,7 @@ export function presentRoom(
 
 export interface PvpPreview {
   seated: false;
+  origin: "public" | "private";
   status: "open" | "full" | "expired" | "closed";
   names: string[];
   openSeats: number;
@@ -289,5 +394,24 @@ export function previewRoom(room: PvpRoom, now: number): PvpPreview {
       : openSeats === 0
         ? "full"
         : "open";
-  return { seated: false, status, names, openSeats };
+  return { seated: false, origin: roomOrigin(room), status, names, openSeats };
+}
+
+/**
+ * Completed battles for one seated actor. Live matches, locks, and room
+ * state are never included, so this is safe to show a former owner whose
+ * sessions lost official authority: their own history, nothing current.
+ */
+export function historyForActor(room: PvpRoom, actor: string): PvpHistoryRow[] {
+  const you = seatOf(room, actor);
+  if (!you) return [];
+  const foeName = room.seats[otherSeat(you)]?.name ?? "Friend";
+  const rows = room.completed
+    .map((entry) => row(entry, you, foeName))
+    .filter((entry): entry is PvpHistoryRow => !!entry);
+  // A finished current battle is history, not hidden state: result rows only
+  // exist once both moves are revealed, so a live battle adds nothing here.
+  const current = room.match ? row(room.match, you, foeName) : null;
+  if (current) rows.push(current);
+  return rows;
 }

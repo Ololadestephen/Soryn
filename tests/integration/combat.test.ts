@@ -1,3 +1,4 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
@@ -6,7 +7,7 @@ import { describe, it, expect } from "vitest";
 import { Store } from "../../src/server/persistence";
 import { BattleStore } from "../../src/server/combat/persistence";
 import { BattleService } from "../../src/server/combat/service";
-import { RunService } from "../../src/server/runs";
+import { RunService } from "../../src/server/adventure/runs";
 import { fighters } from "../../src/domain/combat/definitions";
 import { character } from "../../src/domain/characters/definitions";
 import { identityFor, type OfficialAuthority } from "../../src/domain/identity";
@@ -35,8 +36,20 @@ describe("separate durable combat records", () => {
       id = randomUUID();
     try {
       let service = new BattleService(new BattleStore(store));
-      const start = service.start(actor, id, "pip", "bolt");
-      expect(service.start(actor, id, "pip", "bolt")).toEqual(start);
+      const start = service.start({
+        actor: actor,
+        id: id,
+        player: "pip",
+        opponent: "bolt",
+      });
+      expect(
+        service.start({
+          actor: actor,
+          id: id,
+          player: "pip",
+          opponent: "bolt",
+        }),
+      ).toEqual(start);
       const pending = service.records.get(id, actor).pending;
       expect(JSON.stringify(start)).not.toContain("reason");
       const first = service.step(actor, id, 1, "special");
@@ -46,9 +59,14 @@ describe("separate durable combat records", () => {
       expect(() => service.step(actor, id, 3, "basic")).toThrow(
         "Stale or future",
       );
-      expect(() => service.start(actor, id, "moss", "bolt")).toThrow(
-        "another loadout",
-      );
+      expect(() =>
+        service.start({
+          actor: actor,
+          id: id,
+          player: "moss",
+          opponent: "bolt",
+        }),
+      ).toThrow("another loadout");
       const nextPending = service.records.get(id, actor).pending;
       store.close();
       store = new Store(path);
@@ -79,7 +97,7 @@ describe("separate durable combat records", () => {
       const service = new BattleService(new BattleStore(store)),
         actor = randomUUID(),
         id = randomUUID();
-      service.start(actor, id, "pip", "bolt");
+      service.start({ actor: actor, id: id, player: "pip", opponent: "bolt" });
       const record = service.records.get(id, actor);
       record.state.player.health = 1;
       service.records.save(record);
@@ -111,13 +129,13 @@ describe("separate durable combat records", () => {
         grant = authority();
       for (const fighter of fighters) {
         const actor = randomUUID();
-        const view = service.start(
-          actor,
-          randomUUID(),
-          fighter.id,
-          "bolt",
-          grant,
-        );
+        const view = service.start({
+          actor: actor,
+          id: randomUUID(),
+          player: fighter.id,
+          opponent: "bolt",
+          authority: grant,
+        });
         expect(view.state.player.energy).toBe(4);
         expect(view.snapshot.player).not.toHaveProperty("charges");
         expect(
@@ -125,11 +143,20 @@ describe("separate durable combat records", () => {
         ).toHaveLength(1);
         if (character(fighter.id).access === "holder")
           expect(() =>
-            service.start(randomUUID(), randomUUID(), fighter.id, "pip"),
+            service.start({
+              actor: randomUUID(),
+              id: randomUUID(),
+              player: fighter.id,
+              opponent: "pip",
+            }),
           ).toThrow("verified ownership");
         expect(
-          service.start(randomUUID(), randomUUID(), "pip", fighter.id).snapshot
-            .opponent.id,
+          service.start({
+            actor: randomUUID(),
+            id: randomUUID(),
+            player: "pip",
+            opponent: fighter.id,
+          }).snapshot.opponent.id,
         ).toBe(fighter.id);
       }
     } finally {
@@ -143,7 +170,13 @@ describe("separate durable combat records", () => {
         actor = randomUUID(),
         grant = authority(),
         id = randomUUID();
-      service.start(actor, id, "aegis", "pip", grant);
+      service.start({
+        actor: actor,
+        id: id,
+        player: "aegis",
+        opponent: "pip",
+        authority: grant,
+      });
       expect(service.session(actor, "guest").battle).toBeNull();
       expect(
         service.session(actor, "official", {
@@ -161,13 +194,13 @@ describe("separate durable combat records", () => {
         "unavailable",
       );
       const newGrant = authority();
-      const current = service.start(
-        actor,
-        randomUUID(),
-        "nyx",
-        "pip",
-        newGrant,
-      );
+      const current = service.start({
+        actor: actor,
+        id: randomUUID(),
+        player: "nyx",
+        opponent: "pip",
+        authority: newGrant,
+      });
       expect(current.id).not.toBe(id);
       expect(service.records.get(id, actor).rounds).toHaveLength(0);
     } finally {
@@ -186,15 +219,20 @@ describe("separate durable combat records", () => {
       const saved = store.db
         .prepare("SELECT record FROM runs WHERE id=?")
         .get(id)?.record;
-      const exhibits = JSON.stringify(store.museum());
+      const exhibits = JSON.stringify(new AdventureStore(store).museum());
       const battles = new BattleService(new BattleStore(store));
-      battles.start(actor, randomUUID(), "pip", "bolt");
+      battles.start({
+        actor: actor,
+        id: randomUUID(),
+        player: "pip",
+        opponent: "bolt",
+      });
       expect(
         store.db.prepare("SELECT record FROM runs WHERE id=?").get(id)?.record,
       ).toBe(saved);
-      expect(JSON.stringify(store.museum())).toBe(exhibits);
+      expect(JSON.stringify(new AdventureStore(store).museum())).toBe(exhibits);
       expect(runs.session(actor).run?.observation.outcome).toBe("trapped");
-      expect(store.getRun(id, actor).tactics).toBeNull();
+      expect(new AdventureStore(store).getRun(id, actor).tactics).toBeNull();
     } finally {
       store.close();
     }

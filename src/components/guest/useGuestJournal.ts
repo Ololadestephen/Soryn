@@ -1,4 +1,5 @@
 "use client";
+import { journalReplySchema } from "../../domain/adventure/responses";
 
 import { useState } from "react";
 import type { GuestJournalView } from "../../domain/journal";
@@ -21,8 +22,9 @@ export function useGuestJournal(gate: GuestRequestGate) {
     if (!gate.begin()) return;
     setSelection((previous) => ({ ...previous, error: "", requestedId: id }));
     try {
-      const data = await request<{ chapter: RunView }>(
+      const data = await request(
         `/api/game?chapter=${id}`,
+        journalReplySchema.parse,
       );
       if (gate.isMounted())
         setSelection((previous) => ({ ...previous, chapter: data.chapter }));

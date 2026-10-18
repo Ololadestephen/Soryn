@@ -1,4 +1,6 @@
-# Chog Déjà Vu
+# Soryn
+
+**Soryn — October 15, 2026:** a browser tactical creature battler. Find a public match, challenge a friend, play The Fractured Sanctuary, or practice. Status and the decisions still open are in [SORYN_PLAN.md](SORYN_PLAN.md).
 
 **Private friend battles — October 14, 2026:** a friend can join a private invitation and play the same battle on a second browser. Practice, the twelve fighters and saved adventure records stay. [Contract, checks and hosting limits](docs/PRIVATE_PVP.md).
 

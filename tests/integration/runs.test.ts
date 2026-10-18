@@ -1,9 +1,10 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { RunService } from "../../src/server/runs";
+import { RunService } from "../../src/server/adventure/runs";
 import { Store } from "../../src/server/persistence";
 import type { Action } from "../../src/domain/game/contracts";
 
@@ -46,9 +47,9 @@ describe("authoritative persisted guest loop", () => {
   });
   it("does not let another actor overwrite a chosen run ID", () => {
     const id = complete(["door"]);
-    const previous = store.getRun(id, actor);
+    const previous = new AdventureStore(store).getRun(id, actor);
     expect(() => service.start(stranger, id, null)).toThrow("ID unavailable");
-    expect(store.getRun(id, actor)).toEqual(previous);
+    expect(new AdventureStore(store).getRun(id, actor)).toEqual(previous);
     expect(service.session(stranger).run).toBeNull();
   });
   it("publishes only consented terminal failures, idempotently, with no private identifiers", () => {
@@ -98,7 +99,9 @@ describe("authoritative persisted guest loop", () => {
     const fresh = service.start(stranger, randomUUID(), exhibit.id);
     expect(fresh.cohort).toBe("first-recorded");
     const finished = service.step(stranger, fresh.id, 0, "door");
-    expect(finished.replay?.scenario).toEqual(store.getRun(id, actor).scenario);
+    expect(finished.replay?.scenario).toEqual(
+      new AdventureStore(store).getRun(id, actor).scenario,
+    );
     expect(finished.comparison).toEqual({ original: "tied", ghost: "tied" });
     const retry = service.start(stranger, randomUUID(), exhibit.id, fresh.id);
     expect(retry.cohort).toBe("informed-retry");
@@ -110,20 +113,22 @@ describe("authoritative persisted guest loop", () => {
   });
   it("freezes ghost versions and replays across database reopen", () => {
     const id = complete(["door"]);
-    const original = service.view(store.getRun(id, actor));
+    const original = service.view(new AdventureStore(store).getRun(id, actor));
     complete(["inspect", "arch", "gadget", "sneak", "inspect", "swap", "exit"]);
-    expect(service.view(store.getRun(id, actor)).ghost).toEqual(original.ghost);
+    expect(
+      service.view(new AdventureStore(store).getRun(id, actor)).ghost,
+    ).toEqual(original.ghost);
     expect(service.session(actor).run?.ghost?.profile.runs).toBe(2);
     expect(service.session(actor).run?.cohort).toBe("informed-retry");
     const published = service.publish(actor, id, "Painted", "Curator", true);
     store.close();
     store = new Store(join(folder, "test.sqlite"));
     service = new RunService(store);
-    expect(service.view(store.getRun(id, actor))).toEqual({
+    expect(service.view(new AdventureStore(store).getRun(id, actor))).toEqual({
       ...original,
       publication: published,
     });
-    expect(store.exhibit(published.id).ghost.runs).toBe(1);
+    expect(new AdventureStore(store).exhibit(published.id).ghost.runs).toBe(1);
   });
   it("withdrawal preserves private authorship, hides public replay, and blocks new challenges", () => {
     const id = complete(["door"]);
@@ -148,14 +153,14 @@ describe("authoritative persisted guest loop", () => {
   });
   it("rolls back failed writes and enforces request-rate boundaries", () => {
     const id = complete(["door"]);
-    const original = store.getRun(id, actor);
+    const original = new AdventureStore(store).getRun(id, actor);
     expect(() =>
       store.transaction(() => {
-        store.saveRun({ ...original, actions: ["leave"] });
+        new AdventureStore(store).saveRun({ ...original, actions: ["leave"] });
         throw new Error("Simulated failure after persistence mutation");
       }),
     ).toThrow();
-    expect(store.getRun(id, actor)).toEqual(original);
+    expect(new AdventureStore(store).getRun(id, actor)).toEqual(original);
     for (let i = 0; i < 60; i++) store.rateLimit(actor, 1000);
     expect(() => store.rateLimit(actor, 1000)).toThrow("Too many");
     expect(() => store.rateLimit(actor, 61000)).not.toThrow();

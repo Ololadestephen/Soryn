@@ -239,3 +239,12 @@ describe("read-only Monad adapter", () => {
     45_000,
   );
 });
+
+describe("wallet-code provider failure boundary", () => {
+  it("classifies malformed provider code as unavailable, never invalid client input", async () => {
+    const reader = new MonadReader(async () => "malformed-code");
+    await expect(reader.isContract(owner)).rejects.toMatchObject({
+      status: 503,
+    });
+  });
+});

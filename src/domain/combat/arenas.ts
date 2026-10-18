@@ -12,19 +12,19 @@ export function arenaSuggestion(value: unknown): ArenaId | undefined {
 }
 export const arenas: Record<ArenaId, { name: string; description: string }> = {
   sanctuary: {
-    name: "Ruined Sanctuary",
+    name: "Chog Sanctuary",
     description: "Lavender stone and old gold.",
   },
   grove: {
-    name: "Moonlit Grove",
+    name: "Echo Grove",
     description: "A clearing beneath luminous trees.",
   },
   foundry: {
-    name: "Ember Foundry",
+    name: "Foundry of First Light",
     description: "Solid basalt above distant forge fire.",
   },
   sky: {
-    name: "Sky Temple",
+    name: "Monad Spire",
     description: "A quiet courtyard above the clouds.",
   },
 };

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CharacterScreen } from "../../../components/CharacterScreen";
 
-export const metadata: Metadata = { title: "My Chog · Chog Déjà Vu" };
+export const metadata: Metadata = { title: "My Chog · Soryn" };
 
 export default function CharacterPage() {
   return <CharacterScreen />;

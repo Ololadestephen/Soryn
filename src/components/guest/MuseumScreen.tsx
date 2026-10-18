@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Museum } from "../Museum";
+import { ArchivedNotice } from "../site/ArchivedNotice";
 import { useGuestSession } from "./GuestProvider";
 
 export function MuseumScreen() {
@@ -10,6 +11,7 @@ export function MuseumScreen() {
     return <p role="status">Loading the museum…</p>;
   return (
     <>
+      <ArchivedNotice />
       <Museum {...game} />
       <p className="museum-journal-link">
         Already tried an exhibit?{" "}

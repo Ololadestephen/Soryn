@@ -4,23 +4,18 @@ export type HeroPlaybackState = {
   failed: boolean;
 };
 type Connection = EventTarget & { saveData?: boolean };
-const enhancementDelayMs = 1500;
 /** Independent decorative-media lifecycle; it never gates navigation. */
 class HeroPlayback {
   private reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  private portrait = matchMedia("(max-width:700px) and (orientation:portrait)");
   private connection = (navigator as Navigator & { connection?: Connection })
     .connection;
-  private source = matchMedia("(max-width:700px)").matches
-    ? "/hero/sanctuary-motion-v3-mobile.mp4"
-    : "/hero/sanctuary-motion-v3-desktop.mp4";
   private visible = true;
-  private eligible = false;
   private disposed = false;
   private navigating = false;
   private ready = false;
   private failed = false;
   private generation = 0;
-  private timer: ReturnType<typeof setTimeout> | undefined;
   private observer: IntersectionObserver;
   constructor(
     private video: HTMLVideoElement,
@@ -35,13 +30,13 @@ class HeroPlayback {
       { threshold: 0.05 },
     );
     this.observer.observe(root);
-    if (document.readyState === "complete") this.schedule();
-    else window.addEventListener("load", this.schedule, { once: true });
     document.addEventListener("visibilitychange", this.synchronize);
     document.addEventListener("click", this.navigate, true);
     this.reduced.addEventListener("change", this.preferences);
+    this.portrait.addEventListener("change", this.resize);
     this.connection?.addEventListener("change", this.preferences);
     video.addEventListener("error", this.error);
+    this.synchronize();
   }
   private publish() {
     this.report({
@@ -73,9 +68,12 @@ class HeroPlayback {
     this.publish();
   }
   private async play() {
-    if (!this.eligible || !this.allowed()) return;
+    if (!this.allowed()) return;
     const attempt = ++this.generation;
-    if (!this.video.getAttribute("src")) this.video.src = this.source;
+    if (!this.video.getAttribute("src"))
+      this.video.src = this.portrait.matches
+        ? "/hero/sanctuary-motion-v4-mobile.mp4"
+        : "/hero/sanctuary-motion-v4-desktop.mp4";
     try {
       await this.video.play();
       if (attempt !== this.generation || !this.allowed()) {
@@ -108,11 +106,9 @@ class HeroPlayback {
     if (this.reduced.matches || this.connection?.saveData) this.clear();
     else this.synchronize();
   };
-  private schedule = () => {
-    this.timer = setTimeout(() => {
-      this.eligible = true;
-      this.synchronize();
-    }, enhancementDelayMs);
+  private resize = () => {
+    this.clear();
+    this.synchronize();
   };
   private error = () => {
     this.failed = true;
@@ -149,11 +145,10 @@ class HeroPlayback {
   };
   dispose() {
     this.disposed = true;
-    clearTimeout(this.timer);
-    window.removeEventListener("load", this.schedule);
     document.removeEventListener("visibilitychange", this.synchronize);
     document.removeEventListener("click", this.navigate, true);
     this.reduced.removeEventListener("change", this.preferences);
+    this.portrait.removeEventListener("change", this.resize);
     this.connection?.removeEventListener("change", this.preferences);
     this.video.removeEventListener("error", this.error);
     this.observer.disconnect();

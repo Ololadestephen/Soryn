@@ -17,7 +17,7 @@ export function Hero() {
       aria-labelledby="welcome-title"
     >
       <div className="gateway-world" aria-hidden="true">
-        <Environment id="sanctuary" />
+        <Environment id="sanctuary" hero />
       </div>
       <HeroFilm />
       <div className="gateway-shade" aria-hidden="true" />
@@ -26,33 +26,13 @@ export function Hero() {
           <Brand hero />
         </h1>
         <p className="gateway-genre">Turn-based creature battles.</p>
-        <p className="gateway-description">
-          Choose your fighter. Time your defence.
-          <br />
-          Unleash your companion.
-        </p>
         <div className="gateway-actions">
-          <Link prefetch={false} className="world-button" href="/arena">
+          <Link prefetch={false} className="world-button" href="/start">
             Play now
-          </Link>
-          <Link
-            prefetch={false}
-            className="gateway-secondary"
-            href="/challenge"
-          >
-            Challenge a friend
           </Link>
           <a className="gateway-secondary" href="#gameplay">
             Watch gameplay
           </a>
-        </div>
-        <p className="gateway-note">
-          Play in your browser. Four free starters. No wallet required.
-        </p>
-        <div className="hero-lineup" aria-label="Game features">
-          <span>Twelve fighters</span>
-          <span>Twelve companions</span>
-          <span>Four arenas</span>
         </div>
       </div>
     </section>

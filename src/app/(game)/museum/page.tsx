@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { MuseumScreen } from "../../../components/guest/MuseumScreen";
 
-export const metadata: Metadata = { title: "The museum · Chog Déjà Vu" };
+export const metadata: Metadata = { title: "Archived museum · Soryn" };
 
 export default function MuseumPage() {
   return <MuseumScreen />;

@@ -15,9 +15,11 @@ import { PrivyWalletBridge } from "./PrivyWalletBridge";
 export default function PrivyIdentity({
   appId,
   onMuseumChanged,
+  children,
 }: {
   appId: string;
-  onMuseumChanged: () => Promise<void>;
+  onMuseumChanged?: () => Promise<void>;
+  children?: React.ReactNode;
 }) {
   return (
     <PrivyProvider
@@ -32,11 +34,13 @@ export default function PrivyIdentity({
           theme: "dark",
           accentColor: "#e7bc72",
           walletChainType: "ethereum-only",
-          landingHeader: "Sign in to Chog Déjà Vu",
+          landingHeader: "Sign in to Soryn",
         },
       }}
     >
-      <PrivyWalletBridge onMuseumChanged={onMuseumChanged} />
+      <PrivyWalletBridge onMuseumChanged={onMuseumChanged}>
+        {children}
+      </PrivyWalletBridge>
     </PrivyProvider>
   );
 }

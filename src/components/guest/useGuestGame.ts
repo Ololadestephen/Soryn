@@ -1,4 +1,6 @@
 "use client";
+import { guestSessionSchema } from "../../domain/adventure/responses";
+import { guestMutationSchema } from "../../domain/adventure/responses";
 
 import { guestStartRequest } from "../characters/startRequests";
 
@@ -6,7 +8,6 @@ import type { CharacterId } from "../../domain/characters/definitions";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ExhibitSummary, RunView } from "../../domain/views";
-import type { GuestJournalView, GuestSessionView } from "../../domain/journal";
 
 import { request } from "../request";
 import { useGuestJournal } from "./useGuestJournal";
@@ -46,8 +47,9 @@ export function useGuestGame() {
     const controller = new AbortController();
     async function load() {
       try {
-        const data = await request<GuestSessionView>(
+        const data = await request(
           "/api/game",
+          guestSessionSchema.parse,
           undefined,
           controller.signal,
         );
@@ -77,14 +79,11 @@ export function useGuestGame() {
     setError("");
     setPending(input);
     try {
-      const data = await request<{ run?: RunView; journal: GuestJournalView }>(
-        "/api/game",
-        input,
-      );
+      const data = await request("/api/game", guestMutationSchema.parse, input);
       if (!mounted.current) return;
       if (data.run) setRun(data.run);
       else {
-        const session = await request<GuestSessionView>("/api/game");
+        const session = await request("/api/game", guestSessionSchema.parse);
         setRun(session.run);
         setMuseum(session.museum);
       }
@@ -133,7 +132,7 @@ export function useGuestGame() {
     mutate,
     start,
     refreshMuseum: async () => {
-      const session = await request<GuestSessionView>("/api/game");
+      const session = await request("/api/game", guestSessionSchema.parse);
       setMuseum(session.museum);
       setJournal(session.journal);
     },

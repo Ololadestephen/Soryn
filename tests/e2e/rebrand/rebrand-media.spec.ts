@@ -10,7 +10,7 @@ test("gameplay loads only on request, plays the real clip, pauses offscreen and 
   });
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "Déjà Vu",
+    "Soryn",
   );
   expect(videoRequests).toEqual([]);
   await expect(page.locator("#gameplay video")).toHaveCount(0);
@@ -69,7 +69,7 @@ test("failed gameplay retains explicit retry and a working battle link", async (
   await expect(page.locator(".media-error")).toBeVisible();
   await page
     .locator(".media-error")
-    .getByRole("link", { name: "Play now" })
+    .getByRole("link", { name: "Practice" })
     .click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
@@ -86,7 +86,7 @@ test("a missing route retains the game identity and recovery destinations", asyn
   ).toBeVisible();
   await page.getByRole("link", { name: "Return home", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "Déjà Vu",
+    "Soryn",
   );
 });
 

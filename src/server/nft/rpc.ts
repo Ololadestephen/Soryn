@@ -70,10 +70,12 @@ export function publicRpc(
       if (data.error !== undefined || data.result === undefined)
         throw new Error("RPC method failed");
       return data.result;
-    } catch {
+    } catch (cause) {
       throw new ServiceError(
         503,
         "Monad ownership evidence unavailable. No official write was authorized.",
+        undefined,
+        { cause },
       );
     }
   };
@@ -85,10 +87,19 @@ export class MonadReader implements OwnershipReader {
     private now = Date.now,
   ) {}
   async isContract(address: string): Promise<boolean> {
-    return (
-      hexSchema.parse(await this.rpc("eth_getCode", [address, "latest"])) !==
-      "0x"
-    );
+    try {
+      return (
+        hexSchema.parse(await this.rpc("eth_getCode", [address, "latest"])) !==
+        "0x"
+      );
+    } catch (cause) {
+      throw new ServiceError(
+        503,
+        "Wallet code verification is unavailable. Retry when the provider recovers.",
+        undefined,
+        { cause },
+      );
+    }
   }
   private async block(tag: string): Promise<BlockReference> {
     return blockSchema.parse(
@@ -211,10 +222,12 @@ export class MonadReader implements OwnershipReader {
         pendingTransfer,
         checkedAt: this.now(),
       };
-    } catch {
+    } catch (cause) {
       throw new ServiceError(
         503,
         "Fresh, consistent Monad ownership evidence unavailable. Retry; guest play remains available.",
+        undefined,
+        { cause },
       );
     }
   }

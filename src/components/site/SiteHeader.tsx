@@ -1,38 +1,24 @@
 import Link from "next/link";
 import { Brand } from "./Brand";
-
-const destinations = [
-  ["/challenge", "Challenge"],
-  ["/arena", "Practice"],
-  ["/#fighters", "Fighters"],
-  ["/character", "My Chog"],
-  ["/history", "Battle history"],
-] as const;
-
-export function SiteHeader({ current = "/" }: { current?: string }) {
+import { SiteNavigation } from "./SiteNavigation";
+export function SiteHeader({
+  current = "/",
+  cinematic = false,
+}: {
+  current?: string;
+  cinematic?: boolean;
+}) {
   return (
-    <header className="topbar">
+    <header className={cinematic ? "landing-nav" : "topbar"}>
       <Link
         prefetch={false}
-        className="wordmark"
+        className={cinematic ? "landing-brand" : "wordmark"}
         href="/"
-        aria-label="Chog Déjà Vu home"
+        aria-label="Soryn home"
       >
         <Brand />
       </Link>
-      <nav aria-label="Main navigation">
-        {destinations.map(([href, label]) => (
-          <Link
-            key={href}
-            prefetch={false}
-            href={href}
-            aria-current={current === href ? "page" : undefined}
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
-      <span className="badge">Local preview</span>
+      <SiteNavigation current={current} />
     </header>
   );
 }

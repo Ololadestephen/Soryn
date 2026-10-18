@@ -49,6 +49,9 @@ function emptyRoom(): PvpRoom {
     match: null,
     completed: [],
     timers: PVP_TIMERS,
+    series: null,
+    roster: "private",
+    ownershipStallSince: null,
   };
 }
 
@@ -538,19 +541,31 @@ describe("private match clocks and stale views", () => {
     expect(older).toBeNull();
     const lobby = nextRoomState(
       cursor,
-      { seated: false, status: "open", names: [], openSeats: 1 },
+      {
+        seated: false,
+        origin: "private",
+        status: "open",
+        names: [],
+        openSeats: 1,
+      },
       3,
       "poll",
     );
     expect(lobby).toBeNull();
     const leave = nextRoomState(
       cursor,
-      { seated: false, status: "open", names: [], openSeats: 1 },
+      {
+        seated: false,
+        origin: "private",
+        status: "open",
+        names: [],
+        openSeats: 1,
+      },
       4,
       "action",
     );
     expect(leave?.room.seated).toBe(false);
-    expect(remainingSeconds(1_000, 31_000, 9_000_000)).toBe(30);
+    expect(remainingSeconds(1_000, 31_000, 9_000_000, 9_000_000)).toBe(30);
   });
 });
 
@@ -577,7 +592,7 @@ describe("holder seats at match start", () => {
     return { service, invite: created.invite };
   }
 
-  it("keeps a holder match closed when the other seat is no longer eligible", async () => {
+  it("keeps a holder match closed when eligibility cannot be verified", async () => {
     const path = join(
       mkdtempSync(join(tmpdir(), "chog-pvp-")),
       "holders.sqlite",
@@ -585,12 +600,12 @@ describe("holder seats at match start", () => {
     const { service, invite } = officialRoom(path);
     await expect(
       service.confirmReady(B, invite, true, NOW, grantB),
-    ).rejects.toThrow(/did not start/);
+    ).rejects.toThrow(/verification is unavailable/);
     const view = service.preview(invite, B, NOW);
     expect(view.seated && view.battle).toBeFalsy();
     const host = service.preview(invite, A, NOW);
-    expect(host.seated && host.you.characterId).toBeNull();
-    expect(host.seated && host.notice).toMatch(/verified ownership/);
+    expect(host.seated && host.you.characterId).toBe("aegis");
+    expect(host.seated && host.series?.outcome).toBeNull();
     service.records.store.close();
   });
 
@@ -644,5 +659,14 @@ describe("holder seats at match start", () => {
     const view = service.preview(invite, A, NOW);
     expect(view.seated && view.phase).not.toBe("loading");
     service.records.store.close();
+  });
+});
+
+describe("turn-clock elapsed display", () => {
+  it("counts down between polls independent of the client's absolute clock", () => {
+    expect(remainingSeconds(1000, 31000, 9000000, 9005000)).toBe(25);
+    expect(remainingSeconds(1000, 31000, 50, 5050)).toBe(25);
+    expect(remainingSeconds(1000, 31000, 50, 40050)).toBe(0);
+    expect(remainingSeconds(1000, 31000, 50, 40)).toBe(30);
   });
 });

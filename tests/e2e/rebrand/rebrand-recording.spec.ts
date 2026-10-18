@@ -88,10 +88,14 @@ test("record landing to setup, battle, result and rematch", async ({
   test.setTimeout(180000);
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "Déjà Vu",
+    "Soryn",
   );
   await page.waitForTimeout(1000);
-  await page.getByRole("link", { name: "Play now", exact: true }).click();
+  await page
+    .locator(".gateway-hero .gateway-actions")
+    .getByRole("link", { name: "Play now", exact: true })
+    .click();
+  await page.locator('.play-mode[href="/arena"]').click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();

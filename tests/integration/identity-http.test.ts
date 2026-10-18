@@ -1,3 +1,4 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { NextRequest } from "next/server";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
@@ -222,7 +223,7 @@ describe("identity API boundaries", () => {
         )
       ).status,
     ).toBe(503);
-    expect(ctx.store.museum()).toEqual([]);
+    expect(new AdventureStore(ctx.store).museum()).toEqual([]);
   });
   it("fails closed on corrupted stored permissions and preserves legacy guest records", async () => {
     const ctx = await setup();
@@ -237,7 +238,7 @@ describe("identity API boundaries", () => {
       ).status,
     ).toBe(503);
     const guest = randomUUID();
-    const { RunService } = await import("../../src/server/runs");
+    const { RunService } = await import("../../src/server/adventure/runs");
     const service = new RunService(ctx.store);
     const run = service.start(guest, randomUUID(), null);
     const row = ctx.store.db
@@ -255,7 +256,7 @@ describe("identity API boundaries", () => {
   it("marks prior guest and inherited chapter exposure as informed retries", async () => {
     const ctx = await setup();
     const guest = randomUUID();
-    const { RunService } = await import("../../src/server/runs");
+    const { RunService } = await import("../../src/server/adventure/runs");
     new RunService(ctx.store).start(guest, randomUUID(), null);
     const initial = await ctx.post(
       {

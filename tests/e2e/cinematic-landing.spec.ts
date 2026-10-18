@@ -16,9 +16,13 @@ test("immediate readable entry, arena-only hero, guest and holder routes", async
   page.on("request", (r) => requests.push(r.url()));
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName(
-    "Déjà Vu",
+    "Soryn",
   );
-  await expect(page.getByRole("link", { name: /Play now/ })).toBeVisible();
+  await expect(
+    page
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true }),
+  ).toBeVisible();
   expect(
     requests.some((p) => /\/api\/|privy|\/combat\/audio\/|\/blender\//.test(p)),
   ).toBe(false);
@@ -36,12 +40,16 @@ test("immediate readable entry, arena-only hero, guest and holder routes", async
       .filter((p) => /arenas\/.+-(desktop|portrait)/.test(p))
       .every((p) => p.includes("sanctuary")),
   ).toBe(true);
-  await page.getByRole("link", { name: /Play now/ }).click();
+  await page
+    .locator(".gateway-hero .gateway-actions")
+    .getByRole("link", { name: "Play now", exact: true })
+    .click();
+  await page.locator('.play-mode[href="/arena"]').click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();
   await page.goBack();
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page).toHaveURL(/\/start$/);
   await page.goForward();
   await expect(page).toHaveURL(/\/arena$/);
   await page.goBack();
@@ -50,7 +58,11 @@ test("immediate readable entry, arena-only hero, guest and holder routes", async
   const context = await browser.newContext({ javaScriptEnabled: false });
   const readable = await context.newPage();
   await readable.goto("/");
-  await expect(readable.getByRole("link", { name: /Play now/ })).toBeVisible();
+  await expect(
+    readable
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true }),
+  ).toBeVisible();
   await expect(
     readable.getByRole("button", { name: "Pip Starter", exact: true }),
   ).toBeAttached();
@@ -235,7 +247,11 @@ test("asset failure stays navigable and preview can retry without overlapping", 
     "data-preview-status",
     "complete",
   );
-  await page.getByRole("link", { name: /Play now/ }).click();
+  await page
+    .locator(".gateway-hero .gateway-actions")
+    .getByRole("link", { name: "Play now", exact: true })
+    .click();
+  await page.locator('.play-mode[href="/arena"]').click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();
@@ -275,9 +291,15 @@ test("desktop and enlarged responsive layouts, reduced motion, contrast and focu
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await expect(page.getByRole("link", { name: /Play now/ })).toBeVisible();
     await expect(
-      page.getByRole("link", { name: "Play now", exact: true }),
+      page
+        .locator(".gateway-hero .gateway-actions")
+        .getByRole("link", { name: "Play now", exact: true }),
+    ).toBeVisible();
+    await expect(
+      page
+        .locator(".gateway-hero .gateway-actions")
+        .getByRole("link", { name: "Play now", exact: true }),
     ).toBeInViewport();
     expect(
       await page
@@ -374,7 +396,11 @@ test.describe("high-density portrait", () => {
     });
     const start = Date.now();
     await page.goto("/", { waitUntil: "commit" });
-    await expect(page.getByRole("link", { name: /Play now/ })).toBeVisible({
+    await expect(
+      page
+        .locator(".gateway-hero .gateway-actions")
+        .getByRole("link", { name: "Play now", exact: true }),
+    ).toBeVisible({
       timeout: 30000,
     });
     const contentMs = Date.now() - start;
@@ -482,12 +508,16 @@ test("Play works while hero artwork is stalled, and the scene never moves text o
   });
   try {
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    const play = page.getByRole("link", { name: "Play now", exact: true });
+    const play = page
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true });
     await expect(play).toBeVisible();
     const before = await play.boundingBox();
     await page.mouse.move(1000, 400);
     expect(await play.boundingBox()).toEqual(before);
     await play.click();
+    await expect(page).toHaveURL(/\/start$/);
+    await page.locator('.play-mode[href="/arena"]').click();
     await expect(page).toHaveURL(/\/arena$/);
     await expect(
       page.getByRole("button", { name: "Enter guest arena" }),

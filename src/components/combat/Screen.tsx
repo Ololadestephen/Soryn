@@ -1,4 +1,6 @@
 "use client";
+import { usePlayIdentity } from "../auth/PlayIdentity";
+import { useAccessState } from "../auth/AccessGate";
 import { useState } from "react";
 import Link from "next/link";
 import { useCombat } from "./useCombat";
@@ -17,7 +19,9 @@ export function CombatScreen({
   headers?: () => Promise<Record<string, string>>;
   suggestedArena?: ArenaId;
 }) {
-  const game = useCombat(mode, headers);
+  const identity = usePlayIdentity();
+  const access = useAccessState();
+  const game = useCombat(mode, headers ?? identity.headers);
   const [choosing, setChoosing] = useState(!!suggestedArena),
     [history, setHistory] = useState(false);
   const battle = game.battle;
@@ -56,8 +60,10 @@ export function CombatScreen({
       <div className="combat-heading">
         <p className="eyebrow">
           {mode === "guest"
-            ? "Guest arena · separate private practice"
-            : "Chog holder arena · private battle history"}
+            ? identity.walletPlay
+              ? "Wallet Practice"
+              : "Guest Practice"
+            : "NFT Practice"}
         </p>
         <Link prefetch={false} href="/challenge">
           Challenge a friend
@@ -78,6 +84,7 @@ export function CombatScreen({
       )}
       <FighterSelection
         holder={mode === "official"}
+        allowed={identity.walletPlay ? access?.fighters : undefined}
         busy={game.busy || (!!battle && !battle.state.outcome)}
         initialArena={suggestedArena}
         onStart={(id, opponent, difficulty, arena) => {

@@ -33,6 +33,13 @@ export function identityFor(tokenId: string): TokenIdentity {
 export function tokenKey(identity: TokenIdentity): string {
   return `${identity.chainId}:${identity.collection}:${identity.tokenId}`;
 }
+/** Story progress row key for official play. Guest rows stay plain UUIDs. */
+export function tokenStoryActor(
+  identity: TokenIdentity,
+  owner?: string,
+): string {
+  return `token:${tokenKey(identity)}${owner ? `:keeper:${addressSchema.parse(owner)}` : ""}`;
+}
 export const blockSchema = z.object({
   number: z.string().regex(/^0x[0-9a-f]+$/),
   hash: z.string().regex(/^0x[0-9a-f]{64}$/),

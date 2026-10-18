@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { CharacterSelection } from "../characters/Selection";
 import { Adventure } from "../adventure/Adventure";
+import { ArchivedNotice } from "../site/ArchivedNotice";
 import { useGuestSession } from "./GuestProvider";
 
 export function PlayScreen({ challenge }: { challenge: string | null }) {
@@ -19,6 +20,7 @@ export function PlayScreen({ challenge }: { challenge: string | null }) {
   }, [challenge, game]);
   return (
     <>
+      <ArchivedNotice />
       {!challenge && (!game.run || game.run.observation.outcome) && (
         <CharacterSelection
           selected={game.selectedCharacter}

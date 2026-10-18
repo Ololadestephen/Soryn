@@ -1,3 +1,8 @@
+import {
+  grantedFighter,
+  publicFighter,
+  type AccessGrant,
+} from "../access/policy";
 import type { CharacterId } from "../characters/definitions";
 import { character } from "../characters/definitions";
 import type { ArenaChoice, ArenaId } from "../combat/arenas";
@@ -5,7 +10,13 @@ import { arenaIds } from "../combat/arenas";
 import type { Move } from "../combat/contracts";
 import { pvpSnapshot } from "../combat/definitions";
 import { legalMoves } from "../combat/moves";
-import { commitRound, openMatch } from "./advance";
+import {
+  commitRound,
+  forfeitSeries,
+  openMatch,
+  openNextBattle,
+} from "./advance";
+import { derivedId, freshSeries } from "./series";
 import { PvpError } from "./errors";
 import {
   invitationExpired,
@@ -20,10 +31,20 @@ import {
 export interface SeatActor {
   actor: string;
   mode: "guest" | "official";
+  access?: AccessGrant;
+  cosmetic?: boolean;
 }
 
-export function fighterAllowed(id: CharacterId, mode: SeatActor["mode"]) {
-  return mode === "official" || character(id).access === "starter";
+export function fighterAllowed(
+  id: CharacterId,
+  mode: SeatActor["mode"],
+  access?: AccessGrant,
+) {
+  return (
+    mode === "official" ||
+    grantedFighter(id, access) ||
+    character(id).access === "starter"
+  );
 }
 
 function mustSeat(room: PvpRoom, actor: string): SeatId {
@@ -66,6 +87,8 @@ export function joinRoom(
     misses: 0,
     notice: null,
     holderGrant: null,
+    ...(actor.access ? { access: actor.access } : {}),
+    ...(actor.cosmetic ? { cosmetic: true } : {}),
   };
   room.seats[seat] = sitting;
   room.revision += 1;
@@ -86,8 +109,8 @@ export function leaveSeat(room: PvpRoom, actor: string) {
 
 export function closeRoom(room: PvpRoom, actor: string, now: number) {
   mustSeat(room, actor);
-  if (room.match) throw new PvpError(409, "The match has started.");
   if (room.closedAt) return;
+  if (room.match) throw new PvpError(409, "The match has started.");
   room.closedAt = now;
   room.revision += 1;
 }
@@ -98,8 +121,18 @@ export function selectFighter(room: PvpRoom, actor: string, id: CharacterId) {
   if (room.match?.phase === "complete")
     throw new PvpError(409, "Return to setup before changing fighters.");
   if (room.match) throw new PvpError(409, "The match has started.");
+  if (
+    room.series &&
+    room.series.phase !== "setup" &&
+    room.series.phase !== "complete"
+  )
+    throw new PvpError(409, "Fighters stay locked until the series ends.");
   const sitting = room.seats[seat]!;
-  if (!fighterAllowed(id, sitting.mode))
+  if (room.roster === "public-six" && !publicFighter(id))
+    throw new PvpError(403, "This public queue shares six fighters.");
+  if (room.roster === "starters" && character(id).access !== "starter")
+    throw new PvpError(403, "This public queue uses the four starters.");
+  if (!fighterAllowed(id, sitting.mode, sitting.access))
     throw new PvpError(
       403,
       "Holder fighters stay locked until ownership is verified.",
@@ -141,6 +174,13 @@ export function setReady(
   const sitting = room.seats[seat]!;
   if (ready && !sitting.characterId)
     throw new PvpError(409, "Choose your fighter first.");
+  if (
+    ready &&
+    room.roster === "public-six" &&
+    sitting.characterId &&
+    !publicFighter(sitting.characterId)
+  )
+    throw new PvpError(403, "Choose from the shared six fighters.");
   if (sitting.ready === ready) return;
   sitting.ready = ready;
   room.revision += 1;
@@ -155,8 +195,8 @@ export function setReady(
   )
     return;
   if (
-    !fighterAllowed(left.characterId, left.mode) ||
-    !fighterAllowed(right.characterId, right.mode)
+    !fighterAllowed(left.characterId, left.mode, left.access) ||
+    !fighterAllowed(right.characterId, right.mode, right.access)
   )
     throw new PvpError(
       403,
@@ -169,6 +209,24 @@ export function setReady(
     snapshot: pvpSnapshot(left.characterId, right.characterId, next.tie),
   });
   room.rematchOf = null;
+}
+
+export function confirmIntermission(room: PvpRoom, actor: string, now: number) {
+  const seat = mustSeat(room, actor);
+  if (!room.series || room.series.phase !== "intermission")
+    throw new PvpError(409, "The next battle is not ready.");
+  const sitting = room.seats[seat]!;
+  if (!sitting.ready) {
+    sitting.ready = true;
+    room.revision += 1;
+  }
+  if (room.seats.a?.ready && room.seats.b?.ready) openNextBattle(room, now);
+}
+
+export function surrender(room: PvpRoom, actor: string, now: number) {
+  const seat = mustSeat(room, actor);
+  if (room.series?.phase === "complete" || room.closedAt !== null) return;
+  forfeitSeries(room, otherSeat(seat), now);
 }
 
 export function markAssets(room: PvpRoom, actor: string, now: number) {
@@ -253,7 +311,7 @@ function clearForSetup(room: PvpRoom) {
     sitting.misses = 0;
     if (
       sitting.characterId &&
-      !fighterAllowed(sitting.characterId, sitting.mode)
+      !fighterAllowed(sitting.characterId, sitting.mode, sitting.access)
     ) {
       sitting.characterId = null;
       sitting.notice =
@@ -264,17 +322,42 @@ function clearForSetup(room: PvpRoom) {
 
 export function returnToSetup(room: PvpRoom, actor: string) {
   mustSeat(room, actor);
+  if (room.closedAt !== null)
+    throw new PvpError(
+      409,
+      "This series is archived. Start a new match or invitation.",
+    );
+  if (
+    room.series &&
+    room.series.phase !== "complete" &&
+    room.series.phase !== "setup"
+  )
+    throw new PvpError(
+      409,
+      "Surrender the series or continue the next battle.",
+    );
   archiveMatch(room);
   clearForSetup(room);
   room.rematchOf = null;
+  if (room.series?.phase === "complete")
+    room.series = freshSeries(
+      derivedId(`${room.id}:series:after:${room.series.id}`),
+    );
   room.revision += 1;
 }
 
 export function requestRematch(room: PvpRoom, actor: string) {
   const seat = mustSeat(room, actor);
+  if (room.closedAt !== null)
+    throw new PvpError(
+      409,
+      "This series is archived. Start a new match or invitation.",
+    );
   const match = room.match;
   if (!match || match.phase !== "complete")
     throw new PvpError(409, "Finish the battle before a rematch.");
+  if (room.series && room.series.phase !== "complete")
+    throw new PvpError(409, "Finish the series before a rematch.");
   const sitting = room.seats[seat]!;
   if (!sitting.rematch) {
     sitting.rematch = true;
@@ -284,6 +367,10 @@ export function requestRematch(room: PvpRoom, actor: string) {
   const previous = archiveMatch(room);
   clearForSetup(room);
   room.rematchOf = previous;
+  if (room.series?.phase === "complete")
+    room.series = freshSeries(
+      derivedId(`${room.id}:series:after:${room.series.id}`),
+    );
   room.revision += 1;
 }
 

@@ -7,7 +7,11 @@ test("actual browser tour · fighter, companion special and four arenas", async 
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByRole("link", { name: /Play now/ })).toBeVisible();
+  await expect(
+    page
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true }),
+  ).toBeVisible();
   await page.waitForTimeout(1800);
   await page.getByRole("link", { name: /Meet the fighters/ }).click();
   await page.waitForTimeout(1000);

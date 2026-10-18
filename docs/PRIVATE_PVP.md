@@ -75,7 +75,7 @@ When both locks exist for the current round, the server resolves that round once
 The stored policy is `pvp-timeout/1`:
 
 - 30 seconds to choose a move
-- 8 seconds to present a resolved round
+- 5 seconds to present a resolved round
 - 20 seconds to load essential battle art
 - 30 minutes for an unused lobby
 - a seat looks disconnected after 8 seconds without a poll
@@ -95,7 +95,7 @@ Disconnecting does not move `deadlineAt`. Rejoining shows the same round and the
 
 If the process was stopped across more than one deadline, the next request walks the stored deadlines in order, up to 48 steps. Presentation and the next turn are dated from the deadline that expired, so downtime does not grant a new 30 seconds. If the room is still behind after 48 steps, the match is abandoned as timed out while catching up.
 
-The presentation window is eight seconds for everyone. Reduced motion changes the local animation, not the shared deadline. A client that misses more than one resolved round snaps to the current state instead of replaying the gap. A refresh does not replay earlier rounds.
+The presentation window is five seconds for rooms created with the current clock. A room already saved keeps its stored window. Reduced motion changes the local animation, not the shared deadline. A client that misses more than one resolved round snaps to the current state instead of replaying the gap. A refresh does not replay earlier rounds.
 
 `CHOG_PVP_TIMERS=test` may shorten the move, presentation, and loading clocks for the local browser suite. It takes effect only when `APP_ORIGIN` is `http://127.0.0.1` or `http://localhost`. A public origin keeps the 30 second policy even if the flag is present. The shortened values cannot exceed the real policy and cannot go below one second, 200 milliseconds, and one second. Hosted play must leave the flag unset. Rooms keep the numbers they stored at creation. The server logs a warning when a loopback process is actually using the short clocks.
 
@@ -112,6 +112,15 @@ The guest cookie is HTTP-only, SameSite strict, and lasts seven days. It is mark
 Clients discard a response that started before one they already applied, a lower revision, or an older `serverNow` for the same revision. A lobby poll does not replace a seat the player has already taken. The on-screen countdown is `deadlineAt - serverNow`. A wrong device clock does not add time. Rejoining shows the same round and the time remaining until the stored deadline.
 
 A rematch is a flag on each seat. The completed match is archived only after both players ask for one. The new match id is created later, when both are ready again, and it records `rematchOf`. Either player can return to setup without creating that match. Fighter eligibility is checked again when both players are ready, including a rematch. An illegal holder choice is cleared, with a visible note, before the next match opens. The completed match stays in the room.
+
+Ownership is rechecked with fresh RPC evidence before every official action, and every
+official seat in the room is rechecked, not just the acting one. A confirmed ownership change ends
+an open series as no contest with no win awarded: completed battles stay in the history, the
+interrupted battle is discarded, and a room with no open series closes instead. RPC outages fail
+closed with an explicit verification-unavailable response and never end a series on their own; a
+stall that outlives its bound terminates as abandoned without a winner. One active official series
+per token is enforced by the persistent `token_locks` table, covering private rooms, the public
+queue, and story encounters.
 
 ## Hosting still required
 

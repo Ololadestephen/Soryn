@@ -1,11 +1,12 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { randomUUID } from "node:crypto";
 import { mkdtempSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { Store } from "../../src/server/persistence";
-import { RunService } from "../../src/server/runs";
-import { GuestJournal } from "../../src/server/journal";
+import { RunService } from "../../src/server/adventure/runs";
+import { GuestJournal } from "../../src/server/adventure/journal";
 import type { Action } from "../../src/domain/game/contracts";
 
 describe("guest journal and selected races", () => {
@@ -32,7 +33,7 @@ describe("guest journal and selected races", () => {
   });
   function finish(id: string, actions: Action[], who = actor) {
     actions.forEach((action, index) => runs.step(who, id, index, action));
-    return runs.view(store.getRun(id, who));
+    return runs.view(new AdventureStore(store).getRun(id, who));
   }
   function completeDoorFailure(who = actor) {
     const run = runs.start(who, randomUUID(), null);
@@ -42,7 +43,7 @@ describe("guest journal and selected races", () => {
     const old = completeDoorFailure();
     const recent = completeDoorFailure();
     const draft = runs.start(actor, randomUUID(), null);
-    const before = store.getRun(draft.id, actor);
+    const before = new AdventureStore(store).getRun(draft.id, actor);
     expect(journal.read(actor).chapters.map((chapter) => chapter.id)).toEqual([
       recent.id,
       old.id,
@@ -59,7 +60,7 @@ describe("guest journal and selected races", () => {
       expect(text).not.toContain(hidden);
     expect(journal.chapter(actor, old.id).replay).toEqual(old.replay);
     expect(runs.session(actor).run?.id).toBe(draft.id);
-    expect(store.getRun(draft.id, actor)).toEqual(before);
+    expect(new AdventureStore(store).getRun(draft.id, actor)).toEqual(before);
     expect(journal.read(stranger)).toEqual({ chapters: [], challenges: [] });
     expect(() => journal.chapter(stranger, old.id)).toThrow("unavailable");
     expect(() => journal.chapter(actor, draft.id)).toThrow(
@@ -80,8 +81,10 @@ describe("guest journal and selected races", () => {
     expect(selected.rival?.replay).toBeNull();
     expect(selected.exhibitId).toBeNull();
     expect(selected.cohort).toBe("informed-retry");
-    expect(store.getRun(id, actor).scenario).toEqual(old.replay?.scenario);
-    expect(store.getRun(id, actor).ghostOf).toBe(old.id);
+    expect(new AdventureStore(store).getRun(id, actor).scenario).toEqual(
+      old.replay?.scenario,
+    );
+    expect(new AdventureStore(store).getRun(id, actor).ghostOf).toBe(old.id);
     expect(journal.race(actor, id, old.id)).toEqual(selected);
     expect(() => journal.race(actor, id, recent.id)).toThrow("Race ID");
     expect(() => runs.start(actor, id, null)).toThrow("Start ID");
@@ -132,9 +135,9 @@ describe("guest journal and selected races", () => {
     expect(personal.exhibitId).toBeNull();
     expect(personal.rival?.source).toBe("previous-run");
     expect(personal.rival?.version).toBe(win.ghost?.version);
-    expect(store.getRun(personal.id, stranger).scenario).toEqual(
-      store.exhibit(exhibit.id).scenario,
-    );
+    expect(
+      new AdventureStore(store).getRun(personal.id, stranger).scenario,
+    ).toEqual(new AdventureStore(store).exhibit(exhibit.id).scenario);
     runs.withdraw(actor, original.id);
     const withdrawn = journal.read(stranger).challenges[0];
     expect(withdrawn.challenge).toEqual({
@@ -153,12 +156,17 @@ describe("guest journal and selected races", () => {
     expect(() => journal.race(stranger, randomUUID(), source.id)).toThrow(
       "unavailable",
     );
-    const before = store.getRun(other.id, stranger);
+    const before = new AdventureStore(store).getRun(other.id, stranger);
     expect(() => journal.race(actor, other.id, source.id)).toThrow(
       "ID unavailable",
     );
-    expect(store.getRun(other.id, stranger)).toEqual(before);
-    store.saveRun({ ...store.getRun(source.id, actor), ghost: null });
+    expect(new AdventureStore(store).getRun(other.id, stranger)).toEqual(
+      before,
+    );
+    new AdventureStore(store).saveRun({
+      ...new AdventureStore(store).getRun(source.id, actor),
+      ghost: null,
+    });
     expect(journal.read(actor).chapters[0].ghostVersion).toBeNull();
     expect(() => journal.race(actor, randomUUID(), source.id)).toThrow(
       "no frozen ghost",
@@ -166,12 +174,15 @@ describe("guest journal and selected races", () => {
   });
   it("loads pre-selection records without reconstructing a fictitious selected race", () => {
     const old = completeDoorFailure();
-    const { ghostOf, ...legacy } = store.getRun(old.id, actor);
+    const { ghostOf, ...legacy } = new AdventureStore(store).getRun(
+      old.id,
+      actor,
+    );
     expect(ghostOf).toBeNull();
     store.db
       .prepare("UPDATE runs SET record=? WHERE id=?")
       .run(JSON.stringify(legacy), old.id);
-    expect(store.getRun(old.id, actor).ghostOf).toBeNull();
+    expect(new AdventureStore(store).getRun(old.id, actor).ghostOf).toBeNull();
     expect(journal.chapter(actor, old.id)).toEqual(old);
   });
   it("bounds the journal to recent records and fails closed on invalid stored data", () => {

@@ -30,18 +30,76 @@ export function response(data: unknown, status = 200): NextResponse {
     },
   });
 }
-export function failure(error: unknown): NextResponse {
-  if (error instanceof ServiceError)
-    return response({ error: error.message }, error.status);
-  if (error instanceof z.ZodError || error instanceof SyntaxError)
-    return response(
-      { error: "Invalid request. Check fields and supported versions." },
+/** Explicit request boundary: internal schema errors must remain server failures. */
+export function parseInput<T>(schema: z.ZodType<T>, value: unknown): T {
+  const parsed = schema.safeParse(value);
+  if (!parsed.success)
+    throw new ServiceError(
       400,
+      "Invalid request. Check fields and supported versions.",
+      undefined,
+      { cause: parsed.error },
     );
-  console.error(
-    "Chog request failed",
-    error instanceof Error ? error.name : "UnknownError",
-  );
+  return parsed.data;
+}
+
+const diagnosticMessages = new Set([
+  "Wrong chain",
+  "Stale block",
+  "Inconsistent blocks",
+  "Allowlisted code changed",
+  "Unsupported contract",
+  "Invalid owner encoding",
+  "No owner",
+  "Observation timed out",
+  "Invalid transfer evidence",
+  "Snapshot changed during check",
+  "Evidence exceeded freshness budget",
+  "RPC HTTP failure",
+  "RPC method failed",
+]);
+/** Log only allowlisted categories; never provider bodies, URLs, wallets, tokens or stored records. */
+function logServerFailure(error: unknown): void {
+  const causes: string[] = [];
+  const seen = new Set<unknown>();
+  for (
+    let current = error;
+    current instanceof Error && !seen.has(current) && causes.length < 5;
+    current = current.cause
+  ) {
+    seen.add(current);
+    causes.push(
+      current instanceof z.ZodError
+        ? "SchemaValidation"
+        : current instanceof SyntaxError
+          ? "MalformedStoredJSON"
+          : diagnosticMessages.has(current.message)
+            ? current.message
+            : current.name === "TimeoutError"
+              ? "Timeout"
+              : current.name === "AbortError"
+                ? "Aborted"
+                : current instanceof ServiceError
+                  ? `ServiceError:${current.status}`
+                  : current instanceof TypeError
+                    ? "TypeError"
+                    : "InternalError",
+    );
+  }
+  console.error("Soryn request failed", {
+    causes: causes.length ? causes : ["UnknownError"],
+  });
+}
+
+export function failure(error: unknown): NextResponse {
+  if (error instanceof ServiceError) {
+    if (error.status >= 500) logServerFailure(error);
+    return response(
+      { error: error.message, ...(error.code ? { code: error.code } : {}) },
+      error.status,
+    );
+  }
+  logServerFailure(error);
   return response(
     {
       error:

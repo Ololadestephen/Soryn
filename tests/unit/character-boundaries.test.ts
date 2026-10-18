@@ -1,3 +1,4 @@
+import { AdventureStore } from "../../src/server/adventure/persistence";
 import { describe, it, expect } from "vitest";
 import {
   initialState,
@@ -17,8 +18,9 @@ import {
   challengeProgress,
   type JournalChapter,
 } from "../../src/domain/journal";
-import { Store, runSchema } from "../../src/server/persistence";
-import { RunService } from "../../src/server/runs";
+import { Store } from "../../src/server/persistence";
+import { runSchema } from "../../src/server/adventure/persistence";
+import { RunService } from "../../src/server/adventure/runs";
 import { randomUUID } from "node:crypto";
 
 describe("versioned character boundaries", () => {
@@ -125,7 +127,8 @@ describe("versioned character boundaries", () => {
       expect(patch.rival).toBeNull();
       const otherPip = runs.start(actor, randomUUID(), null, null, null, "pip");
       expect(otherPip.rival?.version).toBe(
-        runs.view(store.getRun(pip.id, actor)).ghost?.version,
+        runs.view(new AdventureStore(store).getRun(pip.id, actor)).ghost
+          ?.version,
       );
     } finally {
       store.close();

@@ -1,7 +1,13 @@
 "use client";
 import { useImageFailure } from "./useImageFailure";
 import type { ArenaId } from "../../../domain/combat/arenas";
-export function Environment({ id }: { id: ArenaId }) {
+export function Environment({
+  id,
+  hero = false,
+}: {
+  id: ArenaId;
+  hero?: boolean;
+}) {
   const { ref, failed } = useImageFailure();
   return (
     <>
@@ -15,15 +21,29 @@ export function Environment({ id }: { id: ArenaId }) {
         style={{ visibility: failed ? "hidden" : "visible" }}
       >
         <source
-          media="(max-width:700px)"
-          srcSet={`/combat/arenas/${id}-portrait.webp`}
+          media={
+            hero
+              ? "(max-width:700px) and (orientation:portrait)"
+              : "(max-width:700px)"
+          }
+          srcSet={
+            hero
+              ? "/hero/sanctuary-motion-v4-mobile.webp"
+              : `/combat/arenas/${id}-portrait.webp`
+          }
         />
         <img
           ref={ref}
-          src={`/combat/arenas/${id}-desktop.webp`}
+          src={
+            hero
+              ? "/hero/sanctuary-motion-v4-desktop.webp"
+              : `/combat/arenas/${id}-desktop.webp`
+          }
+          fetchPriority={hero ? "high" : undefined}
+          loading={hero ? "eager" : undefined}
           alt=""
-          width={id === "sanctuary" ? 1672 : 1536}
-          height={id === "sanctuary" ? 941 : 1024}
+          width={hero ? 1280 : id === "sanctuary" ? 1672 : 1536}
+          height={hero ? 720 : id === "sanctuary" ? 941 : 1024}
         />
       </picture>
     </>

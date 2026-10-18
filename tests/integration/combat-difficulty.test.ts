@@ -15,20 +15,34 @@ describe("difficulty-bound battle records", () => {
         const actor = randomUUID(),
           id = randomUUID(),
           service = new BattleService(new BattleStore(store));
-        let view = service.start(actor, id, "pip", "bolt", null, mode);
+        let view = service.start({
+          actor: actor,
+          id: id,
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: mode,
+        });
         const pending = service.records.get(id, actor).pending;
-        expect(service.start(actor, id, "pip", "bolt", null, mode)).toEqual(
-          view,
-        );
+        expect(
+          service.start({
+            actor: actor,
+            id: id,
+            player: "pip",
+            opponent: "bolt",
+            authority: null,
+            difficulty: mode,
+          }),
+        ).toEqual(view);
         expect(() =>
-          service.start(
-            actor,
-            id,
-            "pip",
-            "bolt",
-            null,
-            mode === "easy" ? "hard" : "easy",
-          ),
+          service.start({
+            actor: actor,
+            id: id,
+            player: "pip",
+            opponent: "bolt",
+            authority: null,
+            difficulty: mode === "easy" ? "hard" : "easy",
+          }),
         ).toThrow("another loadout");
         expect(service.session(actor, "guest").battle?.snapshot).toEqual(
           view.snapshot,
@@ -46,14 +60,14 @@ describe("difficulty-bound battle records", () => {
         expect(service.session(actor, "guest").history[0].difficulty).toBe(
           mode,
         );
-        const rematch = service.start(
-          actor,
-          randomUUID(),
-          "pip",
-          "bolt",
-          null,
-          mode,
-        );
+        const rematch = service.start({
+          actor: actor,
+          id: randomUUID(),
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: mode,
+        });
         expect(rematch.snapshot).toEqual(view.snapshot);
         expect(rematch.state.player.health).toBe(84);
         expect(rematch.rounds).toHaveLength(0);
@@ -67,7 +81,12 @@ describe("difficulty-bound battle records", () => {
       const actor = randomUUID(),
         id = randomUUID(),
         service = new BattleService(new BattleStore(store));
-      const legacy = service.start(actor, id, "pip", "bolt");
+      const legacy = service.start({
+        actor: actor,
+        id: id,
+        player: "pip",
+        opponent: "bolt",
+      });
       const raw = String(
         store.db.prepare("SELECT record FROM battles WHERE id=?").get(id)
           ?.record,
@@ -80,7 +99,14 @@ describe("difficulty-bound battle records", () => {
       expect(pending?.move).toBe("special");
       expect(difficultyLabel(legacy.snapshot)).toBe("Legacy policy");
       expect(() =>
-        service.start(actor, id, "pip", "bolt", null, "medium"),
+        service.start({
+          actor: actor,
+          id: id,
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: "medium",
+        }),
       ).toThrow("another loadout");
       expect(
         store.db.prepare("SELECT record FROM battles WHERE id=?").get(id)

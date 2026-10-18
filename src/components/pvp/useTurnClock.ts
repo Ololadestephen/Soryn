@@ -12,8 +12,11 @@ export function useTurnClock(view: PvpView | null) {
   const deadlineAt = view?.deadlineAt;
   useEffect(() => {
     if (!choosing || serverNow === undefined || deadlineAt == null) return;
+    const receivedAt = performance.now();
     const tick = () =>
-      setSeconds(remainingSeconds(serverNow, deadlineAt, Date.now()));
+      setSeconds(
+        remainingSeconds(serverNow, deadlineAt, receivedAt, performance.now()),
+      );
     tick();
     const timer = setInterval(tick, 250);
     return () => clearInterval(timer);

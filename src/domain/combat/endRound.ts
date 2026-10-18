@@ -15,6 +15,8 @@ function tickBurn(context: RoundContext) {
       "impact",
       side,
       `${side} takes ${burn[index]} end-of-round burn damage.`,
+      undefined,
+      { type: "burn" },
     );
   });
 }

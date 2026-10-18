@@ -1,11 +1,15 @@
 import type { ArenaId } from "../combat/arenas";
 import type { CombatSnapshot, Move, Side } from "../combat/contracts";
+import { pvpSnapshot } from "../combat/definitions";
 import { CombatError, initialCombat, resolveRound } from "../combat/engine";
 import { legalMoves } from "../combat/moves";
+import { character } from "../characters/definitions";
 import { PvpError } from "./errors";
+import { isLate, timeoutResult } from "./deadline";
+import { armBattle, derivedId, noteSeries } from "./series";
 import {
-  otherSeat,
   seatIds,
+  SERIES_MAX_BATTLES,
   type PvpMatch,
   type PvpResult,
   type PvpRoom,
@@ -39,7 +43,7 @@ function finishEngine(match: PvpMatch) {
   };
 }
 
-function complete(room: PvpRoom, result: PvpResult) {
+function complete(room: PvpRoom, result: PvpResult, now: number) {
   const match = room.match;
   if (!match) return;
   match.phase = "complete";
@@ -51,6 +55,7 @@ function complete(room: PvpRoom, result: PvpResult) {
       outcome: result.winner === "a" ? "victory" : "defeat",
     };
   room.revision += 1;
+  noteSeries(room, now);
 }
 
 export function commitRound(
@@ -80,6 +85,7 @@ export function commitRound(
       match.deadlineAt = presentFrom + room.timers.presentMs;
     }
     room.revision += 1;
+    noteSeries(room, presentFrom);
   } catch (error) {
     if (error instanceof CombatError) throw new PvpError(422, error.message);
     throw error;
@@ -92,61 +98,30 @@ function guardLegal(match: PvpMatch, seat: SeatId) {
   );
 }
 
-function endWithoutRound(room: PvpRoom, result: PvpResult) {
-  complete(room, result);
-}
-
 function resolveDeadline(room: PvpRoom) {
   const match = room.match;
   if (!match || !room.seats.a || !room.seats.b) return;
   const due = match.deadlineAt;
   const round = match.state.round;
   const missed = seatIds.filter((seat) => match.locks[seat]?.round !== round);
-  const nextMiss = (seat: SeatId) =>
-    missed.includes(seat) ? room.seats[seat]!.misses + 1 : 0;
-  const forfeits = missed.filter(
-    (seat) => nextMiss(seat) >= room.timers.missedTurns,
-  );
-  if (forfeits.length >= 2) {
-    endWithoutRound(room, {
-      kind: "abandoned",
-      winner: null,
-      explanation:
-        "Both fighters missed two turns in a row, so the match is a no contest.",
-    });
-    return;
-  }
-  if (forfeits.length === 1) {
-    endWithoutRound(room, {
-      kind: "forfeit",
-      winner: otherSeat(forfeits[0]),
-      explanation: "Two missed turns in a row forfeited the match.",
-    });
-    return;
-  }
-  const blocked = missed.filter((seat) => !guardLegal(match, seat));
-  if (blocked.length >= 2) {
-    endWithoutRound(room, {
-      kind: "abandoned",
-      winner: null,
-      explanation:
-        "Neither fighter had a legal Guard when the turn expired, so the match is a no contest.",
-    });
-    return;
-  }
-  if (blocked.length === 1) {
-    endWithoutRound(room, {
-      kind: "forfeit",
-      winner: otherSeat(blocked[0]),
-      explanation:
-        "A turn expired and Guard was not legal, so that fighter forfeited.",
-    });
+  const nextMisses = {
+    a: missed.includes("a") ? room.seats.a.misses + 1 : 0,
+    b: missed.includes("b") ? room.seats.b.misses + 1 : 0,
+  };
+  const terminal = timeoutResult({
+    missed,
+    nextMisses,
+    guardAllowed: { a: guardLegal(match, "a"), b: guardLegal(match, "b") },
+    missedTurnLimit: room.timers.missedTurns,
+  });
+  if (terminal) {
+    complete(room, terminal, due);
     return;
   }
   for (const seat of seatIds) {
     const person = room.seats[seat];
     if (!person) continue;
-    person.misses = nextMiss(seat);
+    person.misses = nextMisses[seat];
     if (missed.includes(seat)) match.locks[seat] = { round, move: "guard" };
   }
   const player = match.locks.a;
@@ -171,9 +146,17 @@ function startChoose(room: PvpRoom) {
   room.revision += 1;
 }
 
+function applySeriesClock(room: PvpRoom, now: number) {
+  const series = room.series;
+  if (!series || series.phase !== "intermission" || series.deadlineAt === null)
+    return false;
+  if (!isLate(now, series.deadlineAt)) return false;
+  return openNextBattle(room, series.deadlineAt);
+}
+
 function applyDeadline(room: PvpRoom, now: number) {
   const match = room.match;
-  if (!match || match.phase === "complete" || now < match.deadlineAt)
+  if (!match || match.phase === "complete" || !isLate(now, match.deadlineAt))
     return false;
   if (match.phase === "choose") resolveDeadline(room);
   else startChoose(room);
@@ -185,19 +168,25 @@ export function advanceRoom(original: PvpRoom, now: number): PvpRoom {
   const room = structuredClone(original);
   let moved = false;
   for (let step = 0; step < 48; step += 1) {
-    if (!applyDeadline(room, now)) return moved ? room : original;
+    const deadlineMoved = applyDeadline(room, now);
+    const seriesMoved = applySeriesClock(room, now);
+    if (!deadlineMoved && !seriesMoved) return moved ? room : original;
     moved = true;
   }
   if (
     room.match &&
     room.match.phase !== "complete" &&
-    room.match.deadlineAt <= now
+    isLate(now, room.match.deadlineAt)
   ) {
-    endWithoutRound(room, {
-      kind: "abandoned",
-      winner: null,
-      explanation: "The match timed out while catching up.",
-    });
+    complete(
+      room,
+      {
+        kind: "abandoned",
+        winner: null,
+        explanation: "The match timed out while catching up.",
+      },
+      now,
+    );
   }
   return room;
 }
@@ -225,6 +214,16 @@ export function openMatch(
     phase: "loading",
     deadlineAt: now + room.timers.loadingMs,
     result: null,
+    participants: {
+      a:
+        room.seats.a?.mode === "official"
+          ? structuredClone(room.seats.a.holderGrant)
+          : null,
+      b:
+        room.seats.b?.mode === "official"
+          ? structuredClone(room.seats.b.holderGrant)
+          : null,
+    },
   };
   for (const seat of seatIds) {
     const sitting = room.seats[seat];
@@ -232,6 +231,74 @@ export function openMatch(
     sitting.assetsReady = false;
     sitting.misses = 0;
     sitting.rematch = false;
+    sitting.notice = null;
   }
   room.revision += 1;
+  if (room.series && room.match) {
+    room.series.participants ??= structuredClone(room.match.participants);
+    armBattle(room.series, room.match.id);
+  }
+}
+
+export function holderIntermission(room: PvpRoom): boolean {
+  return (
+    room.series?.phase === "intermission" &&
+    !!room.match &&
+    [room.match.snapshot.player.id, room.match.snapshot.opponent.id].some(
+      (id) => character(id).access === "holder",
+    )
+  );
+}
+
+export function openNextBattle(
+  room: PvpRoom,
+  now: number,
+  holdersCleared = false,
+): boolean {
+  const series = room.series;
+  const previous = room.match;
+  if (!series || series.phase !== "intermission" || !previous) return false;
+  if (holderIntermission(room) && !holdersCleared) return false;
+  const battleNumber = series.battleNumber + 1;
+  if (battleNumber > SERIES_MAX_BATTLES) return false;
+  const nextId = derivedId(`${series.id}:${battleNumber}`);
+  openMatch(room, now, {
+    id: nextId,
+    rematchOf: previous.id,
+    arena: previous.arena,
+    snapshot: pvpSnapshot(
+      previous.snapshot.player.id,
+      previous.snapshot.opponent.id,
+      previous.snapshot.tie,
+    ),
+  });
+  series.battleNumber = battleNumber;
+  return true;
+}
+
+export function forfeitSeries(room: PvpRoom, winner: SeatId, now: number) {
+  const series = room.series;
+  if (!series || series.phase === "setup" || series.phase === "complete")
+    throw new PvpError(409, "There is no series to surrender.");
+  if (series.phase === "intermission") {
+    series.phase = "complete";
+    series.deadlineAt = null;
+    series.outcome = {
+      kind: "forfeit",
+      winner,
+      explanation: "A player surrendered the series.",
+    };
+    room.revision += 1;
+    return;
+  }
+  if (room.match && room.match.phase !== "complete")
+    complete(
+      room,
+      {
+        kind: "forfeit",
+        winner,
+        explanation: "A player surrendered the series.",
+      },
+      now,
+    );
 }

@@ -1,4 +1,6 @@
 "use client";
+import { officialSessionSchema } from "../../domain/adventure/responses";
+import { ignoreResponse } from "../request";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { OfficialSessionView } from "../../domain/officialViews";
 import { request } from "../request";
@@ -34,15 +36,21 @@ export function useWalletSession() {
     async function load() {
       try {
         const headers = adapter.authenticated ? await headersForSession() : {};
-        const data = await request<OfficialSessionView>(
+        const data = await request(
           "/api/identity",
+          officialSessionSchema.parse,
           undefined,
           abort.signal,
           headers,
         );
         if (abort.signal.aborted) return;
         if (data.account && data.account.wallet !== adapter.address) {
-          await request("/api/identity", { operation: "logout" }, abort.signal);
+          await request(
+            "/api/identity",
+            ignoreResponse,
+            { operation: "logout" },
+            abort.signal,
+          );
           setError("Wallet changed. Authorize the selected Chog again.");
         } else setSession(data);
       } catch (problem) {

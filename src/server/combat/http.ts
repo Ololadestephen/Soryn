@@ -1,3 +1,7 @@
+import { walletPlay } from "../access/auth";
+import { AccessBoundary, protectWalletActor } from "../access/boundary";
+import type { AccessGrant } from "../../domain/access/policy";
+import { parseInput } from "../httpShared";
 import { NextRequest, type NextResponse } from "next/server";
 import { z } from "zod";
 import { characterIdSchema } from "../../domain/characters/definitions";
@@ -11,7 +15,13 @@ import { AuthService } from "../auth/service";
 import { type PrivyVerifier } from "../auth/privy";
 import { identityRuntime } from "../auth/runtime";
 import { matchSession, privyFor, walletSecret } from "../auth/request";
-import { body, failure, response, requireJsonOrigin } from "../httpShared";
+import {
+  body,
+  failure,
+  response,
+  requireJsonOrigin,
+  guestCookieOptions,
+} from "../httpShared";
 import { ServiceError } from "../errors";
 import { BattleStore } from "./persistence";
 import { BattleService } from "./service";
@@ -44,19 +54,23 @@ export function createBattleHandlers(
   verifier: PrivyVerifier,
 ) {
   const service = new BattleService(new BattleStore(store));
+  const access = new AccessBoundary(store, origin, auth, verifier);
   async function get(request: NextRequest): Promise<NextResponse> {
     try {
-      const reader = await battleReader(request, auth, verifier);
+      const reader = await battleReader(request, auth, verifier, store);
       const { mode, actor } = reader;
-      store.rateLimit(actor);
+      store.rateLimit(
+        mode === "official" || reader.existingGuest
+          ? `read:${actor}`
+          : "read:anonymous-guest",
+        Date.now(),
+        mode === "official" || reader.existingGuest ? 90 : 120,
+      );
       const result = readBattleView(request, service, reader);
       const reply = response(result);
-      if (mode === "guest")
+      if (mode === "guest" && !walletPlay(request))
         reply.cookies.set("chog_guest", actor, {
-          httpOnly: true,
-          sameSite: "strict",
-          secure: request.nextUrl.protocol === "https:",
-          path: "/",
+          ...guestCookieOptions(request, origin),
           maxAge: GUEST_COOKIE_SECONDS,
         });
       return reply;
@@ -67,9 +81,11 @@ export function createBattleHandlers(
   async function post(request: NextRequest): Promise<NextResponse> {
     try {
       requireJsonOrigin(request, origin);
-      const input = inputSchema.parse(await body(request));
+      const input = parseInput(inputSchema, await body(request));
       let actor: string;
       let authority = null;
+      let admission: AccessGrant | undefined;
+      const player = await access.player(request);
       if (input.mode === "official") {
         const secret = walletSecret(request);
         const session = matchSession(
@@ -82,6 +98,10 @@ export function createBattleHandlers(
         auth.ownership.assertFresh(grant.authority.ownership);
         actor = grant.session.actor;
         authority = grant.authority;
+      } else if (player) {
+        actor = player.actor;
+        store.rateLimit(actor);
+        if (input.operation === "start") admission = await access.admit(player);
       } else {
         const cookie = z
           .uuid()
@@ -92,19 +112,22 @@ export function createBattleHandlers(
             "Open the arena to establish guest practice.",
           );
         actor = cookie.data;
+        protectWalletActor(store, actor);
         store.rateLimit(actor);
       }
       const battle =
         input.operation === "start"
-          ? service.start(
-              actor,
-              input.id,
-              input.characterId,
-              input.opponent,
-              authority,
-              input.difficulty,
-              input.arena,
-            )
+          ? service.start({
+              actor: actor,
+              id: input.id,
+              player: input.characterId,
+              opponent: input.opponent,
+              authority: authority,
+              access: admission,
+              cosmetic: access.entitlements.equipped(actor),
+              difficulty: input.difficulty,
+              arenaChoice: input.arena,
+            })
           : service.step(actor, input.id, input.round, input.move, authority);
       return response({
         battle,

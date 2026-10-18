@@ -95,17 +95,50 @@ export const eventSchema = z.strictObject({
   move: moveSchema.nullable(),
   message: z.string().max(400),
   state: stateSchema,
+  /** New events carry presentation facts; absent only in frozen legacy rounds. */
+  detail: z
+    .discriminatedUnion("type", [
+      z.strictObject({
+        type: z.literal("prepare"),
+        shield: z.number().int().nonnegative(),
+      }),
+      z.strictObject({
+        type: z.literal("attack"),
+        shield: z.number().int().nonnegative(),
+        decoy: z.number().int().nonnegative(),
+        dodged: z.boolean(),
+      }),
+      z.strictObject({ type: z.enum(["burn", "recoil"]) }),
+    ])
+    .optional(),
 });
 export type CombatEvent = z.infer<typeof eventSchema>;
-export const roundSchema = z.strictObject({
-  round: z.number().int().min(1).max(20),
-  player: moveSchema,
-  opponent: moveSchema,
-  reason: z.string().max(240),
-  events: z.array(eventSchema).min(1).max(36),
-});
+export const roundSchema = z
+  .strictObject({
+    eventFormat: z.literal(2).optional(),
+    round: z.number().int().min(1).max(20),
+    player: moveSchema,
+    opponent: moveSchema,
+    reason: z.string().max(240),
+    events: z.array(eventSchema).min(1).max(36),
+  })
+  .refine(
+    (round) =>
+      round.eventFormat !== 2 ||
+      round.events.every((event) =>
+        event.kind === "prepare"
+          ? event.detail?.type === "prepare"
+          : event.kind === "impact"
+            ? !!event.detail &&
+              ["attack", "burn", "recoil"].includes(event.detail.type)
+            : true,
+      ),
+    "Structured rounds require preparation and impact details.",
+  );
 export type ResolvedRound = z.infer<typeof roundSchema>;
 export interface BattleView {
+  accessKind?: "token" | "nft" | "both";
+  cosmetic?: boolean;
   arena?: ArenaId;
   id: string;
   mode: "guest" | "official";

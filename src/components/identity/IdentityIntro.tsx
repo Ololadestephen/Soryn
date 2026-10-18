@@ -2,14 +2,15 @@ export function IdentityIntro() {
   return (
     <div>
       <p className="eyebrow">My Chog · Monad Mainnet</p>
-      <h2 id="identity-title">Your Chog. Eight more ways to battle.</h2>
+      <h2 id="identity-title">Your Chog. Your persistent competitor.</h2>
       <p>
         Verified current Chog Genesis holders can choose all twelve fighters.
         Sign in when you’re ready. Four guest starters need no wallet.
       </p>
       <p className="muted">
-        Battle records are private. Only consented public adventure chapters
-        follow a Chog to its next keeper.
+        Results start private. Consented public combat records and adventure
+        chapters follow the token with their original attribution. Unfinished
+        Story runs and private sessions stay with their keeper.
       </p>
       <details>
         <summary>How holder access works</summary>

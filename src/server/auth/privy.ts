@@ -21,6 +21,7 @@ export interface PrivyIdentity {
   userId: string;
   sessionId: string;
   wallets: string[];
+  selectedWallet?: string;
 }
 export interface PrivyVerifier {
   verify(accessToken: string, identityToken: string): Promise<PrivyIdentity>;

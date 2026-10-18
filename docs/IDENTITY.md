@@ -1,3 +1,11 @@
+# Current Soryn competitor policy — October 16, 2026
+
+[The M7 release report](M7_RELEASE_REPORT.md) and [series policy](SERIES.md) supersede the historical UI/count/status notes below. The actual token ID, allowlisted chain/collection and SIWE statement remain unchanged. Privy is the sign-in path. Selected-token official play uses fresh server authority; no wallet is needed for labelled guest play.
+
+Combat results are private by default, stored with source/rules/participating generation. Per-result consent publishes only a bounded projection with the keeper's historical alias. A successor inherits published results, not private Story runs, drafts or sessions. Owner lookup failures show unavailable. Soryn records remain off-chain. No real-holder Privy session is claimed by the fixture gates. Artwork licensing remains separate from metadata and identity.
+
+---
+
 # Real Chog identity milestone
 
 Latest authentication update: [PRIVY.md](PRIVY.md) replaces injected-only connection with Privy login and verified provider tokens. Counts and original UI paths below are historical identity milestone evidence; no actual Privy hosted login has been observed yet.

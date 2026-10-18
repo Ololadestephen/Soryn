@@ -1,164 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { generateKeyPair, exportSPKI, SignJWT } from "jose";
-import { privateKeyToAccount, generatePrivateKey } from "viem/accounts";
 import { NextRequest } from "next/server";
+import { battleSessionSchema } from "../../src/domain/combat/responses";
 import { describe, it, expect } from "vitest";
-import { Store } from "../../src/server/persistence";
-import { IdentityStore } from "../../src/server/auth/persistence";
-import { AuthService } from "../../src/server/auth/service";
-import { PrivyTokenVerifier } from "../../src/server/auth/privy";
-import { createBattleHandlers } from "../../src/server/combat/http";
-import { createIdentityHandlers } from "../../src/server/identityHttp";
-import { identityFor } from "../../src/domain/identity";
-import { ServiceError } from "../../src/server/errors";
-
-const origin = "https://chog.example";
-// Disposable provider signatures and wallet; the synthetic chain is never mainnet evidence.
-async function setup() {
-  const store = new Store(":memory:"),
-    owner = privateKeyToAccount(generatePrivateKey()),
-    outsider = privateKeyToAccount(generatePrivateKey());
-  const pair = await generateKeyPair("ES256", { extractable: true });
-  const now = Date.now(),
-    seconds = Math.floor(now / 1000),
-    appId = "combat-synthetic-privy";
-  async function proof(wallet: string, user = "did:privy:combat-fixture") {
-    const sign = (extra: Record<string, unknown>) =>
-      new SignJWT(extra)
-        .setProtectedHeader({ alg: "ES256" })
-        .setIssuer("privy.io")
-        .setAudience(appId)
-        .setSubject(user)
-        .setIssuedAt(seconds)
-        .setExpirationTime(seconds + 3600)
-        .sign(pair.privateKey);
-    return {
-      Authorization: `Bearer ${await sign({ sid: "fixture-session" })}`,
-      "privy-id-token": await sign({
-        linked_accounts: JSON.stringify([
-          { type: "wallet", chain_type: "ethereum", address: wallet },
-        ]),
-      }),
-    };
-  }
-  let available = true,
-    changed = false,
-    height = 100;
-  const chain = {
-    isContract: async () => false,
-    observe: async () => {
-      if (!available) throw new ServiceError(503, "Fixture RPC unavailable.");
-      height++;
-      const result = {
-        owner: owner.address.toLowerCase(),
-        changed,
-        pendingTransfer: false,
-        checkedAt: now,
-        block: {
-          number: `0x${height.toString(16)}`,
-          hash: `0x${height.toString(16).padStart(64, "0")}`,
-          timestamp: `0x${seconds.toString(16)}`,
-        },
-      };
-      changed = false;
-      return result;
-    },
-  };
-  const auth = new AuthService(
-    new IdentityStore(store),
-    chain,
-    origin,
-    () => now,
-  );
-  const verifier = new PrivyTokenVerifier(
-    appId,
-    await exportSPKI(pair.publicKey),
-    () => now,
-  );
-  const battles = createBattleHandlers(store, origin, auth, verifier);
-  const identity = createIdentityHandlers(
-    new IdentityStore(store),
-    auth,
-    origin,
-    verifier,
-  );
-  const guest = (
-    await battles.get(new NextRequest(`${origin}/api/battle`))
-  ).headers
-    .get("set-cookie")!
-    .split(";")[0];
-  const post = (
-    input: unknown,
-    cookie = guest,
-    headers: Record<string, string> = {},
-  ) =>
-    battles.post(
-      new NextRequest(`${origin}/api/battle`, {
-        method: "POST",
-        headers: {
-          origin,
-          "Content-Type": "application/json",
-          cookie,
-          ...headers,
-        },
-        body: JSON.stringify(input),
-      }),
-    );
-  async function login(account = owner) {
-    const headers = await proof(account.address);
-    const browser = (
-      await identity.get(new NextRequest(`${origin}/api/identity`))
-    ).headers
-      .get("set-cookie")!
-      .split(";")[0];
-    const challenge = await auth.challenge(
-      browser.split("=")[1],
-      account.address,
-      identityFor("276"),
-      "did:privy:combat-fixture",
-    );
-    const verified = await identity.post(
-      new NextRequest(`${origin}/api/identity`, {
-        method: "POST",
-        headers: {
-          origin,
-          cookie: browser,
-          "Content-Type": "application/json",
-          ...headers,
-        },
-        body: JSON.stringify({
-          operation: "verify",
-          nonce: challenge.nonce,
-          message: challenge.message,
-          signature: await account.signMessage({ message: challenge.message }),
-        }),
-      }),
-    );
-    expect(verified.status).toBe(200);
-    return {
-      cookie: `${guest}; ${browser}; ${verified.headers.get("set-cookie")!.split(";")[0]}`,
-      headers,
-    };
-  }
-  return {
-    store,
-    post,
-    battles,
-    guest,
-    login,
-    outsider,
-    proof,
-    outage: () => {
-      available = false;
-    },
-    recover: () => {
-      available = true;
-    },
-    awayBack: () => {
-      changed = true;
-    },
-  };
-}
+import {
+  officialCombatFixture as setup,
+  origin,
+} from "../fixtures/official-combat";
 describe("combat HTTP current-owner and input boundaries", () => {
   it("hides pending choices and rejects client damage/loadouts, cross-session reads and duplicate conflicts", async () => {
     const ctx = await setup();
@@ -178,6 +25,7 @@ describe("combat HTTP current-owner and input boundaries", () => {
       const opened = await ctx.post(start);
       expect(opened.status).toBe(200);
       const data = await opened.json();
+      expect(battleSessionSchema.safeParse(data).success).toBe(true);
       expect(data.battle.pending).toBeUndefined();
       expect(data.battle.authority).toBeUndefined();
       const step = {
@@ -233,7 +81,6 @@ describe("combat HTTP current-owner and input boundaries", () => {
       };
       const accepted = await ctx.post(step, owner.cookie, owner.headers);
       expect(accepted.status).toBe(200);
-      const old = (await accepted.json()).battle;
       ctx.outage();
       expect(
         (
@@ -265,7 +112,7 @@ describe("combat HTTP current-owner and input boundaries", () => {
           headers: { cookie: owner.cookie, ...owner.headers },
         }),
       );
-      expect((await restored.json()).battle).toEqual(old);
+      expect(restored.status).toBe(403);
       const wrong = await ctx.proof(ctx.outsider.address, "did:privy:other");
       expect((await ctx.post(start, owner.cookie, wrong)).status).toBe(401);
     } finally {
@@ -296,4 +143,56 @@ describe("combat HTTP current-owner and input boundaries", () => {
       ctx.store.close();
     }
   });
+});
+
+it("battle reads have their own quota and anonymous reads share a bounded bucket", async () => {
+  const ctx = await setup();
+  try {
+    const id = randomUUID(),
+      actor = randomUUID(),
+      cookie = `chog_guest=${actor}`;
+    for (let index = 0; index < 90; index++)
+      expect(
+        (
+          await ctx.battles.get(
+            new NextRequest(`${origin}/api/battle`, { headers: { cookie } }),
+          )
+        ).status,
+      ).toBe(200);
+    expect(
+      (
+        await ctx.battles.get(
+          new NextRequest(`${origin}/api/battle`, { headers: { cookie } }),
+        )
+      ).status,
+    ).toBe(429);
+    expect(
+      (
+        await ctx.post(
+          {
+            operation: "start",
+            mode: "guest",
+            id,
+            characterId: "pip",
+            opponent: "bolt",
+          },
+          cookie,
+        )
+      ).status,
+    ).toBe(200);
+    const previousAnonymousReads = Number(
+      ctx.store.db
+        .prepare("SELECT count FROM rate_limits WHERE actor=?")
+        .get("read:anonymous-guest")?.count ?? 0,
+    );
+    for (let index = previousAnonymousReads; index < 120; index++)
+      expect(
+        (await ctx.battles.get(new NextRequest(`${origin}/api/battle`))).status,
+      ).toBe(200);
+    expect(
+      (await ctx.battles.get(new NextRequest(`${origin}/api/battle`))).status,
+    ).toBe(429);
+  } finally {
+    ctx.store.close();
+  }
 });

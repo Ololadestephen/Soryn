@@ -8,16 +8,18 @@ export interface PvpTimers {
   loadingMs: number;
   lobbyMs: number;
   disconnectMs: number;
+  intermissionMs: number;
   missedTurns: 2;
 }
 
 export const PVP_TIMERS: PvpTimers = {
   version: PVP_TIMEOUT_VERSION,
   moveMs: 30_000,
-  presentMs: 8_000,
+  presentMs: 5_000,
   loadingMs: 20_000,
   lobbyMs: 1_800_000,
   disconnectMs: 8_000,
+  intermissionMs: 10_000,
   missedTurns: 2,
 };
 

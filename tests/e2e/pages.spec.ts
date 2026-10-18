@@ -16,7 +16,7 @@ test("landing introduces the loop without opening a guest session or wallet", as
   await page.goto("/");
   await expect(
     page.getByRole("heading", {
-      name: "Déjà Vu",
+      name: "Soryn",
     }),
   ).toBeVisible();
   await page
@@ -78,7 +78,9 @@ test("landing introduces the loop without opening a guest session or wallet", as
     readable.getByRole("link", { name: "Challenge a friend" }).first(),
   ).toBeVisible();
   await expect(
-    readable.getByRole("heading", { name: "Four starters. No wallet required." }),
+    readable.getByRole("heading", {
+      name: "Four starters. No wallet required.",
+    }),
   ).toBeVisible();
   await noScript.close();
 });
@@ -99,14 +101,20 @@ test("dedicated pages preserve active play through navigation, back, refresh and
   const saved = await page.request.get("/api/game");
   const original = (await saved.json()).run;
   const nav = page.getByRole("navigation");
-  await expect(nav.getByRole("link", { name: "Adventure", exact: true })).toHaveCount(0);
-  await page.getByRole("navigation").getByRole("link", { name: "My Chog" }).click();
+  await expect(
+    nav.getByRole("link", { name: "Adventure", exact: true }),
+  ).toHaveCount(0);
+  await page
+    .getByRole("navigation")
+    .getByRole("link", { name: "My Chog" })
+    .click();
   await expect(page.getByRole("heading", { name: "My Chog" })).toBeFocused();
   await page.goto("/journal");
   await expect(
     page.getByRole("heading", { name: "Adventure journal" }),
   ).toBeVisible();
-  await expect(nav.getByRole("link", { name: "Battle history" })).toBeVisible();
+  await page.locator(".nav-more summary").click();
+  await expect(nav.getByRole("link", { name: "Battle History" })).toBeVisible();
   await expect(
     page.getByText("Your current adventure is still in progress.", {
       exact: false,
@@ -114,7 +122,7 @@ test("dedicated pages preserve active play through navigation, back, refresh and
   ).toBeVisible();
   await expect(page.locator("#adventure, #museum, #character")).toHaveCount(0);
   await page.goto("/museum");
-  await expect(page).toHaveTitle("The museum · Chog Déjà Vu");
+  await expect(page).toHaveTitle("Archived museum · Soryn");
   await expect(page.locator("#museum")).toBeVisible();
   await page.goBack();
   await expect(page).toHaveURL(/\/journal$/);
@@ -129,7 +137,7 @@ test("dedicated pages preserve active play through navigation, back, refresh and
   await expect(page.locator(".clue")).toContainText("no hinges");
   await page
     .getByRole("banner")
-    .getByRole("link", { name: "Chog Déjà Vu home" })
+    .getByRole("link", { name: "Soryn home" })
     .click();
   await expect(page).toHaveURL(/\/$/);
   await page.goto("/archive");

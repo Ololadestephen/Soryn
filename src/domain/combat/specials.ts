@@ -50,6 +50,13 @@ export function afterAttack(context: RoundContext, side: Side, damage: number) {
     );
   if (id === "ember") {
     context.state[side].health = Math.max(0, context.state[side].health - 7);
-    emit(context, "impact", side, "Flash Burn recoil: lose 7 health.");
+    emit(
+      context,
+      "impact",
+      side,
+      "Flash Burn recoil: lose 7 health.",
+      undefined,
+      { type: "recoil" },
+    );
   }
 }

@@ -33,7 +33,14 @@ export function hit(context: RoundContext, side: Side, raw: number): number {
   let power = raw;
   if (context.dodge[target] && context.moves[side] === "basic") {
     context.dodge[target] = false;
-    emit(context, "impact", side, `${target} dodges the basic hit; 0 damage.`);
+    emit(
+      context,
+      "impact",
+      side,
+      `${target} dodges the basic hit; 0 damage.`,
+      undefined,
+      { type: "attack", shield: 0, decoy: 0, dodged: true },
+    );
     return 0;
   }
   const decoy = Math.min(power, foe.effects.decoy);
@@ -53,6 +60,8 @@ export function hit(context: RoundContext, side: Side, raw: number): number {
     "impact",
     side,
     `${context.snapshot[side].moves[context.moves[side]].name}: ${damage} damage; shield ${blocked}, decoy ${decoy}.`,
+    undefined,
+    { type: "attack", shield: blocked, decoy, dodged: false },
   );
   if (damage && foe.health && context.counter[target]) {
     context.counter[target] = false;

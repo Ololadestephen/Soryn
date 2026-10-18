@@ -27,19 +27,7 @@ export function Roster() {
       aria-labelledby="roster-title"
     >
       <div className="section-heading">
-        <div>
-          <p className="world-kicker">Choose your fighter</p>
-          <h2 id="roster-title">
-            Twelve fighters.
-            <br />
-            <em>Find your fighting style.</em>
-          </h2>
-        </div>
-        <p>
-          Twelve fighters. Twelve companions.
-          <br />
-          Find the pair that feels like you.
-        </p>
+        <h2 id="roster-title">Fighters &amp; companions</h2>
       </div>
       <div className="roster-body">
         <div className="roster-art-panel">
@@ -54,7 +42,7 @@ export function Roster() {
       </div>
       <div className="roster-index">
         <p>
-          Meet the twelve <span>{String(index + 1).padStart(2, "0")} / 12</span>
+          Selected <span>{String(index + 1).padStart(2, "0")} / 12</span>
         </p>
       </div>
       <div

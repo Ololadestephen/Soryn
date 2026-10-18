@@ -27,6 +27,7 @@ function state(overrides: Partial<Game> = {}): Game {
     prepare: async () => {},
     sign: async () => {},
     logout: async () => {},
+    changeToken: async () => {},
     mutate: async () => {},
     start: () => {},
     clearChallenge: () => {},
@@ -78,8 +79,8 @@ it("labels a verified grant but replaces the badge on ownership or provider fail
 });
 it("ships a readable vector brand and an explicit gameplay control without initial video or poster media", () => {
   const brand = renderToStaticMarkup(createElement(Brand, { hero: true }));
-  expect(brand).toContain('alt="Déjà Vu"');
-  expect(brand).toContain("/brand/wordmark.svg");
+  expect(brand).toContain("SORYN");
+  expect(brand).toContain("<title>Soryn</title>");
   const showcase = renderToStaticMarkup(createElement(GameplayShowcase));
   expect(showcase).toContain("Play gameplay");
   expect(showcase).toContain("Defence prepares");

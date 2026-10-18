@@ -27,7 +27,7 @@ for (const portrait of [false, true]) {
       await expect(film).toHaveAttribute("data-ready", "true", {
         timeout: 20000,
       });
-      await expect(film).toHaveAttribute("src", /sanctuary-motion-v3-/);
+      await expect(film).toHaveAttribute("src", /sanctuary-motion-v4-/);
       // Wait out the poster crossfade; compare fully visible, naturally playing frames.
       await page.waitForTimeout(900);
       const copyBox = await page.locator(".gateway-copy").boundingBox();
@@ -74,7 +74,11 @@ for (const portrait of [false, true]) {
       await expect(film).toHaveAttribute("data-ready", "true", {
         timeout: 15000,
       });
-      await page.getByRole("link", { name: "Play now", exact: true }).click();
+      await page
+        .locator(".gateway-hero .gateway-actions")
+        .getByRole("link", { name: "Play now", exact: true })
+        .click();
+      await page.locator('.play-mode[href="/arena"]').click();
       await expect(
         page.getByRole("button", { name: "Enter guest arena" }),
       ).toBeEnabled();

@@ -1,4 +1,8 @@
-# Start here — Chog Déjà Vu
+# Start here — Soryn
+
+**Health queue recovery — October 16, 2026:** all twenty outstanding concrete blind-review findings are fixed, tested and resolved. Normal mechanical scanning now completes: objective 92.3, displayed strict 87.4. Fresh subjective scores remain pending because the blind runner hit its usage limit. See [the queue recovery report](docs/HEALTH_QUEUE_RECOVERY.md) for changes, checks, evidence and the remaining review gate. This does not authorize hosting or real-wallet actions.
+
+**Soryn — October 15, 2026:** the battle game is now Soryn. Find a Match, Challenge a Friend, Story, and Practice are the primary actions. The series rules are in [docs/SERIES.md](docs/SERIES.md). The public starter queue is in [docs/MATCHMAKING.md](docs/MATCHMAKING.md). What is finished, and what is still blocked, is in [SORYN_PLAN.md](SORYN_PLAN.md). The folder name and the saved database keys are unchanged. The older adventure remains on its old URLs and is not the story chapter.
 
 **Private friend battles — October 14, 2026:** Challenge a friend sits beside practice. Two seats share an invitation, the existing combat engine resolves both hidden moves, and deadlines live in SQLite so a refresh or process restart can continue the same round. The sandwich adventure, journal, museum and adventure ghosts leave the main navigation and remain on `/play`, `/journal`, `/museum` and `/archive`. Public matchmaking, rankings, rewards and combat ghosts are not in this slice. Local checks are in [private friend battles](docs/PRIVATE_PVP.md). The quality and security remediation, including what is still unverified, is in [the PvP review](docs/PVP_QUALITY_SECURITY_REVIEW.md). This is not an internet or physical-device test.
 

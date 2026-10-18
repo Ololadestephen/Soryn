@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { type BattleView } from "../../domain/combat/contracts";
 import { type CombatPresentation, presentationFrames } from "./playback";
 import { feelDuration } from "../../domain/combat/presentation/feel";
@@ -12,14 +12,26 @@ export function usePlayback() {
     cancelWait = useRef<(() => void) | null>(null),
     played = useRef(new Set<string>()),
     currentBattle = useRef<string | null>(null);
+  const generation = useRef(0);
+  const clear = useCallback(() => {
+    generation.current += 1;
+    cancelWait.current?.();
+    cancelWait.current = null;
+    played.current.clear();
+    currentBattle.current = null;
+    setPresentation(null);
+  }, []);
   useEffect(() => {
     mounted.current = true;
     return () => {
       mounted.current = false;
+      generation.current += 1;
       cancelWait.current?.();
     };
   }, []);
   async function playRound(battle: BattleView, previous: BattleView | null) {
+    const active = ++generation.current;
+    cancelWait.current?.();
     if (currentBattle.current !== battle.id) {
       played.current.clear();
       currentBattle.current = battle.id;
@@ -28,7 +40,7 @@ export function usePlayback() {
       "(prefers-reduced-motion: reduce)",
     ).matches;
     for (const frame of presentationFrames(battle, previous)) {
-      if (!mounted.current) return;
+      if (!mounted.current || active !== generation.current) return;
       if (frame.id && played.current.has(frame.id)) continue;
       if (frame.id) played.current.add(frame.id);
       setPresentation(frame);
@@ -36,10 +48,12 @@ export function usePlayback() {
       cancelWait.current = beat.cancel;
       await beat.finished;
     }
-    cancelWait.current = null;
-    if (mounted.current) setPresentation(null);
+    if (active === generation.current) {
+      cancelWait.current = null;
+      if (mounted.current) setPresentation(null);
+    }
   }
-  return { presentation, playRound, clear: () => setPresentation(null) };
+  return { presentation, playRound, clear };
 }
 
 function playbackBeat(duration: number) {

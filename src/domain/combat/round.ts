@@ -11,6 +11,7 @@ export interface RoundContext {
   state: CombatState;
   moves: Record<Side, Move>;
   events: CombatEvent[];
+  eventFormat: 1 | 2;
   shield: Record<Side, number>;
   dodge: Record<Side, boolean>;
   counter: Record<Side, boolean>;
@@ -22,6 +23,7 @@ export function emit(
   side: Side | null,
   message: string,
   move: Move | null = side ? context.moves[side] : null,
+  detail?: CombatEvent["detail"],
 ) {
   context.events.push({
     kind,
@@ -29,6 +31,7 @@ export function emit(
     move,
     message,
     state: structuredClone(context.state),
+    ...(context.eventFormat === 2 && detail ? { detail } : {}),
   });
 }
 export function heal(context: RoundContext, side: Side, amount: number) {

@@ -8,7 +8,7 @@ import type {
   ResolvedRound,
 } from "../contracts";
 import { moveTreatments, type MoveTreatment } from "./moves";
-import { eventCue, type EventCue } from "./cues";
+import { eventCue, preparedShield, type EventCue } from "./cues";
 export interface CombatPresentation {
   event: CombatEvent;
   previous: CombatState;
@@ -82,9 +82,7 @@ function updateDefence(c: Projection, event: CombatEvent, cue: EventCue) {
         ["patch", "aegis"].includes(c.battle.snapshot[event.side].id)));
   if (prepared) {
     c.guarding.push(event.side!);
-    c.shield[event.side!] = Number(
-      event.message.match(/(\d+) shield prepared/)?.[1] ?? 0,
-    );
+    c.shield[event.side!] = preparedShield(event);
   }
   if (cue.target && cue.shield) {
     c.shield[cue.target] = Math.max(0, c.shield[cue.target] - cue.shield);

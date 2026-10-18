@@ -14,29 +14,37 @@ describe("cosmetic arena persistence", () => {
         const service = new BattleService(new BattleStore(store)),
           actor = randomUUID(),
           id = randomUUID();
-        let battle = service.start(
-          actor,
-          id,
-          "pip",
-          "bolt",
-          null,
-          "hard",
-          arena,
-        );
+        let battle = service.start({
+          actor: actor,
+          id: id,
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: "hard",
+          arenaChoice: arena,
+        });
         expect(battle.arena).toBe(arena);
         expect(
-          service.start(actor, id, "pip", "bolt", null, "hard", arena),
+          service.start({
+            actor: actor,
+            id: id,
+            player: "pip",
+            opponent: "bolt",
+            authority: null,
+            difficulty: "hard",
+            arenaChoice: arena,
+          }),
         ).toEqual(battle);
         expect(() =>
-          service.start(
-            actor,
-            id,
-            "pip",
-            "bolt",
-            null,
-            "hard",
-            arena === "sky" ? "grove" : "sky",
-          ),
+          service.start({
+            actor: actor,
+            id: id,
+            player: "pip",
+            opponent: "bolt",
+            authority: null,
+            difficulty: "hard",
+            arenaChoice: arena === "sky" ? "grove" : "sky",
+          }),
         ).toThrow("another loadout");
         while (!battle.state.outcome)
           battle = service.step(
@@ -69,21 +77,29 @@ describe("cosmetic arena persistence", () => {
       const service = new BattleService(new BattleStore(store)),
         actor = randomUUID(),
         id = randomUUID();
-      let battle = service.start(
-        actor,
-        id,
-        "pip",
-        "bolt",
-        null,
-        "easy",
-        "random",
-      );
+      let battle = service.start({
+        actor: actor,
+        id: id,
+        player: "pip",
+        opponent: "bolt",
+        authority: null,
+        difficulty: "easy",
+        arenaChoice: "random",
+      });
       const chosen = battle.arena;
       expect(arenaIds).toContain(chosen);
       const raw = service.records.get(id, actor);
       expect(raw.arenaChoice).toBe("random");
       expect(
-        service.start(actor, id, "pip", "bolt", null, "easy", "random").arena,
+        service.start({
+          actor: actor,
+          id: id,
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: "easy",
+          arenaChoice: "random",
+        }).arena,
       ).toBe(chosen);
       expect(service.session(actor, "guest").battle?.arena).toBe(chosen);
       while (!battle.state.outcome)
@@ -94,8 +110,15 @@ describe("cosmetic arena persistence", () => {
           battle.legal.includes("special") ? "special" : "basic",
         );
       expect(
-        service.start(actor, randomUUID(), "pip", "bolt", null, "easy", chosen)
-          .arena,
+        service.start({
+          actor: actor,
+          id: randomUUID(),
+          player: "pip",
+          opponent: "bolt",
+          authority: null,
+          difficulty: "easy",
+          arenaChoice: chosen,
+        }).arena,
       ).toBe(chosen);
     } finally {
       store.close();
@@ -107,7 +130,7 @@ describe("cosmetic arena persistence", () => {
       const service = new BattleService(new BattleStore(store)),
         actor = randomUUID(),
         id = randomUUID();
-      service.start(actor, id, "pip", "bolt");
+      service.start({ actor: actor, id: id, player: "pip", opponent: "bolt" });
       const legacy = service.records.get(id, actor);
       delete legacy.arena;
       delete legacy.arenaChoice;
@@ -115,9 +138,10 @@ describe("cosmetic arena persistence", () => {
       const bytes = JSON.stringify(legacy);
       store.db.prepare("UPDATE battles SET record=? WHERE id=?").run(bytes, id);
       expect(service.session(actor, "guest").battle?.arena).toBe("sanctuary");
-      expect(service.start(actor, id, "pip", "bolt").snapshot).toEqual(
-        legacy.snapshot,
-      );
+      expect(
+        service.start({ actor: actor, id: id, player: "pip", opponent: "bolt" })
+          .snapshot,
+      ).toEqual(legacy.snapshot);
       expect(
         store.db.prepare("SELECT record FROM battles WHERE id=?").get(id)
           ?.record,

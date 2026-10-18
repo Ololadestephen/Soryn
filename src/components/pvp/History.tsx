@@ -1,30 +1,45 @@
 "use client";
+import { battleSessionSchema } from "../../domain/combat/responses";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useState } from "react";
 import Link from "next/link";
 import type { BattleSession } from "../../domain/combat/contracts";
 import { request } from "../request";
+import { usePlayIdentity } from "../auth/PlayIdentity";
 import { usePvp } from "./usePvp";
 
 export function BattleHistoryPage() {
-  const pvp = usePvp();
+  const identity = usePlayIdentity();
+  const headers = useEffectEvent(() => identity.headers());
+  const pvp = usePvp(undefined, true);
   const [practice, setPractice] = useState<BattleSession["history"]>([]);
   const [error, setError] = useState("");
   useEffect(() => {
     const abort = new AbortController();
-    request<BattleSession>("/api/battle?mode=guest", undefined, abort.signal)
+    void (async () =>
+      request(
+        "/api/battle?mode=guest",
+        battleSessionSchema.parse,
+        undefined,
+        abort.signal,
+        await headers(),
+      ))()
       .then((session) => setPractice(session.history))
       .catch((problem: unknown) => {
         if (!abort.signal.aborted)
           setError(problem instanceof Error ? problem.message : "Try again.");
       });
     return () => abort.abort();
-  }, []);
+  }, [identity.walletPlay]);
   return (
     <section className="pvp-history" aria-label="Battle history">
       <p className="eyebrow">Your battles only</p>
       <h1>Battle history</h1>
-      <p>Practice and private friend battles for this browser stay separate.</p>
+      <p>
+        {identity.walletPlay
+          ? "Private records for this authenticated wallet. No new holdings check is required to read them."
+          : "Practice and player battles for this browser stay separate."}
+      </p>
       {error && <p role="alert">{error}</p>}
       <h2>Practice</h2>
       {practice.length === 0 ? (

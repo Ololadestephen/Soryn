@@ -57,6 +57,7 @@ try {
         CHOG_E2E_JWT_KEY: signingKey,
         CHOG_E2E_APP_ID: "chog-character-fixture",
         CHOG_E2E_JWT_PUBLIC: verificationKey,
+        CHOG_E2E_DB_PATH: join(directory, "browser.sqlite"),
       },
     },
   );

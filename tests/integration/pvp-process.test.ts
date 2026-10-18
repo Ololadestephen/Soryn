@@ -18,7 +18,7 @@ function run(args: string[]) {
       join(process.cwd(), "tests/integration/pvp-process-cli.ts"),
       ...args,
     ],
-    { cwd: process.cwd(), encoding: "utf8" },
+    { cwd: process.cwd(), encoding: "utf8", timeout: 10000 },
   );
   if (result.status !== 0)
     throw new Error(result.stderr || result.stdout || "Process failed.");
@@ -31,10 +31,12 @@ function run(args: string[]) {
     battle?: { rounds: { player: string; opponent: string }[] };
     rounds?: number;
     deadlineAt?: number;
+    phase?: string;
+    wins?: { a: number; b: number };
   };
 }
 
-describe("private match process restart", () => {
+describe("private match process restart", { timeout: 20000 }, () => {
   it("keeps a hidden lock and resolves it once after the process exits", () => {
     const path = join(
       mkdtempSync(join(tmpdir(), "chog-pvp-process-")),
@@ -79,5 +81,19 @@ describe("private match process restart", () => {
       player: "special",
       opponent: "guard",
     });
+  });
+
+  it("keeps a series intermission when the process exits", () => {
+    const path = join(
+      mkdtempSync(join(tmpdir(), "chog-series-process-")),
+      "series.sqlite",
+    );
+    const seeded = run(["series-seed", path]);
+    expect(seeded.phase).toBe("intermission");
+    expect(seeded.wins).toEqual({ a: 1, b: 0 });
+    const restored = run(["series-peek", path, seeded.invite]);
+    expect(restored.phase).toBe("intermission");
+    expect(restored.wins).toEqual({ a: 1, b: 0 });
+    expect(restored.deadline).toBe(seeded.deadline);
   });
 });

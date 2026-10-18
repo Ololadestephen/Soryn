@@ -97,7 +97,11 @@ for (const target of ["landing", "journey", "guest", "heavy"] as const) {
       }
       if (target === "journey") {
         mark("playClick");
-        await page.getByRole("link", { name: "Play now", exact: true }).click();
+        await page
+          .locator(".gateway-hero .gateway-actions")
+          .getByRole("link", { name: "Play now", exact: true })
+          .click();
+        await page.locator('.play-mode[href="/arena"]').click();
         await expect(
           page.getByRole("button", { name: "Enter guest arena" }),
         ).toBeEnabled({ timeout: 60000 });

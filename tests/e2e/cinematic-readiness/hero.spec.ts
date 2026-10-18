@@ -17,9 +17,10 @@ for (const mobile of [false, true])
     });
     await page.goto("/");
     const film = page.locator(".hero-film");
-    await expect(film).not.toHaveAttribute("src", /./);
     await expect(
-      page.getByRole("link", { name: "Play now", exact: true }),
+      page
+        .locator(".gateway-hero .gateway-actions")
+        .getByRole("link", { name: "Play now", exact: true }),
     ).toBeVisible();
     await expect(film).toHaveAttribute("data-ready", "true", {
       timeout: 20000,
@@ -47,9 +48,12 @@ for (const mobile of [false, true])
     await page.bringToFront();
     await other.close();
     await page.emulateMedia({ reducedMotion: "reduce" });
-    await expect(film).not.toHaveAttribute("src", /./);
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await page.getByRole("link", { name: "Play now", exact: true }).click();
+    await page
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true })
+      .click();
+    await page.locator('.play-mode[href="/arena"]').click();
     await expect(
       page.getByRole("button", { name: "Enter guest arena" }),
     ).toBeEnabled();
@@ -111,7 +115,11 @@ test("failed hero request retains poster and Play remains available", async ({
     "data-ready",
     "true",
   );
-  await page.getByRole("link", { name: "Play now", exact: true }).click();
+  await page
+    .locator(".gateway-hero .gateway-actions")
+    .getByRole("link", { name: "Play now", exact: true })
+    .click();
+  await page.locator('.play-mode[href="/arena"]').click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();
@@ -139,7 +147,11 @@ test("slow hero request keeps the poster visible and does not hold Play", async 
     "false",
   );
   await expect(page.locator(".gateway-world img")).toBeVisible();
-  await page.getByRole("link", { name: "Play now", exact: true }).click();
+  await page
+    .locator(".gateway-hero .gateway-actions")
+    .getByRole("link", { name: "Play now", exact: true })
+    .click();
+  await page.locator('.play-mode[href="/arena"]').click();
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();

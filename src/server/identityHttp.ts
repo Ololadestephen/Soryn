@@ -1,3 +1,5 @@
+import { AdventureStore } from "./adventure/persistence";
+import { parseInput } from "./httpShared";
 import { characterIdSchema } from "../domain/characters/definitions";
 import { randomUUID } from "node:crypto";
 import { NextRequest, type NextResponse } from "next/server";
@@ -10,8 +12,15 @@ import {
 import { addressSchema, identitySchema, identityFor } from "../domain/identity";
 import { AuthService } from "./auth/service";
 import { IdentityStore } from "./auth/persistence";
-import { OfficialService } from "./official";
-import { response, failure, body, requireJsonOrigin } from "./httpShared";
+import { OfficialService } from "./adventure/official";
+import { TokenRecords } from "./records/tokenRecords";
+import {
+  response,
+  failure,
+  body,
+  requireJsonOrigin,
+  guestCookieOptions,
+} from "./httpShared";
 import { ServiceError } from "./errors";
 import {
   privyFor,
@@ -53,6 +62,7 @@ const requestSchema = z.discriminatedUnion("operation", [
   stepRequestSchema,
   publicationRequestSchema.extend({ museum: z.boolean() }),
   withdrawalRequestSchema,
+  z.strictObject({ operation: z.literal("tokens") }),
   z.strictObject({ operation: z.literal("logout") }),
 ]);
 function browserFor(request: NextRequest): string | null {
@@ -65,12 +75,10 @@ function setCookie(
   name: string,
   value: string,
   seconds: number,
+  origin: string,
 ) {
   reply.cookies.set(name, value, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: request.nextUrl.protocol === "https:",
-    path: "/",
+    ...guestCookieOptions(request, origin),
     maxAge: seconds,
   });
 }
@@ -92,7 +100,7 @@ export function createIdentityHandlers(
           ? publicHistory(request, tokenId, records, auth)
           : await privateSession(request, official, auth, verifier);
       const reply = response(data);
-      setCookie(reply, request, browserCookie, browser, 86400);
+      setCookie(reply, request, browserCookie, browser, 86400, origin);
       return reply;
     } catch (error) {
       return failure(error);
@@ -108,12 +116,12 @@ export function createIdentityHandlers(
           "Open My Chog to establish a browser session.",
         );
       records.store.rateLimit(browser);
-      const input = requestSchema.parse(await body(request));
+      const input = parseInput(requestSchema, await body(request));
       if (input.operation === "logout") {
         const secret = request.cookies.get(sessionCookie)?.value;
         if (secret && /^[0-9a-f]{64}$/.test(secret)) auth.logout(secret);
         const reply = response({ loggedOut: true });
-        setCookie(reply, request, sessionCookie, "", 0);
+        setCookie(reply, request, sessionCookie, "", 0, origin);
         return reply;
       }
       const proof = await privyFor(request, verifier);
@@ -137,9 +145,12 @@ export function createIdentityHandlers(
           auth,
           official,
           proof,
+          origin,
         );
       const secret = secretFor(request);
       matchSession(auth, secret, proof);
+      if (input.operation === "tokens")
+        return response(await pickerTokens(secret, auth, records));
       if (input.operation === "withdraw") {
         const session = auth.session(secret);
         const observed = await auth.ownership.fresh(session.identity);
@@ -174,8 +185,10 @@ function publicHistory(
     }
   }
   for (const chapter of chapters) {
-    if (guest.success) records.store.expose(guest.data, chapter.scenario);
-    if (walletActor) records.store.expose(walletActor, chapter.scenario);
+    if (guest.success)
+      new AdventureStore(records.store).expose(guest.data, chapter.scenario);
+    if (walletActor)
+      new AdventureStore(records.store).expose(walletActor, chapter.scenario);
   }
   return { identity, chapters };
 }
@@ -186,17 +199,17 @@ async function privateSession(
   verifier: PrivyVerifier,
 ) {
   const secret = request.cookies.get(sessionCookie)?.value;
-  return secret && request.headers.has("authorization")
-    ? official.session(
-        matchSession(auth, secret, await privyFor(request, verifier)),
-      )
-    : {
-        account: null,
-        run: null,
-        chapters: [],
-        publication: null,
-        withdrawals: [],
-      };
+  if (!(secret && request.headers.has("authorization")))
+    return {
+      account: null,
+      run: null,
+      chapters: [],
+      publication: null,
+      withdrawals: [],
+    };
+  const session = matchSession(auth, secret, await privyFor(request, verifier));
+  await auth.authorize(secret);
+  return official.session(session);
 }
 async function verifySignIn(
   request: NextRequest,
@@ -206,6 +219,7 @@ async function verifySignIn(
   auth: AuthService,
   official: OfficialService,
   proof: PrivyIdentity,
+  origin: string,
 ) {
   requireLinkedWallet(proof, records.challenge(input.nonce).wallet);
   const signed = await auth.verify(
@@ -217,10 +231,13 @@ async function verifySignIn(
   );
   const guest = z.uuid().safeParse(request.cookies.get("chog_guest")?.value);
   if (guest.success)
-    for (const run of records.store
+    for (const run of new AdventureStore(records.store)
       .history(guest.data)
       .filter((run) => run.mode === "guest"))
-      records.store.expose(signed.session.actor, run.scenario);
+      new AdventureStore(records.store).expose(
+        signed.session.actor,
+        run.scenario,
+      );
   const reply = response(official.session(signed.session));
   setCookie(
     reply,
@@ -228,8 +245,38 @@ async function verifySignIn(
     sessionCookie,
     signed.secret,
     Math.max(0, Math.floor((signed.session.expires - Date.now()) / 1000)),
+    origin,
   );
   return reply;
+}
+/**
+ * The signed-in wallet's verified token picker: the session's bound token
+ * appears only while a fresh ownership check passes, so a transferred token
+ * drops out for its previous owner immediately. Verification outages stay
+ * explicit errors; only a confirmed revoked grant yields an empty picker.
+ */
+async function pickerTokens(
+  secret: string,
+  auth: AuthService,
+  records: IdentityStore,
+) {
+  const session = auth.session(secret);
+  try {
+    await auth.authorize(secret);
+  } catch (error) {
+    if (error instanceof ServiceError && error.status === 403)
+      return { tokens: [] };
+    throw error;
+  }
+  const tokenRecords = new TokenRecords(records.store);
+  return {
+    tokens: [
+      {
+        identity: session.identity,
+        records: tokenRecords.summary(session.identity),
+      },
+    ],
+  };
 }
 async function mutateOfficial(
   input: Extract<

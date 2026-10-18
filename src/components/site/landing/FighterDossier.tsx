@@ -13,9 +13,7 @@ export function FighterDossier({ id }: { id: CharacterId }) {
   return (
     <div className="fighter-dossier" aria-live="polite" aria-atomic="true">
       <p className={`access-label access-${identity.access}`}>
-        {identity.access === "starter"
-          ? "Guest starter · no wallet required"
-          : "Holder access · verified Chog required"}
+        {identity.access === "starter" ? "Starter" : "Holder fighter"}
       </p>
       <div className="dossier-title">
         <h3>{identity.name}</h3>
@@ -47,9 +45,7 @@ export function FighterDossier({ id }: { id: CharacterId }) {
         className="text-link"
         href={identity.access === "starter" ? "/arena" : "/character"}
       >
-        {identity.access === "starter"
-          ? "Choose a starter in setup"
-          : "Explore holder access"}{" "}
+        {identity.access === "starter" ? "Practice" : "My Chog"}{" "}
       </Link>
     </div>
   );

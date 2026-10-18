@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import type { BattleView, Move } from "../../domain/combat/contracts";
 import type { CombatPresentation } from "./playback";
 import { Arena } from "./Arena";
@@ -12,6 +13,9 @@ import { useMatchAssets } from "./useMatchAssets";
 import { usePresentationAudio } from "./audio/usePresentationAudio";
 import { AudioControls } from "./audio/AudioControls";
 import { arenas } from "../../domain/combat/arenas";
+
+/** A hung download must not hold both players until the server loading deadline. */
+const ASSET_ACK_BOUND_MS = 2500;
 
 export function BattleStage({
   battle,
@@ -42,6 +46,8 @@ export function BattleStage({
   recover: () => unknown;
   rival?: string;
   pvp?: {
+    origin?: "public" | "private";
+    finished?: boolean;
     prompt: string;
     detail: string | null;
     connected: boolean;
@@ -51,8 +57,11 @@ export function BattleStage({
     explanation?: string;
     rematchNote?: string;
     rematchRequested?: boolean;
+    score?: string;
+    nextLabel?: string;
+    exitLabel?: string;
   };
-  onAssetsReady?: () => void;
+  onAssetsReady?: () => void | Promise<unknown>;
 }) {
   const dialog = useRef<HTMLDialogElement>(null),
     result = useRef<HTMLHeadingElement>(null);
@@ -62,13 +71,59 @@ export function BattleStage({
   const complete = !busy && (!!battle.state.outcome || !!pvp?.headline);
   const assets = useMatchAssets(battle);
   const reported = useRef("");
+  const sending = useRef("");
+  const [ackDue, setAckDue] = useState(false);
+  const [ackAttempt, setAckAttempt] = useState(0);
+  const turnOpen = pvp?.input === "open";
+  const matchLabel =
+    pvp?.origin === "public"
+      ? "Public match"
+      : pvp
+        ? "Friend match"
+        : undefined;
   usePresentationAudio(battle, presentation, complete);
   useEffect(() => {
-    if (!onAssetsReady || assets.loading || assets.unavailable) return;
-    if (reported.current === battle.id) return;
-    reported.current = battle.id;
-    onAssetsReady();
-  }, [assets.loading, assets.unavailable, battle.id, onAssetsReady]);
+    const timer = setTimeout(() => setAckDue(true), ASSET_ACK_BOUND_MS);
+    return () => clearTimeout(timer);
+  }, [battle.id]);
+  useEffect(() => {
+    const notify = onAssetsReady;
+    if (!notify) return;
+    if (ackAttempt > 3) return;
+    if (reported.current === battle.id || sending.current === battle.id) return;
+    // Unavailable artwork still releases the opponent. A download that never
+    // settles does too, once the bound passes.
+    if (assets.loading && !assets.unavailable && !ackDue) return;
+    sending.current = battle.id;
+    const id = battle.id;
+    let cancel = false;
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    void Promise.resolve(notify()).then(
+      (result) => {
+        if (cancel) return;
+        if (result === false) {
+          sending.current = "";
+          retry = setTimeout(() => setAckAttempt((n) => n + 1), 300);
+        } else reported.current = id;
+      },
+      () => {
+        if (cancel) return;
+        sending.current = "";
+        retry = setTimeout(() => setAckAttempt((n) => n + 1), 300);
+      },
+    );
+    return () => {
+      cancel = true;
+      clearTimeout(retry);
+    };
+  }, [
+    ackAttempt,
+    ackDue,
+    assets.loading,
+    assets.unavailable,
+    battle.id,
+    onAssetsReady,
+  ]);
   useEffect(() => {
     const element = dialog.current;
     element?.showModal();
@@ -80,9 +135,9 @@ export function BattleStage({
   return (
     <dialog
       ref={dialog}
-      className="battle-stage"
+      className={`battle-stage${battle.cosmetic ? " holder-scene" : ""}${battle.cosmetic && complete && battle.state.outcome === "victory" ? " holder-victory" : ""}`}
       data-preparing={assets.loading || undefined}
-      aria-label={`${mode === "guest" ? "Guest" : "Official"} battle`}
+      aria-label={`${battle.accessKind ? "Wallet player" : mode === "guest" ? "Guest" : "NFT competitor"} battle`}
       onCancel={(event) => {
         event.preventDefault();
         setPanel("settings");
@@ -94,6 +149,7 @@ export function BattleStage({
         state={presentation?.event.state ?? battle.state}
         presentation={presentation}
         rival={rival}
+        matchLabel={matchLabel}
       />
       <button
         className="battle-settings"
@@ -150,6 +206,7 @@ export function BattleStage({
             <small>
               {rival} · {pvp.connected ? "Connected" : "Disconnected"}
               {pvp.seconds !== null ? ` · ${pvp.seconds}s` : ""}
+              {pvp.score ? ` · ${pvp.score}` : ""}
               {pvp.detail ? ` · ${pvp.detail}` : ""}
             </small>
           )}
@@ -157,7 +214,7 @@ export function BattleStage({
       )}
       <MoveControls
         battle={battle}
-        busy={busy || assets.loading || pvp?.input === "closed"}
+        busy={busy || (assets.loading && !turnOpen) || pvp?.input === "closed"}
         step={step}
       />
       {error && (
@@ -183,27 +240,49 @@ export function BattleStage({
                   ? "Defeat"
                   : "Draw")}
           </h2>
+          {pvp?.finished && (
+            <p className="eyebrow">Series complete · {pvp.score}</p>
+          )}
           <p>
-            {difficultyLabel(battle.snapshot)} · {battle.rounds.length} rounds
+            {matchLabel ?? difficultyLabel(battle.snapshot)} ·{" "}
+            {battle.rounds.length} rounds
             {" · "}
             {arenas[battle.arena ?? "sanctuary"].name}
           </p>
           {pvp?.explanation && <p>{pvp.explanation}</p>}
           {pvp?.rematchNote && <p>{pvp.rematchNote}</p>}
           <div className="button-row">
-            <button
-              disabled={!!pvp?.rematchRequested}
-              onClick={() => void rematch()}
-            >
-              {pvp?.rematchRequested
-                ? "Rematch requested"
-                : pvp
-                  ? "Request rematch"
-                  : "Rematch"}
-            </button>
-            <button onClick={exit}>
-              {pvp ? "Return to setup" : "Change setup"}
-            </button>
+            {pvp?.finished ? (
+              <>
+                <Link
+                  className="button"
+                  href={`${pvp.origin === "public" ? "/match" : "/challenge"}${mode === "official" ? "?as=chog" : battle.accessKind ? "?as=holder" : ""}`}
+                >
+                  {pvp.origin === "public"
+                    ? "Find another match"
+                    : "Challenge a friend"}
+                </Link>
+                <Link href="/start">Back to modes</Link>
+              </>
+            ) : (
+              <>
+                <button
+                  disabled={!!pvp?.rematchRequested}
+                  onClick={() => void rematch()}
+                >
+                  {pvp?.nextLabel
+                    ? pvp.nextLabel
+                    : pvp?.rematchRequested
+                      ? "Rematch requested"
+                      : pvp
+                        ? "Request rematch"
+                        : "Rematch"}
+                </button>
+                <button onClick={exit}>
+                  {pvp?.exitLabel ?? (pvp ? "Return to setup" : "Change setup")}
+                </button>
+              </>
+            )}
             <button onClick={() => setPanel("history")}>
               View battle history
             </button>
@@ -215,7 +294,7 @@ export function BattleStage({
           <AudioControls />
           <p>
             {pvp
-              ? "Friend battle. The turn keeps its deadline while this menu is open."
+              ? `${matchLabel}. The turn keeps its deadline while this menu is open.`
               : `${mode === "guest" ? "Guest practice" : "Official token battle"}. A round continues while this menu is open. Your battle is saved as you play.`}
           </p>
           <p>
@@ -232,8 +311,18 @@ export function BattleStage({
             ))}
           </details>
           <button onClick={() => setPanel(null)}>Return to battle</button>
-          <button disabled={busy} onClick={exit}>
-            Exit to setup
+          <button
+            disabled={busy}
+            onClick={() => {
+              setPanel(null);
+              exit();
+            }}
+          >
+            {pvp
+              ? pvp.finished
+                ? "Back to modes"
+                : "Surrender series"
+              : "Exit to setup"}
           </button>
         </ModalPanel>
       )}

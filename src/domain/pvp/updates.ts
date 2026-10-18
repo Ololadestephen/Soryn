@@ -40,15 +40,16 @@ export function nextRoomState(
 
 const MILLISECONDS_PER_SECOND = 1000;
 
-/** Display seconds left. The client clock cancels out of the server offset. */
+/** Estimate elapsed time since receipt; only the server may resolve an expired turn. */
 export function remainingSeconds(
   serverNow: number,
   deadlineAt: number,
+  receivedAt: number,
   clientNow: number,
 ) {
-  const offset = serverNow - clientNow;
+  const estimatedServerNow = serverNow + Math.max(0, clientNow - receivedAt);
   return Math.max(
     0,
-    Math.ceil((deadlineAt - (clientNow + offset)) / MILLISECONDS_PER_SECOND),
+    Math.ceil((deadlineAt - estimatedServerNow) / MILLISECONDS_PER_SECOND),
   );
 }

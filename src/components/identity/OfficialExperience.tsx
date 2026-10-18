@@ -7,6 +7,7 @@ import { Adventure } from "../adventure/Adventure";
 import { OfficialPublication } from "./OfficialPublication";
 import { PublicChapters, PublicChapterLookup } from "./PublicChapters";
 import { OfficialCombat } from "../combat/Official";
+import { TokenPicker } from "./TokenPicker";
 
 export function OfficialExperience({
   onMuseumChanged,
@@ -28,6 +29,10 @@ export function OfficialExperience({
         <>
           <OfficialCombat
             key={`${game.account.wallet}:${game.account.identity.tokenId}`}
+          />
+          <TokenPicker
+            key={`tokens:${game.account.wallet}:${game.account.identity.tokenId}`}
+            onChangeToken={() => void game.changeToken()}
           />
           <details className="combat-history">
             <summary>Official sandwich adventures and ghost chapters</summary>

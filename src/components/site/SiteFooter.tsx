@@ -8,15 +8,14 @@ export function SiteFooter() {
         prefetch={false}
         className="wordmark"
         href="/"
-        aria-label="Déjà Vu home"
+        aria-label="Soryn home"
       >
         <Brand />
       </Link>
-      <p>
-        Creature battles. Second chances.
-        <br />
-        Guest practice is private · local preview
-      </p>
+      <Link prefetch={false} href="/help">
+        Help &amp; FAQ
+      </Link>
+      <p>Soryn fiction · not official Chog or Monad lore.</p>
     </footer>
   );
 }

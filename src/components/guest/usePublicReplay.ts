@@ -1,4 +1,5 @@
 "use client";
+import { publicReplaySchema } from "../../domain/adventure/responses";
 
 import { useState } from "react";
 import type { PublicReplayView } from "../../domain/views";
@@ -16,7 +17,10 @@ export function usePublicReplay(
     if (!gate.begin()) return;
     setError("");
     try {
-      const replay = await request<PublicReplayView>(`/api/game?replay=${id}`);
+      const replay = await request(
+        `/api/game?replay=${id}`,
+        publicReplaySchema.parse,
+      );
       if (gate.isMounted()) setPublicReplay(replay);
     } catch (problem) {
       if (gate.isMounted())

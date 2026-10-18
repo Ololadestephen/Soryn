@@ -95,11 +95,13 @@ export function Arena({
   state,
   presentation,
   rival = "Computer",
+  matchLabel,
 }: {
   battle: BattleView;
   state: CombatState;
   presentation: CombatPresentation | null;
   rival?: string;
+  matchLabel?: string;
 }) {
   const event = presentation?.event;
   const sourceLimit = Math.min(
@@ -131,7 +133,7 @@ export function Arena({
         ))}
       </div>
       <span className="arena-round">
-        {difficultyLabel(battle.snapshot)} ·{" "}
+        {matchLabel ?? difficultyLabel(battle.snapshot)} ·{" "}
         {state.outcome && !presentation
           ? `${battle.rounds.length} resolved rounds`
           : `Round ${Math.min(state.round, 20)} / 20`}

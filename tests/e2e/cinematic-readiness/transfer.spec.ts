@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { expect, test } from "@playwright/test";
 for (const mobile of [false, true])
-  test(`separate initial and deferred ${mobile ? "mobile" : "desktop"} transfer`, async ({
+  test(`initial and hero media ${mobile ? "mobile" : "desktop"} transfer`, async ({
     page,
     context,
   }) => {
@@ -28,7 +28,9 @@ for (const mobile of [false, true])
       "true",
     );
     const initial = wire.slice();
-    expect(initial.some((r) => r.path.includes("/hero/"))).toBe(false);
+    expect(
+      initial.some((r) => /\/combat\/(crisp|delivery)\//.test(r.path)),
+    ).toBe(false);
     await expect(page.locator(".hero-film")).toHaveAttribute(
       "data-ready",
       "true",
@@ -45,7 +47,7 @@ for (const mobile of [false, true])
       JSON.stringify(
         {
           initialBytes: initial.reduce((n, r) => n + r.bytes, 0),
-          deferredVideoBytes: media.reduce((n, r) => n + r.bytes, 0),
+          heroMediaBytes: media.reduce((n, r) => n + r.bytes, 0),
           initial,
           media,
           conditions:

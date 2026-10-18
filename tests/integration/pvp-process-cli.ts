@@ -1,3 +1,4 @@
+import { submitMove } from "../../src/domain/pvp/actions";
 import { PVP_TIMERS } from "../../src/domain/pvp/timers";
 import { Store } from "../../src/server/persistence";
 import { PvpStore } from "../../src/server/pvp/persistence";
@@ -28,6 +29,42 @@ if (command === "seed") {
 } else if (command === "peek") {
   process.stdout.write(
     JSON.stringify(service.preview(invite, actor, Number(at))),
+  );
+} else if (command === "series-seed") {
+  const created = service.create({ actor: A, mode: "guest" }, NOW);
+  service.join({ actor: B, mode: "guest" }, created.invite, NOW);
+  service.select(A, created.invite, "pip", NOW);
+  service.select(B, created.invite, "bolt", NOW);
+  service.ready(A, created.invite, true, NOW);
+  service.ready(B, created.invite, true, NOW);
+  const room = service.records.byInvite(created.invite);
+  const match = room.match!;
+  match.phase = "choose";
+  match.deadlineAt = NOW + PVP_TIMERS.moveMs;
+  match.state.player.health = 80;
+  match.state.opponent.health = 1;
+  match.state.player.energy = 4;
+  match.state.opponent.energy = 4;
+  submitMove(room, A, match.state.round, "basic", NOW + 10);
+  submitMove(room, B, match.state.round, "basic", NOW + 10);
+  service.records.save(room);
+  process.stdout.write(
+    JSON.stringify({
+      invite: created.invite,
+      phase: room.series?.phase,
+      wins: room.series?.wins,
+      deadline: room.series?.deadlineAt,
+    }),
+  );
+} else if (command === "series-peek") {
+  const room = service.records.byInvite(invite);
+  process.stdout.write(
+    JSON.stringify({
+      invite,
+      phase: room.series?.phase,
+      wins: room.series?.wins,
+      deadline: room.series?.deadlineAt,
+    }),
   );
 } else if (command === "finish") {
   const view = service.move(B, invite, 1, "guard", Number(at));

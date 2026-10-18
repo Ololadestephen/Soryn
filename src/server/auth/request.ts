@@ -1,3 +1,4 @@
+import { addressSchema } from "../../domain/identity";
 import { NextRequest } from "next/server";
 import {
   type PrivyVerifier,
@@ -12,12 +13,16 @@ export async function privyFor(
   verifier: PrivyVerifier,
 ): Promise<PrivyIdentity> {
   const authorization = request.headers.get("authorization");
-  return verifier.verify(
+  const proof = await verifier.verify(
     authorization?.startsWith("Bearer ") ? authorization.slice(7) : "",
     request.headers.get("privy-id-token") ??
       request.cookies.get("privy-id-token")?.value ??
       "",
   );
+  const selected = request.headers.get("x-soryn-wallet");
+  return selected
+    ? { ...proof, selectedWallet: addressSchema.parse(selected) }
+    : proof;
 }
 export function matchSession(
   auth: AuthService,
@@ -31,6 +36,11 @@ export function matchSession(
       "Sign in through Privy and authorize this token again.",
     );
   requireLinkedWallet(proof, session.wallet);
+  if (proof.selectedWallet && proof.selectedWallet !== session.wallet)
+    throw new ServiceError(
+      401,
+      "The selected wallet changed. Authorize this wallet again.",
+    );
   return session;
 }
 export function walletSecret(request: NextRequest) {

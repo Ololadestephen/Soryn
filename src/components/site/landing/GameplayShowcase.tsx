@@ -91,7 +91,7 @@ export function GameplayShowcase() {
               <Image
                 unoptimized
                 src="/gameplay/pip-v-bolt-poster.webp"
-                alt="Pip and Bolt in the Ruined Sanctuary with health, energy and move controls visible"
+                alt="Pip and Bolt in Chog Sanctuary with health, energy and move controls visible"
                 width={1280}
                 height={800}
                 loading="lazy"
@@ -118,7 +118,7 @@ export function GameplayShowcase() {
           <div className="media-error" role="alert">
             <p>Gameplay video unavailable. You can still play a battle.</p>
             <button onClick={close}>Try video again</button>
-            <a href="/arena">Play now</a>
+            <a href="/arena">Practice</a>
           </div>
         )}
       </div>

@@ -1,4 +1,5 @@
 "use client";
+import { publicChaptersSchema } from "../../domain/adventure/responses";
 import { useState } from "react";
 import type { PublicChapter } from "../../domain/officialViews";
 import type { TokenIdentity } from "../../domain/identity";
@@ -89,6 +90,7 @@ export function PublicChapterLookup() {
             setHistory(
               await request(
                 `/api/identity?tokenId=${encodeURIComponent(tokenId)}`,
+                publicChaptersSchema.parse,
               ),
             );
           } catch (problem) {

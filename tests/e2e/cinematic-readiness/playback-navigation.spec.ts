@@ -30,9 +30,7 @@ for (const portrait of [false, true]) {
     };
     await advancing("initial automatic playback");
     for (let i = 0; i < 2; i++) {
-      await page
-        .getByRole("link", { name: "Chog Déjà Vu home", exact: true })
-        .click();
+      await page.getByRole("link", { name: "Soryn home", exact: true }).click();
       await expect(film).toHaveAttribute("data-ready", "true");
       await advancing(`home click ${i + 1}`);
     }
@@ -53,7 +51,11 @@ for (const portrait of [false, true]) {
       `${directory}/${portrait ? "portrait" : "desktop"}-playback.json`,
       JSON.stringify(samples, null, 2),
     );
-    await page.getByRole("link", { name: "Play now", exact: true }).click();
+    await page
+      .locator(".gateway-hero .gateway-actions")
+      .getByRole("link", { name: "Play now", exact: true })
+      .click();
+    await page.locator('.play-mode[href="/arena"]').click();
     await expect(
       page.getByRole("button", { name: "Enter guest arena" }),
     ).toBeEnabled();

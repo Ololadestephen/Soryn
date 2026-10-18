@@ -1,11 +1,17 @@
+import { PlayIdentity } from "../../components/auth/PlayIdentity";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../components/site/SiteHeader";
 import { SiteFooter } from "../../components/site/SiteFooter";
 import { BattleHistoryPage } from "../../components/pvp/History";
 
-export const metadata: Metadata = { title: "Battle history · Chog Déjà Vu" };
+export const metadata: Metadata = { title: "Battle History · Soryn" };
 
-export default function HistoryPage() {
+export default async function HistoryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ as?: string }>;
+}) {
+  const wallet = (await searchParams).as === "holder";
   return (
     <div className="site-wrap">
       <a className="skip-link" href="#history-main">
@@ -13,7 +19,9 @@ export default function HistoryPage() {
       </a>
       <SiteHeader current="/history" />
       <main className="arena-main" id="history-main" tabIndex={-1}>
-        <BattleHistoryPage />
+        <PlayIdentity official={false} holder={wallet} recordsOnly>
+          <BattleHistoryPage />
+        </PlayIdentity>
       </main>
       <SiteFooter />
     </div>

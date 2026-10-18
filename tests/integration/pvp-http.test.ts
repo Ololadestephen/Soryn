@@ -3,10 +3,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Worker } from "node:worker_threads";
 import { NextRequest } from "next/server";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { officialCombatFixture } from "../fixtures/official-combat";
+import {
+  qualifyingHoldings,
+  walletAccessFixture,
+} from "../fixtures/wallet-access";
+import { WalletAccessAuth } from "../../src/server/access/auth";
 import { PVP_TIMERS } from "../../src/domain/pvp/timers";
-import type { AuthService } from "../../src/server/auth/service";
-import type { PrivyVerifier } from "../../src/server/auth/privy";
 import { Store } from "../../src/server/persistence";
 import { createPvpHandlers } from "../../src/server/pvp/http";
 import { PvpStore } from "../../src/server/pvp/persistence";
@@ -32,18 +36,32 @@ interface BattleBody {
   latestSeq?: number;
   history?: { opponent: string; explanation: string }[];
   error?: string;
+  code?: string;
+  phase?: string;
+  revision?: number;
 }
 
-function handlers(store = new Store(":memory:")) {
-  return {
+beforeEach(() => vi.stubEnv("SORYN_HOLDER_ACCESS", "enabled"));
+afterEach(() => vi.unstubAllEnvs());
+const contexts = new WeakMap<
+  ReturnType<typeof createPvpHandlers>,
+  Awaited<ReturnType<typeof officialCombatFixture>>
+>();
+const sessions = new Map<
+  string,
+  { headers: Record<string, string>; actor: string }
+>();
+async function handlers(store = new Store(":memory:")) {
+  const ctx = await officialCombatFixture(store);
+  const pvp = createPvpHandlers(
     store,
-    pvp: createPvpHandlers(
-      store,
-      origin,
-      {} as AuthService,
-      {} as PrivyVerifier,
-    ),
-  };
+    origin,
+    ctx.auth,
+    ctx.verifier,
+    qualifyingHoldings,
+  );
+  contexts.set(pvp, ctx);
+  return { store, pvp };
 }
 
 async function read(response: Response) {
@@ -62,8 +80,17 @@ function cookieFrom(response: Response) {
 }
 
 async function mint(pvp: ReturnType<typeof createPvpHandlers>) {
-  const response = await pvp.get(new NextRequest(`${origin}/api/pvp`));
-  return cookieFrom(response);
+  const ctx = contexts.get(pvp);
+  if (!ctx) throw Error("Missing fixture context");
+  const f = await walletAccessFixture(qualifyingHoldings, ctx);
+  const login = new WalletAccessAuth(ctx.store, ctx.auth, ctx.verifier, origin);
+  const player = await login.player(
+    new NextRequest(`${origin}/api/access`, {
+      headers: { cookie: f.cookie, ...f.headers },
+    }),
+  );
+  sessions.set(f.cookie, { headers: f.headers, actor: player.actor });
+  return f.cookie;
 }
 
 function post(
@@ -78,8 +105,9 @@ function post(
         origin,
         "content-type": "application/json",
         cookie,
+        ...sessions.get(cookie)?.headers,
       },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ mode: "guest", ...input }),
     }),
   );
 }
@@ -90,13 +118,17 @@ function get(
   invite?: string,
 ) {
   const path = invite
-    ? `${origin}/api/pvp?invite=${encodeURIComponent(invite)}`
+    ? `${origin}/api/pvp?mode=guest&invite=${encodeURIComponent(invite)}`
     : `${origin}/api/pvp`;
-  return pvp.get(new NextRequest(path, { headers: { cookie } }));
+  return pvp.get(
+    new NextRequest(path, {
+      headers: { cookie, ...sessions.get(cookie)?.headers },
+    }),
+  );
 }
 
 function actorOf(cookie: string) {
-  return cookie.split("=")[1] ?? "";
+  return sessions.get(cookie)?.actor ?? cookie.split("=")[1] ?? "";
 }
 
 function health(body: BattleBody, id: string) {
@@ -127,8 +159,40 @@ async function seatedRoom(pvp: ReturnType<typeof createPvpHandlers>) {
 }
 
 describe("private battle HTTP", () => {
+  it("keeps cookieless records isolated and refuses new anonymous room creation", async () => {
+    const { pvp } = await handlers();
+    const first = cookieFrom(
+      await pvp.get(new NextRequest(`${origin}/api/pvp`)),
+    );
+    const second = cookieFrom(
+      await pvp.get(new NextRequest(`${origin}/api/pvp`)),
+    );
+    expect(first).not.toBe(second);
+    const created = await read(await post(pvp, first, { operation: "create" }));
+    expect(created.status).toBe(403);
+    expect(created.body.seated).toBeUndefined();
+    expect((await read(await get(pvp, second))).body.history ?? []).toEqual([]);
+  });
+
+  it("rejects an action stamped for an earlier battle without changing the room", async () => {
+    const { pvp } = await handlers();
+    const { host, invite } = await seatedRoom(pvp);
+    const before = await read(await get(pvp, host, invite));
+    const stale = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    for (const operation of ["assets", "continue"] as const) {
+      const reply = await read(
+        await post(pvp, host, { operation, invite, matchId: stale }),
+      );
+      expect(reply.status).toBe(409);
+      expect(reply.body.code).toBe("stale-battle");
+    }
+    const after = await read(await get(pvp, host, invite));
+    expect(after.body.revision).toBe(before.body.revision);
+    expect(after.body.phase).toBe(before.body.phase);
+  });
+
   it("hides a locked move, mirrors health, and rejects bad seats", async () => {
-    const { store, pvp } = handlers();
+    const { store, pvp } = await handlers();
     const { host, friend, invite } = await seatedRoom(pvp);
     const outsider = await mint(pvp);
     const locked = await read(
@@ -213,8 +277,8 @@ describe("private battle HTTP", () => {
     store.close();
   });
 
-  it("rejects holder fighters, missing wallet sessions and unknown moves", async () => {
-    const { store, pvp } = handlers();
+  it("rejects fighters outside the six-player grant, missing wallet sessions and unknown moves", async () => {
+    const { store, pvp } = await handlers();
     const host = await mint(pvp);
     const created = await read(await post(pvp, host, { operation: "create" }));
     const invite = created.body.invite ?? "";
@@ -230,7 +294,7 @@ describe("private battle HTTP", () => {
       await post(pvp, host, {
         operation: "select",
         invite,
-        characterId: "aegis",
+        characterId: "ember",
       }),
     );
     expect(holder.status).toBe(403);
@@ -253,7 +317,7 @@ describe("private battle HTTP", () => {
   });
 
   it("drops seat control when a player leaves and keeps history private", async () => {
-    const { store, pvp } = handlers();
+    const { store, pvp } = await handlers();
     const host = await mint(pvp);
     const friend = await mint(pvp);
     const created = await read(await post(pvp, host, { operation: "create" }));
@@ -344,7 +408,7 @@ describe("private battle HTTP", () => {
   });
 
   it("rejects setup from a cookie that does not hold a seat", async () => {
-    const { pvp } = handlers();
+    const { pvp } = await handlers();
     const host = await mint(pvp);
     const friend = await mint(pvp);
     const created = await read(await post(pvp, host, { operation: "create" }));
@@ -367,7 +431,7 @@ describe("private battle HTTP", () => {
   });
 
   it("marks the guest cookie Secure when the public origin is HTTPS", async () => {
-    const { pvp } = handlers();
+    const { pvp } = await handlers();
     const response = await pvp.get(
       new NextRequest("http://127.0.0.1:3010/api/pvp"),
     );

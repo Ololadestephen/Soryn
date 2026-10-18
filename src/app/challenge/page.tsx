@@ -1,13 +1,19 @@
+import { PlayIdentity } from "../../components/auth/PlayIdentity";
 import type { Metadata } from "next";
 import { SiteHeader } from "../../components/site/SiteHeader";
 import { SiteFooter } from "../../components/site/SiteFooter";
 import { ChallengeHome } from "../../components/pvp/Challenge";
 
 export const metadata: Metadata = {
-  title: "Challenge a friend · Chog Déjà Vu",
+  title: "Challenge a Friend · Soryn",
 };
 
-export default function ChallengePage() {
+export default async function ChallengePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ as?: string }>;
+}) {
+  const official = (await searchParams).as === "chog";
   return (
     <div className="site-wrap">
       <a className="skip-link" href="#challenge-main">
@@ -15,7 +21,9 @@ export default function ChallengePage() {
       </a>
       <SiteHeader current="/challenge" />
       <main className="arena-main" id="challenge-main" tabIndex={-1}>
-        <ChallengeHome />
+        <PlayIdentity official={official} holder={!official}>
+          <ChallengeHome />
+        </PlayIdentity>
       </main>
       <SiteFooter />
     </div>

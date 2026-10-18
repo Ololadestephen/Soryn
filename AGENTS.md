@@ -1,10 +1,16 @@
-# Chog Déjà Vu — project instructions
+# Soryn — project instructions
+
+The folder remains `chogsnft`. The product name is Soryn. Database identifiers, `chog_guest`, `chog_wallet`, and the SIWE statement in `src/server/auth/service.ts` stay as they are.
 
 ## Product lock
 
-Current user direction, October 11, 2026: build Déjà Vu primarily as a turn-based creature battle game. Choose fighter → arena → paired choices → sequential resolution → result → rematch. Preserve adventures, recorded ghosts, journal, Museum of Bad Decisions, consent and their existing URLs as secondary experiences. Token ownership controls new official fighter history; private drafts stay private and consented public adventure history still follows the token. This explicitly supersedes the previous adventure-first product lock.
+Current user direction, October 15, 2026: Soryn is a browser tactical creature battler. Primary actions are Find a Match, Challenge a Friend, Story, and Practice. Fighters, My Chog, and Battle History stay secondary. Public play is an unranked best-of-three series for the four starters. Private rooms can still use eligible holder fighters. Story is the combat chapter The Fractured Sanctuary. It does not read or write adventure runs.
 
-Read START_HERE.md, README.md, PLAN.md, docs/GAME_SPEC.md, docs/ARCHITECTURE.md and docs/EVENT_AND_SUBMISSION.md before implementation. These documents are project direction, not evidence of implemented functionality. Current user instructions and verified live event rules take precedence; document conflicts and ask before materially changing scope.
+The sandwich adventure, journal, Museum of Bad Decisions, and adventure ghosts stay on `/play`, `/journal`, `/museum`, and `/archive`. Do not delete their records and do not mix them into story progress.
+
+Read SORYN_PLAN.md before changing this direction. Also read START_HERE.md, README.md, PLAN.md, docs/GAME_SPEC.md, docs/ARCHITECTURE.md, docs/SERIES.md, docs/MATCHMAKING.md, and docs/EVENT_AND_SUBMISSION.md. Those documents are direction and evidence notes, not proof that a later claim is finished. Current user instructions and verified live event rules take precedence.
+
+Token ownership still controls official holder fighters and official writes. A CHOG balance does not change damage, health, or initiative. No balance threshold is approved. Achievement claims stay off the player path until a contract deploy is approved. The app remains one Node process with SQLite. Do not add Redis, WebSockets, or another database without a tested reason.
 
 ## Do not drift
 

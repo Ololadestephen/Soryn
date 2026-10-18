@@ -64,6 +64,8 @@ function prepare(context: RoundContext) {
       "prepare",
       side,
       `${definition.moves[move].name} locked. ${shield} shield prepared; ${definition.moves[move].cost} energy spent.`,
+      undefined,
+      { type: "prepare", shield },
     );
   }
 }
@@ -116,6 +118,7 @@ export function resolveRound(
   player: Move,
   opponent: Move,
   reason = "Direct deterministic resolver",
+  eventFormat: 1 | 2 = 2,
 ): { state: CombatState; round: ResolvedRound } {
   const moves = { player, opponent };
   for (const side of sides)
@@ -126,6 +129,7 @@ export function resolveRound(
     state: structuredClone(input),
     moves,
     events: [],
+    eventFormat,
     shield: { player: 0, opponent: 0 },
     dodge: { player: false, opponent: false },
     counter: { player: false, opponent: false },
@@ -138,6 +142,7 @@ export function resolveRound(
   return {
     state: context.state,
     round: {
+      ...(eventFormat === 2 ? { eventFormat: 2 as const } : {}),
       round: input.round,
       player,
       opponent,
