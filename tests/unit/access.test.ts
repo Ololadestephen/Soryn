@@ -5,7 +5,13 @@ import {
   MonadHoldings,
   type HoldingReader,
 } from "../../src/server/access/reader";
-import { CHOG_MINIMUM, PUBLIC_FIGHTERS } from "../../src/domain/access/policy";
+import {
+  ACCESS_POLICY,
+  LEGACY_ACCESS_POLICY,
+  accessGrantSchema,
+  CHOG_MINIMUM,
+  PUBLIC_FIGHTERS,
+} from "../../src/domain/access/policy";
 import { COLLECTION } from "../../src/domain/identity";
 import { readFileSync } from "node:fs";
 const actor = "11111111-1111-4111-8111-111111111111";
@@ -41,6 +47,8 @@ afterEach(() => vi.restoreAllMocks());
 describe("read-only exact integer CHOG eligibility", () => {
   it.each([
     [CHOG_MINIMUM, true],
+    [50n * 10n ** 18n, false],
+    [499n * 10n ** 18n, false],
     [CHOG_MINIMUM - 1n, false],
     [0n, false],
   ] as const)("uses base units at %s", async (balance, qualifies) => {
@@ -273,4 +281,48 @@ it("does not mint a fresh grant from a block that aged out during RPC reads", as
   await expect(
     new MonadHoldings(rpc, () => clock).token(wallet),
   ).rejects.toThrow(/stale|expired/);
+});
+
+it("a still-fresh legacy 50-token cache is readable but never reused for 500-token eligibility", async () => {
+  const store = new Store(":memory:");
+  let qualifies = true;
+  const token = vi.fn(async () => ({
+    qualifies,
+    block: "0x100",
+    checkedAt: now,
+  }));
+  const service = new Entitlements(
+    store,
+    {
+      token,
+      nft: async () => ({ qualifies: false, block: "0x100", checkedAt: now }),
+    },
+    () => now,
+    () => true,
+  );
+  try {
+    const issued = await service.resolve(player);
+    const legacy = { ...issued, policy: LEGACY_ACCESS_POLICY };
+    store.db
+      .prepare("UPDATE access_grants SET record=? WHERE actor=?")
+      .run(JSON.stringify({ wallet, grant: legacy }), actor);
+    qualifies = false;
+    expect(service.stored(actor)?.policy).toBe(LEGACY_ACCESS_POLICY);
+    await expect(service.resolve(player)).rejects.toMatchObject({
+      status: 403,
+    });
+    expect(token).toHaveBeenCalledTimes(2);
+    // The failed new admission leaves legacy evidence and existing encounters untouched.
+    expect(service.stored(actor)?.id).toBe(issued.id);
+    qualifies = true;
+    const fresh = await service.resolve(player);
+    expect(fresh.policy).toBe(ACCESS_POLICY);
+    expect(fresh.id).not.toBe(issued.id);
+    expect(
+      accessGrantSchema.safeParse({ ...legacy, policy: "soryn-access/999" })
+        .success,
+    ).toBe(false);
+  } finally {
+    store.close();
+  }
 });

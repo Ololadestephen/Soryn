@@ -1,3 +1,4 @@
+import { CHOG_TOKEN } from "../../src/domain/chain/chogToken.ts";
 import { importPKCS8, SignJWT } from "jose";
 import { createServer } from "node:https";
 import { readFileSync } from "node:fs";
@@ -16,7 +17,9 @@ let ownerIndex = 0;
 let height = 100;
 let transfers = [];
 let unavailable = false;
-let tokenBalances = [50n * 10n ** 18n, 50n * 10n ** 18n];
+let tokenUnavailable = false;
+let nftUnavailable = false;
+let tokenBalances = [CHOG_TOKEN.threshold, CHOG_TOKEN.threshold];
 const tokenContract = "0x350035555e10d9afaf1566aaebfced5ba6c27777";
 const collection = "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763";
 const topic =
@@ -75,7 +78,9 @@ const server = createServer(
           height = 100;
           transfers = [];
           unavailable = false;
-          tokenBalances = wallets.map(() => 50n * 10n ** 18n);
+          tokenUnavailable = false;
+          nftUnavailable = false;
+          tokenBalances = wallets.map(() => CHOG_TOKEN.threshold);
         }
         if (command.operation === "balance")
           tokenBalances[command.index] = BigInt(command.units);
@@ -85,6 +90,10 @@ const server = createServer(
         }
         if (command.operation === "transfer") move(command.owner);
         if (command.operation === "outage") unavailable = command.enabled;
+        if (command.operation === "route-outage") {
+          if (command.route === "token") tokenUnavailable = command.enabled;
+          if (command.route === "nft") nftUnavailable = command.enabled;
+        }
         return send({
           fixture: true,
           wallets: wallets.map((wallet) => wallet.address.toLowerCase()),
@@ -101,7 +110,7 @@ const server = createServer(
         // Independent synthetic principals keep account state isolated between scenarios.
         while (wallets.length <= input.index) {
           wallets.push(privateKeyToAccount(generatePrivateKey()));
-          tokenBalances.push(50n * 10n ** 18n);
+          tokenBalances.push(CHOG_TOKEN.threshold);
         }
         const wallet = wallets[input.index];
         const sub = `did:privy:chog-fixture-${input.index}`;
@@ -137,11 +146,21 @@ const server = createServer(
           }),
         });
       }
-      if (unavailable) {
+      const { method, params, id } = JSON.parse(bytes);
+      const target =
+        method === "eth_getCode"
+          ? params[0]
+          : method === "eth_call"
+            ? params[0]?.to
+            : null;
+      if (
+        unavailable ||
+        (tokenUnavailable && target?.toLowerCase() === tokenContract) ||
+        (nftUnavailable && target?.toLowerCase() === collection)
+      ) {
         reply.statusCode = 503;
         return send({ error: "Fixture outage" });
       }
-      const { method, params, id } = JSON.parse(bytes);
       let result;
       if (method === "eth_chainId") result = "0x8f";
       else if (method === "eth_getBlockByNumber")

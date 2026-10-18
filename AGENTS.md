@@ -4,13 +4,13 @@ The folder remains `chogsnft`. The product name is Soryn. Database identifiers, 
 
 ## Product lock
 
-Current user direction, October 15, 2026: Soryn is a browser tactical creature battler. Primary actions are Find a Match, Challenge a Friend, Story, and Practice. Fighters, My Chog, and Battle History stay secondary. Public play is an unranked best-of-three series for the four starters. Private rooms can still use eligible holder fighters. Story is the combat chapter The Fractured Sanctuary. It does not read or write adventure runs.
+Current user direction, October 15, 2026: Soryn is a browser tactical creature battler. Primary actions are Find a Match, Challenge a Friend, Story, and Practice. Fighters, My Chog, and Battle History stay secondary. Current holder-first policy, confirmed October 18, 2026: public play is one shared unranked best-of-three queue with six fighters (four starters, Aegis and Nyx). Private rooms can still use eligible holder fighters. Story is the combat chapter The Fractured Sanctuary. It does not read or write adventure runs.
 
 The sandwich adventure, journal, Museum of Bad Decisions, and adventure ghosts stay on `/play`, `/journal`, `/museum`, and `/archive`. Do not delete their records and do not mix them into story progress.
 
 Read SORYN_PLAN.md before changing this direction. Also read START_HERE.md, README.md, PLAN.md, docs/GAME_SPEC.md, docs/ARCHITECTURE.md, docs/SERIES.md, docs/MATCHMAKING.md, and docs/EVENT_AND_SUBMISSION.md. Those documents are direction and evidence notes, not proof that a later claim is finished. Current user instructions and verified live event rules take precedence.
 
-Token ownership still controls official holder fighters and official writes. A CHOG balance does not change damage, health, or initiative. No balance threshold is approved. Achievement claims stay off the player path until a contract deploy is approved. The app remains one Node process with SQLite. Do not add Redis, WebSockets, or another database without a tested reason.
+Token ownership still controls official holder fighters and official writes. A CHOG balance does not change damage, health, or initiative. The approved access threshold is at least 500 $CHOG or a verified Chog NFT on Monad Mainnet; either route qualifies independently. Guests keep four-starter Practice and private history. New holder admissions remain operator-gated; this policy does not authorize enabling production. Achievement claims stay off the player path until a contract deploy is approved. The app remains one Node process with SQLite. Do not add Redis, WebSockets, or another database without a tested reason.
 
 ## Do not drift
 

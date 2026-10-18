@@ -1,3 +1,4 @@
+import { CHOG_MINIMUM } from "../../src/domain/access/policy";
 import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
 import {
@@ -63,7 +64,7 @@ test("below threshold and unavailable RPC remain distinct; authenticated records
   await control({
     operation: "balance",
     index: 0,
-    units: (50n * 10n ** 18n - 1n).toString(),
+    units: (CHOG_MINIMUM - 1n).toString(),
   });
   const access = await page.request.post("/api/access", {
     headers: session.headers,

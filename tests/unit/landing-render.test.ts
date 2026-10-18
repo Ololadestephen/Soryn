@@ -80,8 +80,11 @@ it("a heal preview braces while an attack strikes, without health or result fabr
 it("holder copy preserves the ownership requirement and private-record boundary", () => {
   const html = renderToStaticMarkup(createElement(HolderInvite));
   expect(html).toContain('href="/character"');
-  expect(html).toContain("Verified Chog Genesis holders");
-  expect(html).toContain("Private records stay with you");
+  expect(html).toContain("500 $CHOG or a Chog NFT");
+  expect(html).toContain("Requires a Chog NFT");
+  expect(html).toContain("publishing each result requires consent");
+  expect(html).toContain("Keeper of the Echo");
+  expect(html).toContain("Aegis &amp; Armadillo");
   expect(html).not.toMatch(/No wallet required|Guest play is always available/);
 });
 

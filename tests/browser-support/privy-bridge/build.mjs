@@ -6,8 +6,14 @@ const directory = resolve("tests/browser-support/privy-bridge");
 const compiler = webpack({
   mode: "development",
   devtool: false,
-  entry: resolve(directory, "entry.tsx"),
-  output: { path: resolve(process.argv[2]), filename: "bridge.js" },
+  entry: process.argv[3]
+    ? resolve(process.argv[3])
+    : resolve(directory, "entry.tsx"),
+  output: {
+    path: resolve(process.argv[2]),
+    filename: "bridge.js",
+    publicPath: "/",
+  },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
     alias: {
@@ -18,6 +24,12 @@ const compiler = webpack({
       ),
     },
   },
+  plugins: [
+    new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify({ NODE_ENV: "development" }),
+    }),
+  ],
   module: {
     rules: [
       {

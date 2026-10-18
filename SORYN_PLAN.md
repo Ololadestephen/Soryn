@@ -1,3 +1,7 @@
+# Current holder-first policy — October 18, 2026
+
+The approved policy is four-starter guest Practice; independent access through at least 500 $CHOG or a verified Chog NFT; one shared six-fighter public queue; the broader eligible NFT roster in private play; and separately authorized NFT-bound competitor records. See docs/SERIES.md and docs/MATCHMAKING.md for the current boundaries. Older four-starter-public/threshold-unapproved text below is historical. Production holder admission remains paused until an explicitly approved rollout; this document is not permission to enable it. No human-operated holder or physical mobile test is established by synthetic fixtures.
+
 # Current continuation — October 16, 2026
 
 **Health queue recovery — October 16, 2026:** all twenty outstanding concrete blind-review findings are fixed, tested and resolved. Normal mechanical scanning now completes: objective 92.3, displayed strict 87.4. Fresh subjective scores remain pending because the blind runner hit its usage limit. See [the queue recovery report](docs/HEALTH_QUEUE_RECOVERY.md) for changes, checks, evidence and the remaining review gate. This does not authorize hosting or real-wallet actions.

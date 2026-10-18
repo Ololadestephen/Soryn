@@ -1,5 +1,6 @@
 "use client";
 import { publicChaptersSchema } from "../../domain/adventure/responses";
+import Link from "next/link";
 import { useState } from "react";
 import type { PublicChapter } from "../../domain/officialViews";
 import type { TokenIdentity } from "../../domain/identity";
@@ -120,10 +121,15 @@ export function PublicChapterLookup() {
       </form>
       {error && <p role="alert">{error}</p>}
       {history && (
-        <PublicChapters
-          tokenId={history.identity.tokenId}
-          chapters={history.chapters}
-        />
+        <>
+          <Link prefetch={false} href={`/chog/${history.identity.tokenId}`}>
+            View public competitor profile
+          </Link>
+          <PublicChapters
+            tokenId={history.identity.tokenId}
+            chapters={history.chapters}
+          />
+        </>
       )}
     </div>
   );

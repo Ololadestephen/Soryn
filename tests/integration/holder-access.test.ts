@@ -1,3 +1,4 @@
+import { LEGACY_ACCESS_POLICY } from "../../src/domain/access/policy";
 import { legalMoves } from "../../src/domain/combat/moves";
 import { afterEach, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
@@ -184,6 +185,11 @@ it("enforces direct Story, queue, room and fighter admission; preserves six-figh
     expect(frozen.series?.phase).toBe("battle");
     expect(frozen.seats.a?.access?.kind).toBe("token");
     expect(frozen.seats.a?.holderGrant).toBeNull();
+    // A pre-upgrade started series retains its original 50-token policy grant.
+    for (const seat of Object.values(frozen.seats)) {
+      if (seat?.access) seat.access.policy = LEGACY_ACCESS_POLICY;
+    }
+    records.save(frozen);
     eligible = false;
     const calls = token.mock.calls.length;
     expect(
@@ -232,6 +238,9 @@ it("enforces direct Story, queue, room and fighter admission; preserves six-figh
     expect((await post(b, { operation: "continue", invite })).status).toBe(200);
     expect(records.byInvite(invite).match!.id).not.toBe(firstId);
     expect(records.byInvite(invite).series?.battleNumber).toBe(2);
+    expect(records.byInvite(invite).seats.a?.access?.policy).toBe(
+      LEGACY_ACCESS_POLICY,
+    );
     expect(token).toHaveBeenCalledTimes(calls);
     vi.useRealTimers();
 
@@ -290,6 +299,12 @@ it("a started interaction retains its five-minute grant, while the next encounte
     expect(
       (await post({ operation: "interact", action: "runes" })).status,
     ).toBe(200);
+    // Simulate an encounter persisted before the threshold upgrade, keeping its authored clues.
+    f.ctx.store.db
+      .prepare(
+        "UPDATE story_progress SET record=json_set(record, '$.journey.interaction.access.policy', ?)",
+      )
+      .run(LEGACY_ACCESS_POLICY);
     eligible = false;
     expect(
       (await post({ operation: "interact", action: "companion" })).status,
@@ -352,6 +367,12 @@ it("an expired noncombat grant requires new holdings without erasing clues", asy
     ).toBe(200);
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(Date.now() + 300001);
+    // Simulate an encounter persisted before the threshold upgrade, keeping its authored clues.
+    f.ctx.store.db
+      .prepare(
+        "UPDATE story_progress SET record=json_set(record, '$.journey.interaction.access.policy', ?)",
+      )
+      .run(LEGACY_ACCESS_POLICY);
     eligible = false;
     expect(
       (await post({ operation: "interact", action: "companion" })).status,

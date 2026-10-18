@@ -7,6 +7,7 @@ import "./results.css";
 import "./museum.css";
 import "./journal.css";
 import "./identity.css";
+import "./mychog.css";
 import "./characters.css";
 import "./combat-selection.css";
 import "./combat-arena.css";

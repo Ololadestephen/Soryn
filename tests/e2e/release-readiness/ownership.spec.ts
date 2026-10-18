@@ -1,7 +1,11 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { expect, test, type Page, type Route } from "@playwright/test";
-import { fixtureHolder, fixtureSignIn } from "../../browser-support/holder";
-import { choose, evidence, room } from "./support";
+import {
+  fixtureHolder,
+  fixtureSignIn,
+  fixtureWalletAccess,
+} from "../../browser-support/holder";
+import { attachSignedHeaders, choose, evidence, room } from "./support";
 
 test.describe.configure({ mode: "serial" });
 
@@ -134,6 +138,7 @@ test("a confirmed fixture transfer voids the live series and locks the old owner
 }) => {
   test.setTimeout(180_000);
   const hostContext = await browser.newContext({
+    baseURL: origin,
     viewport: { width: 1280, height: 800 },
     recordVideo: {
       dir: ".cache/readiness-recordings",
@@ -141,12 +146,19 @@ test("a confirmed fixture transfer voids the live series and locks the old owner
     },
   });
   const friendContext = await browser.newContext({
+    baseURL: origin,
     viewport: { width: 1280, height: 800 },
   });
   const host = await hostContext.newPage();
   const friend = await friendContext.newPage();
   try {
     const signed = await fixtureHolder(host.request, 0);
+    const friendSigned = await fixtureWalletAccess(friend.request, 1, origin);
+    await attachSignedHeaders(
+      friend,
+      [`${origin}/api/**`],
+      friendSigned.headers,
+    );
     const previousHistory = (await hostRead(host, signed, "")).history;
     await attachFixtureHeaders(host, signed.headers);
     await host.goto("/challenge?as=chog");
@@ -167,7 +179,7 @@ test("a confirmed fixture transfer voids the live series and locks the old owner
     expect(hidden.opponent?.locked).toBe(true);
     expect(hidden.opponent && "move" in hidden.opponent).toBe(false);
 
-    // Fixture wallet transfer; polls are held so the guest's reply is the
+    // Fixture wallet transfer; polls are held so the opponent's reply is the
     // request that observes the change and voids the series.
     await control(host, { operation: "transfer", owner: 1 });
     let release!: () => void;
@@ -183,7 +195,7 @@ test("a confirmed fixture transfer voids the live series and locks the old owner
     };
     const holdFriendReads = async (route: Route) => {
       if (route.request().method() === "GET") await held;
-      await route.continue();
+      await route.fallback();
     };
     await host.route("**/api/pvp*", hostRoute);
     await friend.route("**/api/pvp*", holdFriendReads);
@@ -235,9 +247,9 @@ test("a confirmed fixture transfer voids the live series and locks the old owner
     expect(roomView.invite).not.toBe(invite);
     expect(roomView.series).toMatchObject({ phase: "setup", outcome: null });
 
-    // The guest cannot continue the voided series either.
+    // The authenticated wallet opponent cannot continue the voided series either.
     const closed = await friend.request.post("/api/pvp", {
-      headers: { Origin: origin },
+      headers: { ...friendSigned.headers, Origin: origin },
       data: { operation: "close", invite },
     });
     expect(closed.status()).toBe(200);

@@ -11,9 +11,11 @@ import assets from "./assets.json";
 export function IdleArt({
   id,
   companion = false,
+  loading = "eager",
 }: {
   id: CharacterId;
   companion?: boolean;
+  loading?: "lazy" | "eager";
 }) {
   const { ref, failed } = useImageFailure();
   const a = assets[id][companion ? "companion" : "fighter"];
@@ -49,7 +51,7 @@ export function IdleArt({
       >
         <Image
           unoptimized
-          loading="eager"
+          loading={loading}
           ref={ref}
           src={a.path}
           alt=""

@@ -1,16 +1,21 @@
+import { CHOG_TOKEN } from "../chain/chogToken";
 import { z } from "zod";
 import { characterIdSchema, type CharacterId } from "../characters/definitions";
 
-export const ACCESS_POLICY = "soryn-access/1" as const;
+export const ACCESS_POLICY = "soryn-access/2" as const;
+// Legacy grants remain valid only as frozen evidence in existing encounters.
+export const LEGACY_ACCESS_POLICY = "soryn-access/1" as const;
+export const CHOG_REQUIREMENT = `${CHOG_TOKEN.minimumTokens} $CHOG or a Chog NFT`;
+export const HOLDER_QUALIFICATION_MESSAGE = `Hold ${CHOG_REQUIREMENT} to unlock holder access.`;
 export const TOKEN_UNLOCKS = ["aegis", "nyx"] as const;
 export const STARTERS = ["pip", "bolt", "patch", "moss"] as const;
 export const PUBLIC_FIGHTERS = [...STARTERS, ...TOKEN_UNLOCKS] as const;
-export const CHOG_MINIMUM = 50n * 10n ** 18n;
+export const CHOG_MINIMUM = CHOG_TOKEN.threshold;
 export const ACCESS_FRESH_MS = 30_000;
 export const accessKindSchema = z.enum(["token", "nft", "both"]);
 /** A server-issued, encounter-local projection. Wallets and balances stay private. */
 export const accessGrantSchema = z.strictObject({
-  policy: z.literal(ACCESS_POLICY),
+  policy: z.enum([ACCESS_POLICY, LEGACY_ACCESS_POLICY]),
   id: z.uuid(),
   actor: z.uuid(),
   kind: accessKindSchema,

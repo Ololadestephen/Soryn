@@ -1,3 +1,4 @@
+import { holderAccessEnabled, HOLDER_ACCESS_PAUSED } from "./rollout";
 import { readStored } from "../storedRecord";
 import type { NextRequest } from "next/server";
 import type { AuthService } from "../auth/service";
@@ -10,15 +11,12 @@ import type { HoldingReader } from "./reader";
 import type { PvpRoom } from "../../domain/pvp/types";
 import {
   accessGrantSchema,
+  HOLDER_QUALIFICATION_MESSAGE,
   type AccessGrant,
 } from "../../domain/access/policy";
 
 export function requireAdmissionsOpen() {
-  if (process.env.SORYN_HOLDER_ACCESS !== "enabled")
-    throw new ServiceError(
-      503,
-      "Holder access is paused. Practice and existing records remain available.",
-    );
+  if (!holderAccessEnabled()) throw new ServiceError(503, HOLDER_ACCESS_PAUSED);
 }
 /** A client-selected guest UUID must never impersonate an authenticated wallet account. */
 export function protectWalletActor(store: Store, actor: string) {
@@ -63,7 +61,7 @@ export class AccessBoundary {
     if (!player)
       throw new ServiceError(
         403,
-        "Hold at least 50 $CHOG or a Chog NFT to unlock. Practice remains available.",
+        `${HOLDER_QUALIFICATION_MESSAGE} Practice remains available.`,
       );
     return this.entitlements.resolve(player, true);
   }

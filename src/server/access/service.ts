@@ -1,8 +1,10 @@
+import { holderAccessEnabled, HOLDER_ACCESS_PAUSED } from "./rollout";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { characters } from "../../domain/characters/definitions";
 import {
   ACCESS_POLICY,
+  HOLDER_QUALIFICATION_MESSAGE,
   ACCESS_FRESH_MS,
   STARTERS,
   PUBLIC_FIGHTERS,
@@ -33,8 +35,7 @@ export class Entitlements {
     readonly store: Store,
     private readonly reader: HoldingReader = new MonadHoldings(),
     private readonly now = Date.now,
-    private readonly enabled = () =>
-      process.env.SORYN_HOLDER_ACCESS === "enabled",
+    private readonly enabled = holderAccessEnabled,
   ) {
     store.db.exec(
       "CREATE TABLE IF NOT EXISTS access_grants (actor TEXT PRIMARY KEY, record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS player_cosmetics (actor TEXT PRIMARY KEY, equipped INTEGER NOT NULL DEFAULT 0)",
@@ -47,11 +48,7 @@ export class Entitlements {
     return row ? readStored(storedSchema, row.record).grant : null;
   }
   async resolve(player: WalletPlayer, force = false): Promise<AccessGrant> {
-    if (!this.enabled())
-      throw new ServiceError(
-        503,
-        "Holder access is paused. Practice and existing records remain available.",
-      );
+    if (!this.enabled()) throw new ServiceError(503, HOLDER_ACCESS_PAUSED);
     const wallet = addressSchema.parse(player.wallet);
     const row = this.store.db
       .prepare("SELECT record FROM access_grants WHERE actor=?")
@@ -60,12 +57,13 @@ export class Entitlements {
     if (
       !force &&
       cached?.wallet === wallet &&
+      cached.grant.policy === ACCESS_POLICY &&
       cached.grant.checkedAt <= this.now() &&
       cached.grant.admissionUntil > this.now()
     )
       return cached.grant;
     // In-flight deduplication only crosses requests to the same store/wallet.
-    const key = `${player.actor}:${wallet}`;
+    const key = `${ACCESS_POLICY}:${player.actor}:${wallet}`;
     let pending = pendingByStore.get(this.store);
     if (!pending) {
       pending = new Map();
@@ -92,10 +90,7 @@ export class Entitlements {
     if (!hasToken && !hasNft) {
       if (token.status === "rejected" || nft.status === "rejected")
         throw new ServiceError(503, "Couldn't verify holdings. Try again.");
-      throw new ServiceError(
-        403,
-        "Hold at least 50 $CHOG or a Chog NFT to unlock.",
-      );
+      throw new ServiceError(403, HOLDER_QUALIFICATION_MESSAGE);
     }
     const checkedAt = this.now();
     const grant: AccessGrant = {

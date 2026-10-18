@@ -38,9 +38,8 @@ const render = (overrides: Partial<Game> = {}) =>
   renderToStaticMarkup(createElement(WalletSignIn, { game: state(overrides) }));
 
 it("keeps signed-out, preparing and no-eligible-token states distinct without granting UI access", () => {
-  expect(render()).toContain("Sign in with Privy");
+  expect(render()).toContain("Select a Chog you own");
   const preparing = render({ busy: true, providerReady: false });
-  expect(preparing).toContain('disabled=""');
   expect(preparing).toContain("Preparing wallet sign-in");
   const nonOwner = render({
     challenge: {
@@ -51,7 +50,7 @@ it("keeps signed-out, preparing and no-eligible-token states distinct without gr
   });
   expect(nonOwner).toContain("No eligible Chog found");
   expect(nonOwner).not.toContain("Verified Chog holder");
-  expect(nonOwner).toContain('href="/arena"');
+  expect(nonOwner).toContain("Review your chapter grant");
 });
 it("labels a verified grant but replaces the badge on ownership or provider failure", () => {
   const account = {

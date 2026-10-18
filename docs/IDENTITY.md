@@ -118,3 +118,12 @@ Raw [scan](evidence/identity-desloppify-scan.txt), [status](evidence/identity-de
 The real app is running at http://127.0.0.1:3000/#character using the existing local database and the public Monad RPC, with no synthetic ownership fallback. The screenshot shows signed-out connection/public-history controls, not a claimed holder session. The existing guest run was read without gameplay changes.
 
 ![Local identity preview](evidence/identity-preview.jpg)
+
+
+## Current access threshold — October 18, 2026
+
+The current qualification is at least 500 $CHOG OR a verified Chog NFT, independently. The single numeric threshold and verified decimals live in `src/domain/chain/chogToken.ts`; UI copy and read-only server balance comparisons derive from it. No dollar equivalent or spending transaction is involved.
+
+New grants use `soryn-access/2`. Persisted `soryn-access/1` grants remain parseable as frozen encounter evidence, but cannot satisfy the entitlement read cache: refresh and every new Story/queue/room admission recheck current qualification. Existing started encounters and series retain their original grants. No progress, earned title or completed record is migrated/deleted. Selected NFT competitors retain their independent fresh ownership and generation/no-contest policy.
+
+My Chog now separates private player eligibility/history from selected NFT competitor controls. The public search is `/explore`; existing `/chog/<tokenId>` URLs and consent rules remain unchanged. Holder presentation is opt-in and private; holder status or balances are not published by this dashboard.

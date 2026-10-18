@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Link from "next/link";
 import { holderAccessMessage } from "./accessMessage";
 import type { useOfficialGame } from "./useOfficialGame";
 
@@ -12,33 +11,21 @@ export function WalletSignIn({
   const [tokenId, setTokenId] = useState("");
   return (
     <div className="identity-status">
-      <span className="badge">
-        {game.error
-          ? "Holder access needs attention"
-          : game.account?.grant
-            ? "Verified Chog holder"
-            : "Chog holder access"}
-      </span>
-      <h3>
-        {game.account
-          ? `Token ${game.account.identity.tokenId}`
-          : "Bring your Chog’s next chapter."}
-      </h3>
-      <p>
-        Sign in with your wallet, then choose your Chog. No NFT transaction or
-        spending approval is needed. You review and sign the access message
-        yourself.
-      </p>
-      {!game.wallet && (
-        <button disabled={!game.providerReady} onClick={() => game.connect()}>
-          Sign in with Privy
-        </button>
+      {(game.account || game.error) && (
+        <p role="status">
+          {game.error
+            ? "Holder access needs attention"
+            : game.account?.grant
+              ? "Verified Chog holder"
+              : "Selected Chog needs fresh authorization"}
+        </p>
       )}
-      <p className="muted">
-        <Link prefetch={false} href="/arena">
-          Play with a guest starter
-        </Link>
-      </p>
+      {!game.account && (
+        <p>
+          Select a Chog you own to keep official results with its token
+          identity.
+        </p>
+      )}
       {game.authenticated && !!game.wallets.length && !game.account && (
         <form
           onSubmit={(event) => {
@@ -46,7 +33,6 @@ export function WalletSignIn({
             void game.prepare(tokenId);
           }}
         >
-          <p className="wallet-address">Privy wallet: {game.wallet}</p>
           {game.wallets.length > 1 && (
             <label>
               Wallet for this Chog
@@ -107,26 +93,14 @@ export function WalletSignIn({
           </button>
         </div>
       )}
-      {game.authenticated && (
-        <>
-          <p className="wallet-address">
-            Signed in with Privy: {game.wallet || "no connected wallet"}
-          </p>
-          {game.account && !game.account.grant && (
-            <p>
-              Holder access unavailable. Check that you still own this Chog,
-              then sign in again. Guest practice and public chapters remain
-              available.
-            </p>
-          )}
-          <button
-            className="secondary"
-            disabled={game.busy}
-            onClick={() => void game.logout()}
-          >
-            Sign out
-          </button>
-        </>
+      {game.account && !game.account.grant && (
+        <button
+          className="secondary"
+          disabled={game.busy}
+          onClick={() => void game.changeToken()}
+        >
+          Choose a Chog again
+        </button>
       )}
       {game.busy && (
         <p role="status">

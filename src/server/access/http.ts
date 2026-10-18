@@ -1,3 +1,4 @@
+import { holderAccessEnabled, HOLDER_ACCESS_PAUSED } from "./rollout";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import type { NextRequest } from "next/server";
@@ -55,8 +56,11 @@ export function createAccessHandlers(
     } catch (error) {
       if (error instanceof ServiceError && error.status === 401)
         return response({
-          status: "signed-out",
-          message: "Connect wallet",
+          status: holderAccessEnabled() ? "signed-out" : "paused",
+          message: holderAccessEnabled()
+            ? "Connect wallet"
+            : HOLDER_ACCESS_PAUSED,
+          authenticated: false,
           fighters: ["pip", "bolt", "patch", "moss"],
           checkedAt: null,
         });
@@ -99,14 +103,19 @@ export function createAccessHandlers(
         });
         return reply;
       }
-      const player = await login.player(request);
-      store.rateLimit(`access-write:${player.actor}`, Date.now(), 30);
+      // Origin-checked, cookie-scoped revocation must also work after Privy expires.
+      // It can only revoke this browser's presented session, never establish authority.
       if (input.operation === "logout") {
         login.logout(request);
         const reply = response({ signedOut: true });
-        reply.cookies.delete("chog_wallet");
+        reply.cookies.set("chog_wallet", "", {
+          ...guestCookieOptions(request, origin),
+          maxAge: 0,
+        });
         return reply;
       }
+      const player = await login.player(request);
+      store.rateLimit(`access-write:${player.actor}`, Date.now(), 30);
       if (input.operation === "equip")
         return response(await entitlements.equip(player, input.equipped));
       return response(await entitlements.view(player, true));

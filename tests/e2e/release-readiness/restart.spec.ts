@@ -11,6 +11,11 @@ import { join, resolve } from "node:path";
 import { once } from "node:events";
 import { expect, test } from "@playwright/test";
 import {
+  fixtureReset,
+  fixtureWalletAccess,
+} from "../../browser-support/holder";
+import { attachSignedHeaders } from "./support";
+import {
   choose,
   continueBattle,
   evidence,
@@ -59,6 +64,11 @@ test("one server recovers a locked public battle and its intermission across rea
           ...process.env,
           APP_ORIGIN: baseURL,
           CHOG_DB_PATH: database,
+          SORYN_HOLDER_ACCESS: "enabled",
+          MONAD_RPC_URL: "https://127.0.0.1:3200",
+          CHOG_PRIVY_SERVER_APP_ID: "chog-character-fixture",
+          PRIVY_VERIFICATION_MODE: "pem",
+          PRIVY_VERIFICATION_KEY: process.env.CHOG_E2E_JWT_PUBLIC ?? "",
           CHOG_PVP_TIMERS: "test",
           CHOG_PVP_MOVE_MS: "30000",
           CHOG_PVP_PRESENT_MS: "500",
@@ -114,13 +124,38 @@ test("one server recovers a locked public battle and its intermission across rea
     await start();
     players = await pair(browser, baseURL, "server-restart");
     const { a, b } = players;
+    await fixtureReset(a.request);
+    const left = await fixtureWalletAccess(a.request, 2, baseURL);
+    const right = await fixtureWalletAccess(b.request, 3, baseURL);
+    await attachSignedHeaders(a, [`${baseURL}/api/**`], left.headers);
+    await attachSignedHeaders(b, [`${baseURL}/api/**`], right.headers);
     const invite = await publicPair(a, b);
+    const matchURL = a.url();
+    async function restartWithoutPolling() {
+      // Finish real requests while the server is alive, then preserve browser
+      // cookies across a genuine process restart without polling a closed port.
+      await Promise.all([a.goto("about:blank"), b.goto("about:blank")]);
+      await Promise.all([
+        a.unrouteAll({ behavior: "wait" }),
+        b.unrouteAll({ behavior: "wait" }),
+      ]);
+      await stop();
+      await start();
+      await attachSignedHeaders(a, [`${baseURL}/api/**`], left.headers);
+      await attachSignedHeaders(b, [`${baseURL}/api/**`], right.headers);
+      await Promise.all([a.goto(matchURL), b.goto(matchURL)]);
+    }
     const locked = await choose(a, "special");
     const lockDeadline = locked.deadlineAt;
-    await stop();
-    await start();
-    await a.reload();
-    await b.reload();
+    for (const index of [2, 3])
+      expect(
+        (
+          await a.request.post("https://127.0.0.1:3200/control", {
+            data: { operation: "balance", index, units: "0" },
+          })
+        ).ok(),
+      ).toBe(true);
+    await restartWithoutPolling();
     await expect(a.locator(".turn-readiness")).toContainText("Move locked");
     const recovered = await room(a, invite);
     expect(recovered.battle!.id).toBe(locked.battle!.id);
@@ -135,10 +170,7 @@ test("one server recovers a locked public battle and its intermission across rea
       you: 1,
       opponent: 0,
     });
-    await stop();
-    await start();
-    await a.reload();
-    await b.reload();
+    await restartWithoutPolling();
     const resumed = await room(a, invite);
     expect(resumed.battle!.id).toBe(between.battle!.id);
     expect(resumed.series).toEqual(between.series);
@@ -153,6 +185,16 @@ test("one server recovers a locked public battle and its intermission across rea
     await a.screenshot({ path: `${evidence}/restart-intermission.png` });
     await continueBattle(a, b);
     const next = await room(a, invite);
+    for (const [page, session] of [
+      [a, left],
+      [b, right],
+    ] as const) {
+      const eligibility = await page.request.post("/api/access", {
+        headers: session.headers,
+        data: { operation: "refresh" },
+      });
+      expect((await eligibility.json()).status).toBe("practice-only");
+    }
     expect(next.battle!.id).not.toBe(between.battle!.id);
     expect(next.series).toMatchObject({ battle: 2, you: 1, opponent: 0 });
     writeFileSync(
@@ -160,7 +202,7 @@ test("one server recovers a locked public battle and its intermission across rea
       JSON.stringify(
         {
           source:
-            "Real SIGTERM, awaited exit and new Node process; same isolated SQLite path; real public queue and moves; no database mutation",
+            "Real SIGTERM, awaited exit and new Node process; same isolated SQLite path; real authenticated token-only fixture queue and moves; both fixture balances set to zero before restart; frozen series continues without database mutation",
           processes,
           locked: recovered,
           intermission: resumed,

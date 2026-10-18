@@ -1,3 +1,4 @@
+import { holderAccessEnabled } from "../access/rollout";
 import { readStored } from "../storedRecord";
 import { accessGrantSchema } from "../../domain/access/policy";
 import { randomUUID } from "node:crypto";
@@ -348,7 +349,7 @@ export class QueueService {
     }
   }
   private sweep(now: number) {
-    if (process.env.SORYN_HOLDER_ACCESS === "enabled") {
+    if (holderAccessEnabled()) {
       // Waiting legacy guests are not started encounters; preserve matched rooms.
       this.store.db
         .prepare(

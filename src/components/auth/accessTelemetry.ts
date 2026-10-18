@@ -6,8 +6,9 @@ export type LoginStage =
   | "signature-request"
   | "signature-returned"
   | "session-ready"
+  | "eligibility-start"
   | "eligibility-ready";
-export function loginStage(stage: LoginStage) {
+export function loginStage(stage: LoginStage, status?: string) {
   if (typeof window === "undefined") return;
   const at = performance.now();
   performance.mark(`soryn:${stage}`);
@@ -18,7 +19,9 @@ export function loginStage(stage: LoginStage) {
     ) as { stage: LoginStage; at: number }[];
     sessionStorage.setItem(
       "soryn-login-stages",
-      JSON.stringify([...previous, { stage, at }].slice(-40)),
+      JSON.stringify(
+        [...previous, { stage, at, ...(status ? { status } : {}) }].slice(-40),
+      ),
     );
   } catch {
     /* Timing storage is optional and never blocks sign-in. */

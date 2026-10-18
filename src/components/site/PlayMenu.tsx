@@ -1,4 +1,5 @@
 "use client";
+import { CHOG_REQUIREMENT } from "../../domain/access/policy";
 import { playMenuSchema } from "../../domain/responses";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -70,8 +71,8 @@ export function PlayMenu() {
         </p>
       )}
       <p className="muted">
-        Story and player battles require 50 $CHOG or a Chog NFT. No tokens are
-        spent.
+        When available, Story and player battles require {CHOG_REQUIREMENT}. No
+        tokens are spent.
       </p>
       <p>
         <Link href="/arena?as=holder">Holder Practice</Link> ·{" "}

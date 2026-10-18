@@ -1,11 +1,10 @@
 "use client";
 import { CharacterSelection } from "../characters/Selection";
-import { IdentityIntro } from "./IdentityIntro";
 import { WalletSignIn } from "./WalletSignIn";
 import { useOfficialGame } from "./useOfficialGame";
 import { Adventure } from "../adventure/Adventure";
 import { OfficialPublication } from "./OfficialPublication";
-import { PublicChapters, PublicChapterLookup } from "./PublicChapters";
+import { PublicChapters } from "./PublicChapters";
 import { OfficialCombat } from "../combat/Official";
 import { TokenPicker } from "./TokenPicker";
 
@@ -19,21 +18,21 @@ export function OfficialExperience({
     <section
       id="character"
       className="official-identity"
-      aria-labelledby="identity-title"
+      aria-label="NFT competitor controls"
     >
-      <div className="identity">
-        <IdentityIntro />
-        <WalletSignIn game={game} />
-      </div>
+      <WalletSignIn game={game} />
       {game.account?.grant && (
         <>
-          <OfficialCombat
-            key={`${game.account.wallet}:${game.account.identity.tokenId}`}
-          />
           <TokenPicker
             key={`tokens:${game.account.wallet}:${game.account.identity.tokenId}`}
             onChangeToken={() => void game.changeToken()}
           />
+          <details className="combat-history">
+            <summary>Official NFT Practice</summary>
+            <OfficialCombat
+              key={`${game.account.wallet}:${game.account.identity.tokenId}`}
+            />
+          </details>
           <details className="combat-history">
             <summary>Official sandwich adventures and ghost chapters</summary>
             {(!game.run || game.run.observation.outcome) && (
@@ -68,10 +67,13 @@ export function OfficialExperience({
         </>
       )}
       {game.account && (
-        <PublicChapters
-          tokenId={game.account.identity.tokenId}
-          chapters={game.chapters}
-        />
+        <details>
+          <summary>Public adventure chapters</summary>
+          <PublicChapters
+            tokenId={game.account.identity.tokenId}
+            chapters={game.chapters}
+          />
+        </details>
       )}
       {!!game.withdrawals.length && (
         <div className="panel">
@@ -96,7 +98,6 @@ export function OfficialExperience({
           ))}
         </div>
       )}
-      {!game.account && <PublicChapterLookup />}
     </section>
   );
 }

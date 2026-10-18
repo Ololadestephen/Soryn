@@ -10,10 +10,16 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { z } from "zod";
-import { accessViewSchema, type AccessView } from "../../domain/access/policy";
+import {
+  CHOG_REQUIREMENT,
+  accessViewSchema,
+  type AccessView,
+} from "../../domain/access/policy";
 import { useWalletAdapter } from "./WalletAdapter";
 import { request } from "../request";
 import { hexMessage, selectedWallet } from "../identity/wallet";
+import { HolderCosmeticToggle } from "./HolderCosmeticToggle";
+import { MyChogPanel } from "../identity/MyChogPanel";
 import { loginStage } from "./accessTelemetry";
 
 const WalletPlay = createContext(false);
@@ -27,14 +33,20 @@ export function useAccessState() {
 export function AccessGate({
   children,
   recordsOnly = false,
+  profile = false,
 }: {
   children: React.ReactNode;
   recordsOnly?: boolean;
+  profile?: boolean;
 }) {
   const wallet = useWalletAdapter();
   const [view, setView] = useState<AccessView | null>(null),
-    [busy, setBusy] = useState(false),
+    [phase, setPhase] = useState<"sign-in" | "holdings" | "sign-out" | null>(
+      null,
+    ),
     [error, setError] = useState("");
+  const busy = phase !== null;
+  const refreshGeneration = useRef(0);
   const [saved, setSaved] = useState(false),
     [readRecords, setReadRecords] = useState(false);
   // Provider bookkeeping can rerender without changing the selected principal.
@@ -55,7 +67,8 @@ export function AccessGate({
       undefined,
       await headers(),
     );
-    if (next.authenticated) loginStage("eligibility-ready");
+    if (next.authenticated && !recordsOnly)
+      loginStage("eligibility-ready", next.status);
     // Legacy encounters and already-frozen wallet encounters can finish even after balance loss.
     const intent = next.authenticated
       ? { ...(await headers()), "x-soryn-play": "wallet" }
@@ -89,15 +102,16 @@ export function AccessGate({
   }, [headers, recordsOnly]);
   useEffect(() => {
     let alive = true;
+    const generation = ++refreshGeneration.current;
     void refresh()
       .then((next) => {
-        if (alive) {
+        if (alive && generation === refreshGeneration.current) {
           setView(next.view);
           setSaved(next.saved);
         }
       })
       .catch((problem: unknown) => {
-        if (alive)
+        if (alive && generation === refreshGeneration.current)
           setError(
             problem instanceof Error
               ? problem.message
@@ -109,7 +123,8 @@ export function AccessGate({
     };
   }, [refresh, wallet.authenticated, wallet.address]);
   async function signIn() {
-    setBusy(true);
+    ++refreshGeneration.current;
+    setPhase("sign-in");
     setError("");
     try {
       const proof = await wallet.headers();
@@ -138,6 +153,8 @@ export function AccessGate({
         proof,
       );
       loginStage("session-ready");
+      setPhase("holdings");
+      loginStage("eligibility-start");
       const next = await refresh();
       setView(next.view);
       setSaved(next.saved);
@@ -148,22 +165,24 @@ export function AccessGate({
           : "Sign-in unavailable. Try again.",
       );
     } finally {
-      setBusy(false);
+      setPhase(null);
     }
   }
   async function recheck() {
-    setBusy(true);
+    ++refreshGeneration.current;
+    setPhase("holdings");
+    loginStage("eligibility-start");
     setError("");
     try {
-      setView(
-        await request(
-          "/api/access",
-          accessViewSchema.parse,
-          { operation: "refresh" },
-          undefined,
-          await headers(),
-        ),
+      const next = await request(
+        "/api/access",
+        accessViewSchema.parse,
+        { operation: "refresh" },
+        undefined,
+        await headers(),
       );
+      loginStage("eligibility-ready", next.status);
+      setView(next);
     } catch (problem) {
       setError(
         problem instanceof Error
@@ -171,11 +190,12 @@ export function AccessGate({
           : "Couldn't verify holdings. Try again.",
       );
     } finally {
-      setBusy(false);
+      setPhase(null);
     }
   }
   async function equip(equipped: boolean) {
-    setBusy(true);
+    ++refreshGeneration.current;
+    setPhase("holdings");
     setError("");
     try {
       setView(
@@ -194,7 +214,37 @@ export function AccessGate({
           : "Could not equip. Try again.",
       );
     } finally {
-      setBusy(false);
+      setPhase(null);
+    }
+  }
+  async function signOut() {
+    ++refreshGeneration.current;
+    setPhase("sign-out");
+    setError("");
+    try {
+      await request(
+        "/api/access",
+        (value) => z.object({ signedOut: z.literal(true) }).parse(value),
+        { operation: "logout" },
+      );
+      setView({
+        status: "signed-out",
+        message: "Connect wallet",
+        fighters: [],
+        checkedAt: null,
+        authenticated: false,
+      });
+      setSaved(false);
+      setReadRecords(false);
+      await wallet.logout();
+    } catch (problem) {
+      setError(
+        problem instanceof Error
+          ? problem.message
+          : "Sign-out failed. Try again.",
+      );
+    } finally {
+      setPhase(null);
     }
   }
   const qualified =
@@ -203,6 +253,26 @@ export function AccessGate({
     view?.status === "both";
   const signedIn = !!view?.authenticated;
   const usable = qualified || saved || (recordsOnly && signedIn) || readRecords;
+  if (profile)
+    return (
+      <AccessState value={view}>
+        <WalletPlay value={signedIn}>
+          <MyChogPanel
+            wallet={wallet}
+            view={view}
+            busy={busy}
+            phase={phase}
+            error={error}
+            signIn={signIn}
+            recheck={recheck}
+            signOut={signOut}
+            equip={equip}
+          >
+            {children}
+          </MyChogPanel>
+        </WalletPlay>
+      </AccessState>
+    );
   return (
     <AccessState value={view}>
       <WalletPlay value={signedIn}>
@@ -210,6 +280,19 @@ export function AccessGate({
           className={`holder-access${usable ? " is-compact" : ""}`}
           aria-label="Soryn access"
         >
+          {(busy || !view) && (
+            <p role="status">
+              {phase === "sign-in"
+                ? "Signing in to your wallet…"
+                : phase === "holdings"
+                  ? "Verifying holdings…"
+                  : phase === "sign-out"
+                    ? "Signing out…"
+                    : !wallet.ready
+                      ? "Loading wallet sign-in…"
+                      : "Checking your session…"}
+            </p>
+          )}
           {qualified ? (
             <details>
               <summary>
@@ -246,16 +329,11 @@ export function AccessGate({
                 history,{" "}
                 <Link href="/character">select your Chog in My Chog</Link>.
               </p>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={!!view.equipped}
-                  disabled={busy}
-                  onChange={(event) => void equip(event.target.checked)}
-                />
-                Equip holder frame, arena light and companion celebration for
-                new encounters
-              </label>
+              <HolderCosmeticToggle
+                equipped={!!view.equipped}
+                busy={busy}
+                equip={equip}
+              />
               <p>
                 Applied to your presentation. This does not publish your
                 profile, wallet or results.
@@ -263,13 +341,13 @@ export function AccessGate({
             </details>
           ) : (
             <>
-              <h2>{!view || busy ? "Checking holdings…" : "Holder access"}</h2>
+              <h2>Holder access</h2>
               {view?.message && view.message !== "Connect wallet" && (
                 <p>{view.message}</p>
               )}
               <p>
-                50 $CHOG or a Chog NFT unlocks Story and player battles. No
-                tokens are spent.
+                When holder access is open, {CHOG_REQUIREMENT} unlocks Story and
+                player battles. No tokens are spent.
               </p>
               <div className="button-row">
                 <Link className="button" href="/arena">
@@ -336,6 +414,15 @@ export function AccessGate({
           )}
           {readRecords && !qualified && (
             <p>Saved records are readable. New gameplay remains locked.</p>
+          )}
+          {wallet.authenticated && (
+            <button
+              className="secondary"
+              disabled={busy}
+              onClick={() => void signOut()}
+            >
+              Sign out
+            </button>
           )}
           {error && <p role="alert">{error}</p>}
         </section>

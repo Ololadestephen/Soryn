@@ -1,3 +1,4 @@
+import { CHOG_TOKEN } from "../../domain/chain/chogToken";
 export interface HelpSection {
   id: string;
   title: string;
@@ -45,8 +46,7 @@ export const helpSections: readonly HelpSection[] = [
     questions: [
       {
         question: "Which modes are free, and which require holdings?",
-        answer:
-          "Guest Practice is available without holdings. The holder-access policy for Story and player battles requires at least 50 $CHOG or a qualifying Chog NFT on Monad Mainnet. These holdings are checked, not spent. Holder access can be paused by the operator; a qualifying wallet does not override a paused service. Practice and existing records remain available during that pause.",
+        answer: `Guest Practice is available without holdings. The holder-access policy for Story and player battles requires at least ${CHOG_TOKEN.minimumTokens} $CHOG or a qualifying Chog NFT on Monad Mainnet. These holdings are checked, not spent. Holder access can be paused by the operator; a qualifying wallet does not override a paused service. Practice and existing records remain available during that pause.`,
       },
       {
         question: "Do more tokens make my fighter stronger?",
@@ -66,7 +66,7 @@ export const helpSections: readonly HelpSection[] = [
       {
         question: "How do I sign in, and why is a signature requested?",
         answer:
-          "Use Connect wallet to open Privy, then follow the in-app authentication steps. A login or identity signature establishes control for this app; it is bound to a wallet, origin, nonce and expiry. Review the exact message in your wallet. Expired or already-used challenges must be replaced with a fresh one. Do not sign a message you do not understand.",
+          "Use Connect wallet to open Privy, then follow the in-app authentication steps. A login or identity signature establishes control for this app; it is bound to a wallet, origin, nonce and expiry. Review the exact message in your wallet. Expired or already-used challenges must be replaced with a fresh one. Do not sign a message you do not understand. Use Sign out in the holder-access panel to revoke the Soryn session before disconnecting Privy. Reconnecting requires a fresh sign-in.",
       },
       {
         question: "Does Soryn need my seed phrase or a transaction?",

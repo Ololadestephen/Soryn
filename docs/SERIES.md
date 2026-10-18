@@ -12,7 +12,7 @@ A series is first to two battle wins. A round is one pair of combat choices. A b
 - A drawn battle gives no win and is replayed. Two drawn battles in a row end the series as a draw. There is no health tie-break.
 - One missed turn still uses Guard when Guard is legal. Two consecutive misses forfeit that battle and the series. Both players missing ends the battle and the series as a no contest.
 - Surrender ends the series as a forfeit.
-- A rematch is available only after the series is complete. Both players must accept. That creates a new series, so fighters can change.
+- Completed and abandoned series are archived. A rematch uses a fresh invitation or queue admission with fresh eligibility; old-room rematch/setup requests return 409. The archived result remains final.
 
 The same rules are shown under Match help in a private room.
 
@@ -51,3 +51,11 @@ Official result rows are private initially and idempotent on `(token, kind, sour
 An interruption is retained privately. It is publicly visible only if its participating keeper publishes it under the same consent policy. This does **not** guarantee a public deterrent against transferring to avoid a loss.
 
 Current implementation evidence and limitations: [M7 release report](M7_RELEASE_REPORT.md).
+
+## Holder-first wallet eligibility — October 18, 2026
+
+Guests retain four-starter Practice and private guest history. An authenticated wallet holding at least 500 $CHOG (18 decimals, base-unit comparison) or a verified Chog NFT qualifies independently for Story and player modes while the operator gate is open. Token eligibility adds Aegis/Nyx; NFT eligibility permits the broader private roster. Both use the same public six-fighter pool. Holdings are checked without spending assets and never scale combat stats.
+
+A wallet-eligibility grant freezes through an already-started series or current Story encounter/interaction. New invitations, queue admission/acceptance, next Story encounters and holder Practice starts recheck holdings. A provider failure is verification-unavailable, not insufficient holdings. One successfully verified route can qualify even when the other route fails. This wallet-level eligibility is distinct from selecting an official NFT competitor: NFT-bound actions still require fresh generation/current-owner evidence and the no-contest, outage, reservation and consent policies above.
+
+`SORYN_HOLDER_ACCESS=enabled` is the explicit operator rollout switch. Unset/disabled refuses new full-game admissions; it does not erase saves or extend NFT authority. Existing frozen encounters and authenticated private records can remain accessible. Real-holder sign-in and physical mobile handoff are separate acceptance gates; fixture tests do not establish them.

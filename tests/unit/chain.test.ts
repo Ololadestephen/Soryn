@@ -19,14 +19,14 @@ const claim = {
 const contract = "0x2222222222222222222222222222222222222222";
 
 describe("chain references", () => {
-  it("keeps the Genesis collection and uses the approved 50-token threshold", () => {
+  it("keeps the Genesis collection and uses the approved 500-token threshold", () => {
     expect(CHAIN_ID).toBe(143);
     expect(COLLECTION).toBe("0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763");
     expect(CHOG_TOKEN.address).toBe(
       "0x350035555E10d9AfAF1566AaebfCeD5BA6C27777",
     );
     expect(CHOG_TOKEN.decimals).toBe(18);
-    expect(CHOG_TOKEN.threshold).toBe(50n * 10n ** 18n);
+    expect(CHOG_TOKEN.threshold).toBe(500n * 10n ** 18n);
     expect(supporterStanding(10n ** 18n, null)).toBe("unconfigured");
     expect(supporterStanding(2n, 1n)).toBe("supporter");
     expect(supporterStanding(1n, 2n)).toBe("below");

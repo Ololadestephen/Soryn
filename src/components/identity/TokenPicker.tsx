@@ -4,21 +4,28 @@ import { ignoreResponse } from "../request";
 import { useEffect, useEffectEvent, useState } from "react";
 import Link from "next/link";
 import type { CompetitorView } from "../../domain/competitor";
-import { request } from "../request";
+import { request, RequestError } from "../request";
 import { useWalletAdapter } from "../auth/WalletAdapter";
 
-export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
+export function TokenPicker({
+  onChangeToken,
+  historyOnly = false,
+}: {
+  onChangeToken?: () => void;
+  historyOnly?: boolean;
+}) {
   const adapter = useWalletAdapter();
   const [reply, setReply] = useState<CompetitorView | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(historyOnly);
   const getHeaders = useEffectEvent(() => adapter.headers());
   useEffect(() => {
     const abort = new AbortController();
     void getHeaders()
       .then((headers) =>
         request(
-          "/api/competitor",
+          `/api/competitor${historyOnly ? "?history=1" : ""}`,
           competitorViewSchema.parse,
           undefined,
           abort.signal,
@@ -32,15 +39,19 @@ export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
         if (!abort.signal.aborted) {
           setReply(null);
           setError(
-            problem instanceof Error
-              ? problem.message
-              : "Verification unavailable.",
+            historyOnly &&
+              problem instanceof RequestError &&
+              problem.status === 401
+              ? "No linked NFT session is available in this browser. Your wallet history remains separate."
+              : problem instanceof Error
+                ? problem.message
+                : "Verification unavailable.",
           );
         }
       });
     return () => abort.abort();
-  }, [adapter.address, adapter.authenticated]);
-  async function refresh(history = false) {
+  }, [adapter.address, adapter.authenticated, historyOnly]);
+  async function refresh(history = historyOnly) {
     setReply(
       await request(
         "/api/competitor" + (history ? "?history=1" : ""),
@@ -51,7 +62,7 @@ export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
       ),
     );
   }
-  async function act(input?: Record<string, unknown>, history = false) {
+  async function act(input?: Record<string, unknown>, history = historyOnly) {
     setBusy(true);
     setError("");
     try {
@@ -87,17 +98,16 @@ export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
   }
   return (
     <section className="panel" aria-labelledby="competitor-title">
-      <h3 id="competitor-title">Your Chog is your persistent competitor.</h3>
-      <p>
-        Choose its fighter and companion in battle setup. These are Soryn
-        loadouts, not NFT traits. Official results stay associated with the
-        token; you choose which results become public.
-      </p>
+      <h3 id="competitor-title">
+        {historyOnly ? "Private NFT records" : "Selected competitor"}
+      </h3>
       {error && <p role="alert">{error}</p>}
       {!reply && !error && <p role="status">Verifying your selected Chog…</p>}
       {reply && (
         <>
-          <h4>Selected competitor · token {reply.identity.tokenId}</h4>
+          <p>
+            <strong>Chog · token {reply.identity.tokenId}</strong>
+          </p>
           <p>
             {reply.verifiedAt
               ? "Ownership verified at " +
@@ -134,70 +144,82 @@ export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
               )}
             </div>
           )}
-          <p>
-            Results remain private until you publish. Public entries show this
-            token, your chosen alias, loadout, result and date. Published
-            history follows the token with its original attribution. Private
-            sessions and unfinished Story runs stay with their keeper.
-          </p>
-          <button
-            className="secondary"
-            disabled={busy || !!reply.active}
-            onClick={onChangeToken}
-          >
-            Choose another Chog
-          </button>
+          <details>
+            <summary>Record privacy and transfers</summary>
+            <p>
+              Results remain private until you publish. Public entries show this
+              token, your chosen alias, loadout, result and date. Published
+              history follows the token with its original attribution. Private
+              sessions and unfinished Story runs stay with their keeper.
+            </p>
+          </details>
+          {!historyOnly && onChangeToken && (
+            <>
+              <button
+                className="secondary"
+                disabled={busy || !!reply.active}
+                onClick={onChangeToken}
+              >
+                Choose another Chog
+              </button>
+            </>
+          )}
           {reply.active && (
             <p>
               Finish or cancel the current encounter before changing your
               selection.
             </p>
           )}
-          <h4>Your private results and publication consent</h4>
-          {!reply.entries.length && <p>No private results yet.</p>}
-          {reply.entries.map((entry) => (
-            <article className="panel" key={entry.id}>
-              <h5>
-                {entry.headline} · {entry.kind.replaceAll("-", " ")}
-              </h5>
-              <p>
-                {entry.fighter} ·{" "}
-                {new Date(entry.recordedAt).toISOString().slice(0, 10)} ·{" "}
-                {entry.publication}
-              </p>
-              {entry.canPublish && (
-                <form onSubmit={(event) => publish(event, entry.id)}>
-                  <label>
-                    Public attribution alias
-                    <input
-                      name="alias"
-                      required
-                      minLength={1}
-                      maxLength={32}
-                      autoComplete="off"
-                    />
-                  </label>
-                  <label className="consent">
-                    <input type="checkbox" name="consent" required />
-                    Publish this result and alias on this Chog’s public Soryn
-                    profile.
-                  </label>
-                  <button disabled={busy}>Publish this result</button>
-                </form>
-              )}
-              {entry.publication === "published" && (
-                <button
-                  className="secondary"
-                  disabled={busy}
-                  onClick={() =>
-                    void act({ operation: "withdraw", id: entry.id }, true)
-                  }
-                >
-                  Withdraw this publication
-                </button>
-              )}
-            </article>
-          ))}
+          <details
+            open={historyOpen}
+            onToggle={(event) => setHistoryOpen(event.currentTarget.open)}
+          >
+            <summary>Your private results and publication consent</summary>
+            {!reply.entries.length && <p>No private results yet.</p>}
+            {reply.entries.map((entry) => (
+              <article className="panel" key={entry.id}>
+                <h5>
+                  {entry.headline} · {entry.kind.replaceAll("-", " ")}
+                </h5>
+                <p>
+                  {entry.fighter} ·{" "}
+                  {new Date(entry.recordedAt).toISOString().slice(0, 10)} ·{" "}
+                  {entry.publication}
+                </p>
+                {entry.canPublish && (
+                  <form onSubmit={(event) => publish(event, entry.id)}>
+                    <label>
+                      Public attribution alias
+                      <input
+                        name="alias"
+                        required
+                        minLength={1}
+                        maxLength={32}
+                        autoComplete="off"
+                      />
+                    </label>
+                    <label className="consent">
+                      <input type="checkbox" name="consent" required />
+                      Publish this result and alias on this Chog’s public Soryn
+                      profile.
+                    </label>
+                    <button disabled={busy}>Publish this result</button>
+                  </form>
+                )}
+                {entry.publication === "published" && (
+                  <button
+                    className="secondary"
+                    disabled={busy}
+                    onClick={() =>
+                      void act({ operation: "withdraw", id: entry.id }, true)
+                    }
+                  >
+                    Withdraw this publication
+                  </button>
+                )}
+              </article>
+            ))}
+          </details>
         </>
       )}
       <div className="button-row">
@@ -211,7 +233,10 @@ export function TokenPicker({ onChangeToken }: { onChangeToken: () => void }) {
         <button
           className="secondary"
           disabled={busy}
-          onClick={() => void act(undefined, true)}
+          onClick={() => {
+            setHistoryOpen(true);
+            void act(undefined, true);
+          }}
         >
           View my private history
         </button>

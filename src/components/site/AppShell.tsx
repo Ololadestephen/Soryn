@@ -22,7 +22,10 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [label, title] = headings[pathname] ?? headings["/play"];
   useEffect(() => {
     if (previousPath.current !== pathname)
-      document.getElementById("page-title")?.focus({ preventScroll: true });
+      (
+        document.getElementById("page-title") ??
+        document.getElementById("page-content")
+      )?.focus({ preventScroll: true });
     previousPath.current = pathname;
   }, [pathname]);
   return (
@@ -35,13 +38,17 @@ export function AppShell({ children }: { children: ReactNode }) {
       </a>
       <SiteHeader current={pathname} />
       <main id="page-content" className="app-content" tabIndex={-1}>
-        <div className="page-intro">
-          <p className="eyebrow">{label}</p>
-          <h1 id="page-title" tabIndex={-1}>
-            {title}
-          </h1>
-        </div>
-        {pathname !== "/play" && <GuestRequestError {...game} />}
+        {pathname !== "/character" && (
+          <div className="page-intro">
+            <p className="eyebrow">{label}</p>
+            <h1 id="page-title" tabIndex={-1}>
+              {title}
+            </h1>
+          </div>
+        )}
+        {pathname !== "/play" && pathname !== "/character" && (
+          <GuestRequestError {...game} />
+        )}
         {(pathname === "/play" ||
           pathname === "/journal" ||
           pathname === "/museum") && (

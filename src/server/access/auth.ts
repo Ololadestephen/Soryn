@@ -184,10 +184,12 @@ export class WalletAccessAuth {
     return player;
   }
   logout(request: NextRequest) {
-    this.auth.logout(walletSecret(request));
+    const secret = request.cookies.get("chog_wallet")?.value;
+    if (!secret || !/^[0-9a-f]{64}$/.test(secret)) return;
+    this.auth.logout(secret);
     this.store.db
       .prepare("DELETE FROM wallet_access_sessions WHERE secret_hash=?")
-      .run(secretHash(walletSecret(request)));
+      .run(secretHash(secret));
   }
 }
 export function walletPlay(request: NextRequest) {

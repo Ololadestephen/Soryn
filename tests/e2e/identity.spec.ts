@@ -7,21 +7,17 @@ test("Privy configuration state is honest and leaves guest adventures playable",
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/character");
-  await expect(page.locator(".identity-status")).toBeVisible();
-  const setupPending = await page
-    .getByRole("heading", { name: "Privy setup is pending." })
-    .isVisible();
-  if (setupPending)
-    await expect(
-      page.getByRole("button", { name: "Sign in with Privy" }),
-    ).toBeDisabled();
-  else
-    await expect(
-      page.getByRole("button", { name: "Sign in with Privy" }),
-    ).toBeVisible(); // Provider readiness depends on this test origin and network; guest play must remain usable.
   await expect(
-    page.getByRole("button", { name: "Connect wallet", exact: true }),
-  ).toHaveCount(0);
+    page.getByRole("heading", { name: "My Chog", exact: true }),
+  ).toHaveCount(1);
+  const connect = page.getByRole("button", {
+    name: "Connect wallet",
+    exact: true,
+  });
+  await expect(connect).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Explore Chogs", exact: true }),
+  ).toHaveAttribute("href", "/explore");
   const result = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
     .analyze();
@@ -38,7 +34,7 @@ test("public token history requires no Privy login and protected APIs fail close
   page,
   request,
 }) => {
-  await page.goto("/character");
+  await page.goto("/explore");
   await page.getByLabel("Public history token ID").fill("276");
   await page.getByRole("button", { name: "Read public chapters" }).click();
   await expect(page.locator(".public-chapters")).toContainText("Token 276");

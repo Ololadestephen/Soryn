@@ -1,3 +1,4 @@
+import { holderAccessEnabled } from "../access/rollout";
 import { randomBytes, randomInt, randomUUID } from "node:crypto";
 import {
   character,
@@ -777,10 +778,7 @@ export class PvpService {
         completed: [],
         timers: this.timers,
         series: freshSeries(this.ids.match()),
-        roster:
-          process.env.SORYN_HOLDER_ACCESS === "enabled"
-            ? "public-six"
-            : "starters",
+        roster: holderAccessEnabled() ? "public-six" : "starters",
         origin: "public",
         ownershipStallSince: null,
       };
