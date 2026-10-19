@@ -37,7 +37,10 @@ export function PrivyWalletBridge({
     if (activeAddress && privy.authenticated) loginStage("wallet-selected");
   }, [activeAddress, privy.authenticated]);
   const adapter: WalletAdapter = {
-    ready: privy.ready && connected.ready,
+    ready:
+      privy.ready &&
+      connected.ready &&
+      (!privy.authenticated || !!identityToken),
     authenticated: privy.authenticated,
     address,
     wallets: wallets.map((wallet) => ({

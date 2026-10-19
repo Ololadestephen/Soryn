@@ -1,16 +1,8 @@
 "use client";
-import dynamic from "next/dynamic";
+import { WalletBoundary } from "../auth/WalletSession";
 import { MyChogEntry } from "./MyChogPanel";
 import { MyChog } from "./MyChog";
 
-const PrivyIdentity = dynamic(() => import("../auth/PrivyIdentity"), {
-  ssr: false,
-  loading: () => (
-    <div className="mychog-page">
-      <MyChogEntry ready={false} message="Loading wallet sign-in…" />
-    </div>
-  ),
-});
 export function OfficialIdentity({
   onMuseumChanged,
 }: {
@@ -19,9 +11,9 @@ export function OfficialIdentity({
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
   if (appId)
     return (
-      <PrivyIdentity appId={appId}>
+      <WalletBoundary>
         <MyChog onMuseumChanged={onMuseumChanged} />
-      </PrivyIdentity>
+      </WalletBoundary>
     );
   return (
     <div className="mychog-page">

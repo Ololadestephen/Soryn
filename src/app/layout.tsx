@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WalletSession } from "../components/auth/WalletSession";
 import "./globals.css";
 import "./layout.css";
 import "./landing.css";
@@ -53,7 +54,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <WalletSession>{children}</WalletSession>
+      </body>
     </html>
   );
 }

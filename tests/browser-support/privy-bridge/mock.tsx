@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 export interface FixtureState {
   authenticated: boolean;
   user: string;
@@ -83,4 +83,15 @@ export function useWallets() {
       },
     ],
   };
+}
+
+let providerMounts = 0;
+export function providerMountCount() {
+  return providerMounts;
+}
+export function PrivyProvider({ children }: { children: React.ReactNode }) {
+  useEffect(() => {
+    providerMounts++;
+  }, []);
+  return children;
 }

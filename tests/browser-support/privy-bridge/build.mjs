@@ -27,7 +27,10 @@ const compiler = webpack({
   plugins: [
     new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
     new webpack.DefinePlugin({
-      "process.env": JSON.stringify({ NODE_ENV: "development" }),
+      "process.env": JSON.stringify({
+        NODE_ENV: "development",
+        NEXT_PUBLIC_PRIVY_APP_ID: "chog-character-fixture",
+      }),
     }),
   ],
   module: {

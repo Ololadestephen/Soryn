@@ -2,13 +2,13 @@
 import { createContext, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { CHOG_REQUIREMENT, type AccessView } from "../../domain/access/policy";
+import { type AccessView } from "../../domain/access/policy";
 import { HolderCosmeticToggle } from "./HolderCosmeticToggle";
 import { MyChogPanel } from "../identity/MyChogPanel";
 
 import { useAccessController } from "./useAccessController";
-import { loginStage } from "./accessTelemetry";
 import { accessProgress } from "./walletSignIn";
+import { AccessEntry } from "./AccessEntry";
 
 const WalletPlay = createContext(false);
 const AccessState = createContext<AccessView | null>(null);
@@ -27,6 +27,7 @@ export function AccessGate({
   recordsOnly?: boolean;
   profile?: boolean;
 }) {
+  const controller = useAccessController(recordsOnly);
   const {
     wallet,
     view,
@@ -36,12 +37,11 @@ export function AccessGate({
     cooldown,
     saved,
     readRecords,
-    setReadRecords,
     signIn,
     recheck,
     equip,
     signOut,
-  } = useAccessController(recordsOnly);
+  } = controller;
   const qualified =
     view?.status === "token" ||
     view?.status === "nft" ||
@@ -130,73 +130,20 @@ export function AccessGate({
                 profile, wallet or results.
               </p>
             </details>
+          ) : recordsOnly && signedIn ? (
+            <div className="access-account-row">
+              <span>Signed in · Private wallet records</span>
+              <Link href="/character">My Chog</Link>
+              <button
+                className="access-quiet"
+                disabled={busy}
+                onClick={() => void signOut()}
+              >
+                Sign out
+              </button>
+            </div>
           ) : (
-            <>
-              <h2>Holder access</h2>
-              {view?.message && view.message !== "Connect wallet" && (
-                <p>{view.message}</p>
-              )}
-              <p>
-                When holder access is open, {CHOG_REQUIREMENT} unlocks Story and
-                player battles. No tokens are spent.
-              </p>
-              <div className="button-row">
-                <Link className="button" href="/arena">
-                  Play Practice
-                </Link>
-                {!wallet.authenticated ? (
-                  <button
-                    disabled={!wallet.ready || busy}
-                    onClick={() => {
-                      loginStage("connect-click");
-                      wallet.login();
-                    }}
-                  >
-                    Connect wallet
-                  </button>
-                ) : !signedIn ? (
-                  <button
-                    disabled={!wallet.address || busy}
-                    onClick={() => void signIn()}
-                  >
-                    Sign in to wallet play
-                  </button>
-                ) : (
-                  <button disabled={busy} onClick={() => void recheck()}>
-                    Check holdings again
-                  </button>
-                )}
-                <Link href="/history">Existing browser history</Link>
-                <Link href="/character">Use an NFT competitor</Link>
-              </div>
-              {wallet.authenticated && wallet.wallets.length > 1 && (
-                <label>
-                  Connected wallet
-                  <select
-                    value={wallet.address}
-                    disabled={busy}
-                    onChange={(event) =>
-                      wallet.selectWallet(event.target.value)
-                    }
-                  >
-                    {wallet.wallets.map((entry) => (
-                      <option key={entry.address} value={entry.address}>
-                        {entry.label} · {entry.address.slice(0, 6)}…
-                        {entry.address.slice(-4)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              )}
-              {!usable && (
-                <button
-                  className="secondary"
-                  onClick={() => setReadRecords(true)}
-                >
-                  View existing saved progress
-                </button>
-              )}
-            </>
+            <AccessEntry controller={controller} usable={usable} />
           )}
           {saved && !qualified && (
             <p role="status">
@@ -207,7 +154,7 @@ export function AccessGate({
           {readRecords && !qualified && (
             <p>Saved records are readable. New gameplay remains locked.</p>
           )}
-          {wallet.authenticated && (
+          {qualified && wallet.authenticated && (
             <button
               className="secondary"
               disabled={busy}
@@ -216,12 +163,12 @@ export function AccessGate({
               Sign out
             </button>
           )}
-          {cooldown > 0 && (
+          {(qualified || recordsOnly) && cooldown > 0 && (
             <p role="status">
               Too many requests. Try again in {cooldown} seconds.
             </p>
           )}
-          {error && <p role="alert">{error}</p>}
+          {(qualified || recordsOnly) && error && <p role="alert">{error}</p>}
         </section>
         {usable && children}
       </WalletPlay>

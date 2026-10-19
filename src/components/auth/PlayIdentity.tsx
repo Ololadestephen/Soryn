@@ -6,16 +6,12 @@ import {
   useEffect,
   useRef,
 } from "react";
-import dynamic from "next/dynamic";
+import { WalletBoundary } from "./WalletSession";
 import Link from "next/link";
 import { AccessGate, useWalletPlay } from "./AccessGate";
 import { WalletAdapterContext } from "./WalletAdapter";
 
 const Mode = createContext<"guest" | "official">("guest");
-const Provider = dynamic(() => import("./PrivyIdentity"), {
-  ssr: false,
-  loading: () => <p role="status">Opening Chog sign-in…</p>,
-});
 export function PlayIdentity({
   official,
   holder = false,
@@ -40,7 +36,7 @@ export function PlayIdentity({
       </section>
     );
   return (
-    <Provider appId={appId}>
+    <WalletBoundary>
       <Mode value={official ? "official" : "guest"}>
         {holder && !official ? (
           <AccessGate recordsOnly={recordsOnly}>{children}</AccessGate>
@@ -48,7 +44,7 @@ export function PlayIdentity({
           children
         )}
       </Mode>
-    </Provider>
+    </WalletBoundary>
   );
 }
 export function usePlayIdentity() {
@@ -56,7 +52,7 @@ export function usePlayIdentity() {
   const walletPlay = useWalletPlay();
   const adapter = useContext(WalletAdapterContext);
   const current = useRef(async () =>
-    adapter?.authenticated
+    adapter?.authenticated && (mode === "official" || walletPlay)
       ? adapter.headers().then((headers) => ({
           ...headers,
           ...(walletPlay ? { "x-soryn-play": "wallet" } : {}),
@@ -65,13 +61,13 @@ export function usePlayIdentity() {
   );
   useEffect(() => {
     current.current = async () =>
-      adapter?.authenticated
+      adapter?.authenticated && (mode === "official" || walletPlay)
         ? adapter.headers().then((headers) => ({
             ...headers,
             ...(walletPlay ? { "x-soryn-play": "wallet" } : {}),
           }))
         : {};
-  }, [adapter, walletPlay]);
+  }, [adapter, mode, walletPlay]);
   const headers = useCallback(() => current.current(), []);
   return { mode, headers, walletPlay };
 }

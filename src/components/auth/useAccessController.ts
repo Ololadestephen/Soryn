@@ -60,7 +60,11 @@ export function useAccessController(recordsOnly: boolean) {
     [headers, recordsOnly],
   );
   useEffect(() => {
-    if (isPending()) return;
+    if (
+      isPending() ||
+      (wallet.authenticated && (!wallet.ready || !wallet.address))
+    )
+      return;
     let alive = true;
     const generation = ++refreshGeneration.current;
     void refresh()
@@ -77,7 +81,14 @@ export function useAccessController(recordsOnly: boolean) {
     return () => {
       alive = false;
     };
-  }, [refresh, wallet.authenticated, wallet.address, showError, isPending]);
+  }, [
+    refresh,
+    wallet.ready,
+    wallet.authenticated,
+    wallet.address,
+    showError,
+    isPending,
+  ]);
   async function signIn() {
     await perform("session", async (signal) => {
       const { session, proof } = await signInToWallet(wallet, setPhase, signal);
