@@ -212,3 +212,101 @@
     overflow-wrap: anywhere;
   }
 }
+
+/* Qualified accounts occupy one corner, leaving the game as the main content. */
+.holder-access.is-account {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  margin-bottom: 20px;
+}
+.wallet-menu {
+  position: relative;
+  max-width: 100%;
+}
+.wallet-menu > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #e7bc7240;
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  list-style: none;
+  min-height: 48px;
+}
+.wallet-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.wallet-menu > summary strong,
+.wallet-menu > summary small {
+  display: block;
+}
+.wallet-menu > summary strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.wallet-menu > summary small {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.wallet-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex: none;
+}
+.wallet-menu-chevron {
+  color: var(--muted);
+  margin-left: 10px;
+}
+.wallet-menu-content {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  width: min(340px, calc(100vw - 40px));
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px #0006;
+}
+.wallet-menu-content p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.wallet-menu-content nav {
+  display: grid;
+  gap: 12px;
+  padding-block: 12px;
+  border-block: 1px solid var(--line);
+  margin-block: 16px;
+}
+.wallet-menu-content .holder-profile-frame {
+  padding: 8px;
+  gap: 8px;
+}
+.wallet-menu-note {
+  color: var(--muted);
+}
+.wallet-menu-content > button {
+  width: 100%;
+  margin-top: 8px;
+}
+@media (max-width: 650px) {
+  .holder-access.is-account {
+    margin-bottom: 18px;
+  }
+  .wallet-menu-content {
+    max-height: 65vh;
+    overflow-y: auto;
+  }
+}

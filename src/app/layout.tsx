@@ -25,6 +25,7 @@ import "./arena-feel.css";
 import "./arena-setup.css";
 import "./arena-feedback.css";
 import "./pvp.css";
+import "./match.css";
 import "./holder-access.css";
 import "./story-journey.css";
 

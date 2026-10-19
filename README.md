@@ -1,6 +1,24 @@
 # Soryn
 
-**Soryn — October 15, 2026:** a browser tactical creature battler. Find a public match, challenge a friend, play The Fractured Sanctuary, or practice. Status and the decisions still open are in [SORYN_PLAN.md](SORYN_PLAN.md).
+Soryn is a browser tactical creature battler with public matchmaking, private friend challenges, The Fractured Sanctuary Story and free Practice.
+
+**Play:** [playsoryn.tech](https://playsoryn.tech) · [Help & FAQ](https://playsoryn.tech/help)
+
+## Current play and access — October 19, 2026
+
+- **Practice:** four free starters, no wallet required; saved guest battles stay separate from wallet records.
+- **Story and multiplayer:** sign in through Privy and verify at least **500 $CHOG or one Chog NFT** on Monad Mainnet. Either route qualifies independently. Holder admissions are enabled on the existing production server. No purchase, transfer, token approval or on-chain transaction is required by sign-in.
+- **Find a Match:** one shared, unranked queue with Pip, Bolt, Patch, Moss, Aegis and Nyx. Accept the offer, select a fighter and ready up. A series is first to two battle wins; the queue never inserts a computer opponent.
+- **Challenge a Friend:** create an invitation and share its link with another eligible player. NFT holders retain their broader eligible private-room roster.
+- **One sign-in across pages:** the selected wallet/provider persists through client navigation; each mode independently checks the server session and required holdings. Expired sessions and wallet changes can require reauthentication. Connected-wallet state alone never authorizes gameplay.
+- **Wallet account:** qualified play pages place account controls in a compact top-right menu, keeping the queue and fighter selection clear. My Chog manages collection identity; private battle history remains available to authenticated former holders.
+- **Ownership:** NFT-bound writes still require fresh current-owner and ownership-generation evidence. Private drafts and account history are not inherited by a new token owner. Achievement claims remain off the player path pending separate deployment approval.
+
+The user confirmed successful live wallet sign-in and holder entry on October 19. This is functional feedback, not a measured retention or usage claim. Automated wallet/RPC fixtures remain labelled; real wallet signatures are human-operated. Current architecture is one Node process with SQLite and nginx; port 3000 stays private. [Identity and access](docs/IDENTITY.md), [series rules](docs/SERIES.md), [matchmaking](docs/MATCHMAKING.md), and [project plan](SORYN_PLAN.md).
+
+## Historical implementation notes
+
+The dated entries below describe earlier milestones and evidence; older access, asset and hosting descriptions do not override the current policy above.
 
 **Private friend battles — October 14, 2026:** a friend can join a private invitation and play the same battle on a second browser. Practice, the twelve fighters and saved adventure records stay. [Contract, checks and hosting limits](docs/PRIVATE_PVP.md).
 
@@ -50,7 +68,7 @@ This does not assume write access to the existing collection's contract or metad
 - Paired choices; defence prepares first, attacks follow initiative, knockout cancels pending attacks.
 - Frozen computer choices, deterministic event replay, persisted resources and bounded 20-round battles.
 - Four free starters; fresh current-owner and generation checks for all official writes.
-- Tall layered vector fighters, authoritative impact frames, readable controls and reduced motion.
+- Approved rendered fighter and companion artwork, authoritative impact presentation, readable controls and reduced motion.
 - Existing adventures, ghosts, journal, museum and withdrawal remain secondary routes.
 
 ## Current status

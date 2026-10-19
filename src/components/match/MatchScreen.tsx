@@ -1,7 +1,7 @@
 "use client";
 import { queueViewSchema } from "../../domain/pvp/responses";
 import { useEffect, useEffectEvent, useState } from "react";
-import Link from "next/link";
+import { MatchPanel } from "./MatchPanel";
 import { useRouter } from "next/navigation";
 import { request } from "../request";
 import type { QueueView } from "../../domain/pvp/queue";
@@ -74,72 +74,14 @@ export function MatchScreen() {
       setBusy(false);
     }
   }
-  const seconds =
-    queue?.deadlineAt && queue.serverNow
-      ? Math.max(0, Math.ceil((queue.deadlineAt - queue.serverNow) / 1000))
-      : null;
   return (
-    <section className="combat-screen" aria-label="Public matchmaking">
-      <p className="eyebrow">Unranked · shared six-fighter pool</p>
-      <h1>Find a Match</h1>
-      <p>{queue?.message ?? "Checking the queue…"}</p>
-      <p className="muted">
-        {identity.mode === "official"
-          ? `Chog entry · Token ${queue?.tokenId ?? "verification pending"}`
-          : identity.walletPlay
-            ? "Wallet player · holder access"
-            : "Saved guest records"}
-      </p>
-      {queue?.status === "waiting" && queue.othersWaiting === 0 && (
-        <div className="button-row">
-          <Link href="/arena">Practice</Link>
-          <Link href="/story">Story</Link>
-        </div>
-      )}
-      {seconds !== null && <p role="status">Accept within {seconds}s.</p>}
-      {error && <p role="alert">{error}</p>}
-      <div className="button-row">
-        {queue?.status !== "offered" && queue?.status !== "matched" && (
-          <button
-            disabled={
-              busy ||
-              !queue ||
-              queue.status === "blocked" ||
-              queue.status === "waiting"
-            }
-            onClick={() => void send("join")}
-          >
-            {queue?.status === "waiting" ? "Still looking" : "Find a match"}
-          </button>
-        )}
-        {queue?.status === "waiting" && (
-          <button disabled={busy} onClick={() => void send("cancel")}>
-            Leave queue
-          </button>
-        )}
-        {queue?.status === "offered" && !queue.accepted && (
-          <>
-            <button disabled={busy} onClick={() => void send("accept")}>
-              Accept opponent
-            </button>
-            <button disabled={busy} onClick={() => void send("decline")}>
-              Decline
-            </button>
-          </>
-        )}
-      </div>
-      <details>
-        <summary>How it works</summary>
-        <p>
-          Unranked, first to two battle wins. The queue pairs people who are
-          waiting. It never adds a computer opponent. Practice and Story are
-          separate modes.
-        </p>
-        <p>
-          Guest progress belongs to this browser session. Verified Chog entry
-          requires current ownership. <Link href="/character">My Chog</Link>
-        </p>
-      </details>
-    </section>
+    <MatchPanel
+      queue={queue}
+      busy={busy}
+      error={error}
+      mode={identity.mode}
+      walletPlay={identity.walletPlay}
+      onAction={send}
+    />
   );
 }

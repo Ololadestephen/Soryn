@@ -1,9 +1,8 @@
 "use client";
 import { createContext, useContext } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { type AccessView } from "../../domain/access/policy";
-import { HolderCosmeticToggle } from "./HolderCosmeticToggle";
+import { HolderAccount } from "./HolderAccount";
 import { MyChogPanel } from "../identity/MyChogPanel";
 
 import { useAccessController } from "./useAccessController";
@@ -73,7 +72,7 @@ export function AccessGate({
     <AccessState value={view}>
       <WalletPlay value={signedIn}>
         <section
-          className={`holder-access${usable ? " is-compact" : ""}`}
+          className={`holder-access${usable ? " is-compact" : ""}${qualified ? " is-account" : ""}`}
           aria-label="Soryn access"
         >
           {(busy || !view) && (
@@ -85,51 +84,7 @@ export function AccessGate({
             </p>
           )}
           {qualified ? (
-            <details>
-              <summary>
-                Holder access unlocked ·{" "}
-                {view.status === "token"
-                  ? "$CHOG"
-                  : view.status === "nft"
-                    ? "Chog NFT"
-                    : "$CHOG + Chog NFT"}
-              </summary>
-              {view.equipped && (
-                <div className="holder-profile-frame">
-                  <Image
-                    src="/brand/soryn-icon.svg"
-                    width={48}
-                    height={48}
-                    alt=""
-                  />
-                  <div>
-                    <strong>Soryn player</strong>
-                    <span className="holder-badge">
-                      {view.status === "token"
-                        ? "$CHOG holder"
-                        : view.status === "nft"
-                          ? "Chog NFT holder"
-                          : "$CHOG + NFT holder"}
-                    </span>
-                    <small>Private profile · cosmetic frame</small>
-                  </div>
-                </div>
-              )}
-              <p>
-                Wallet play keeps player records. For token-bound competitor
-                history,{" "}
-                <Link href="/character">select your Chog in My Chog</Link>.
-              </p>
-              <HolderCosmeticToggle
-                equipped={!!view.equipped}
-                busy={busy}
-                equip={equip}
-              />
-              <p>
-                Applied to your presentation. This does not publish your
-                profile, wallet or results.
-              </p>
-            </details>
+            <HolderAccount controller={controller} />
           ) : recordsOnly && signedIn ? (
             <div className="access-account-row">
               <span>Signed in · Private wallet records</span>
@@ -153,15 +108,6 @@ export function AccessGate({
           )}
           {readRecords && !qualified && (
             <p>Saved records are readable. New gameplay remains locked.</p>
-          )}
-          {qualified && wallet.authenticated && (
-            <button
-              className="secondary"
-              disabled={busy}
-              onClick={() => void signOut()}
-            >
-              Sign out
-            </button>
           )}
           {(qualified || recordsOnly) && cooldown > 0 && (
             <p role="status">

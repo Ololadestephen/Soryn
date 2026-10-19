@@ -227,6 +227,7 @@ test("labelled UI separates wallet signing from holdings verification and signs 
   await expect(page.getByTestId("private-progress")).toHaveCount(0);
   f.releaseHoldings();
   await expect(page.getByTestId("private-progress")).toBeVisible();
+  await page.locator(".wallet-menu > summary").click();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page.getByTestId("private-progress")).toHaveCount(0);
   await expect(
@@ -281,6 +282,7 @@ test("paused state is visible before sign-in and failed revocation does not pret
   await page.unrouteAll({ behavior: "ignoreErrors" });
   await fixture(page, { initial: "token", logoutFailure: true });
   await expect(page.getByTestId("private-progress")).toBeVisible();
+  await page.locator(".wallet-menu > summary").click();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page.getByRole("alert")).toHaveText(
     "Fixture session revocation unavailable",
