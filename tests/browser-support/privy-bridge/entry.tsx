@@ -2,7 +2,13 @@ import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { PrivyWalletBridge } from "../../../src/components/auth/PrivyWalletBridge";
 import { useWalletAdapter } from "../../../src/components/auth/WalletAdapter";
-import { FixtureContext, setIdentityToken, type FixtureState } from "./mock";
+import {
+  FixtureContext,
+  setIdentityToken,
+  identityRefreshCount,
+  limitIdentityRefresh,
+  type FixtureState,
+} from "./mock";
 function Consumer() {
   const adapter = useWalletAdapter();
   const [draft, setDraft] = useState("");
@@ -37,6 +43,7 @@ function Consumer() {
       <button onClick={() => void run("provider")}>Get provider</button>
       <button onClick={() => void run("headers")}>Get headers</button>
       <output data-testid="result">{result}</output>
+      <output data-testid="identity-refreshes">{identityRefreshCount()}</output>
     </>
   );
 }
@@ -74,6 +81,7 @@ function Fixture() {
       >
         Remove identity token
       </button>
+      <button onClick={limitIdentityRefresh}>Limit identity refresh</button>
       <PrivyWalletBridge>
         <Consumer />
       </PrivyWalletBridge>

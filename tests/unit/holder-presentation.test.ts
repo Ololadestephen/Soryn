@@ -37,6 +37,7 @@ function profile(view: AccessView | null, authenticated = true) {
         wallet: { ...wallet, authenticated },
         view,
         busy: false,
+        cooldown: 0,
         phase: null,
         error: "",
         signIn: action,

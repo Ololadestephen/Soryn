@@ -224,7 +224,16 @@ for (const status of [
           }),
         });
         await expect(history).toHaveAttribute("open", "");
-        await expect(history).toContainText("No private results yet.");
+        const records = await (
+          await page.request.get("/api/competitor?history=1", {
+            headers: session.headers,
+          })
+        ).json();
+        await expect(history.locator("article")).toHaveCount(
+          records.entries.length,
+        );
+        if (!records.entries.length)
+          await expect(history).toContainText("No private results yet.");
         await history.locator("summary").click();
         await expect(history).not.toHaveAttribute("open", "");
         expect(

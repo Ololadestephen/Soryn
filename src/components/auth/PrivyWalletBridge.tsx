@@ -1,6 +1,6 @@
 "use client";
-import { Fragment, useEffect, useState } from "react";
-import { usePrivy, useWallets, getIdentityToken } from "@privy-io/react-auth";
+import { Fragment, useEffect, useState, useRef } from "react";
+import { usePrivy, useWallets, useIdentityToken } from "@privy-io/react-auth";
 import { loginStage } from "./accessTelemetry";
 import { WalletAdapterContext, type WalletAdapter } from "./WalletAdapter";
 import { OfficialExperience } from "../identity/OfficialExperience";
@@ -14,6 +14,11 @@ export function PrivyWalletBridge({
 }) {
   const privy = usePrivy();
   const connected = useWallets();
+  const { identityToken } = useIdentityToken();
+  const identity = useRef(identityToken);
+  useEffect(() => {
+    identity.current = identityToken;
+  }, [identityToken]);
   const [selection, setSelection] = useState("");
   const wallets = connected.wallets.filter(
     (wallet) => wallet.linked && wallet.type === "ethereum",
@@ -21,6 +26,9 @@ export function PrivyWalletBridge({
   const selected =
     wallets.find((wallet) => wallet.address.toLowerCase() === selection) ??
     wallets[0];
+  const address = privy.authenticated
+    ? (selected?.address.toLowerCase() ?? "")
+    : "";
   useEffect(() => {
     if (privy.isModalOpen) loginStage("chooser-visible");
   }, [privy.isModalOpen]);
@@ -31,7 +39,7 @@ export function PrivyWalletBridge({
   const adapter: WalletAdapter = {
     ready: privy.ready && connected.ready,
     authenticated: privy.authenticated,
-    address: privy.authenticated ? (selected?.address.toLowerCase() ?? "") : "",
+    address,
     wallets: wallets.map((wallet) => ({
       address: wallet.address.toLowerCase(),
       label: wallet.meta.name,
@@ -48,14 +56,16 @@ export function PrivyWalletBridge({
     },
     headers: async () => {
       const access = await privy.getAccessToken();
-      const identity = await getIdentityToken();
-      if (!access || !identity)
+      // getIdentityToken() forces /users/me in this SDK. Reading its subscribed
+      // token avoids refreshing Privy for every app request (and after signing).
+      const proof = identity.current;
+      if (!privy.authenticated || !access || !proof)
         throw new Error(
           "Privy session or identity token unavailable. Sign in again; identity tokens must be enabled for this app.",
         );
       return {
         Authorization: `Bearer ${access}`,
-        "privy-id-token": identity,
+        "privy-id-token": proof,
         ...(selected
           ? { "x-soryn-wallet": selected.address.toLowerCase() }
           : {}),
@@ -64,10 +74,10 @@ export function PrivyWalletBridge({
   };
   return (
     <WalletAdapterContext value={adapter}>
-      <Fragment key={`${privy.user?.id ?? "anonymous"}:${adapter.address}`}>
+      <Fragment key={`${privy.user?.id ?? "anonymous"}:${address}`}>
         {children ?? (
           <OfficialExperience
-            key={`${privy.user?.id ?? "anonymous"}:${adapter.address}`}
+            key={`${privy.user?.id ?? "anonymous"}:${address}`}
             onMuseumChanged={onMuseumChanged ?? (async () => {})}
           />
         )}

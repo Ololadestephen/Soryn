@@ -76,7 +76,6 @@ export function createAccessHandlers(
         .safeParse(request.cookies.get("soryn_access_browser")?.value);
       if (input.operation === "challenge") {
         const browser = cookie.success ? cookie.data : randomUUID();
-        store.rateLimit("access:challenge", Date.now(), 60);
         const reply = response(
           await login.challenge(request, browser, input.wallet),
         );

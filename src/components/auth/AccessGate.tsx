@@ -1,26 +1,14 @@
 "use client";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useCallback,
-  useState,
-  useRef,
-} from "react";
+import { createContext, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { z } from "zod";
-import {
-  CHOG_REQUIREMENT,
-  accessViewSchema,
-  type AccessView,
-} from "../../domain/access/policy";
-import { useWalletAdapter } from "./WalletAdapter";
-import { request } from "../request";
-import { hexMessage, selectedWallet } from "../identity/wallet";
+import { CHOG_REQUIREMENT, type AccessView } from "../../domain/access/policy";
 import { HolderCosmeticToggle } from "./HolderCosmeticToggle";
 import { MyChogPanel } from "../identity/MyChogPanel";
+
+import { useAccessController } from "./useAccessController";
 import { loginStage } from "./accessTelemetry";
+import { accessProgress } from "./walletSignIn";
 
 const WalletPlay = createContext(false);
 const AccessState = createContext<AccessView | null>(null);
@@ -39,214 +27,21 @@ export function AccessGate({
   recordsOnly?: boolean;
   profile?: boolean;
 }) {
-  const wallet = useWalletAdapter();
-  const [view, setView] = useState<AccessView | null>(null),
-    [phase, setPhase] = useState<"sign-in" | "holdings" | "sign-out" | null>(
-      null,
-    ),
-    [error, setError] = useState("");
-  const busy = phase !== null;
-  const refreshGeneration = useRef(0);
-  const [saved, setSaved] = useState(false),
-    [readRecords, setReadRecords] = useState(false);
-  // Provider bookkeeping can rerender without changing the selected principal.
-  // Read its latest proof adapter without re-running eligibility on each render.
-  const currentWallet = useRef(wallet);
-  useEffect(() => {
-    currentWallet.current = wallet;
-  }, [wallet]);
-  const headers = useCallback(async () => {
-    const adapter = currentWallet.current;
-    return adapter.authenticated ? adapter.headers() : {};
-  }, []);
-  const refresh = useCallback(async () => {
-    const next = await request(
-      `/api/access${recordsOnly ? "?records=1" : ""}`,
-      accessViewSchema.parse,
-      undefined,
-      undefined,
-      await headers(),
-    );
-    if (next.authenticated && !recordsOnly)
-      loginStage("eligibility-ready", next.status);
-    // Legacy encounters and already-frozen wallet encounters can finish even after balance loss.
-    const intent = next.authenticated
-      ? { ...(await headers()), "x-soryn-play": "wallet" }
-      : {};
-    let savedEncounter = false;
-    const path = window.location.pathname;
-    let url: string | null = null;
-    if (path.startsWith("/challenge/") || path.startsWith("/match/"))
-      url = `/api/pvp?mode=guest&invite=${path.split("/").at(-1)}`;
-    else if (path === "/story") url = "/api/story?mode=guest";
-    else if (path === "/arena") url = "/api/battle?mode=guest";
-    if (url) {
-      try {
-        const state = await request(
-          url,
-          (value) => z.record(z.string(), z.unknown()).parse(value),
-          undefined,
-          undefined,
-          intent,
-        );
-        savedEncounter =
-          !!state.battleId ||
-          !!state.battle ||
-          state.phase === "complete" ||
-          state.phase === "closed";
-      } catch {
-        savedEncounter = false;
-      }
-    }
-    return { view: next, saved: savedEncounter };
-  }, [headers, recordsOnly]);
-  useEffect(() => {
-    let alive = true;
-    const generation = ++refreshGeneration.current;
-    void refresh()
-      .then((next) => {
-        if (alive && generation === refreshGeneration.current) {
-          setView(next.view);
-          setSaved(next.saved);
-        }
-      })
-      .catch((problem: unknown) => {
-        if (alive && generation === refreshGeneration.current)
-          setError(
-            problem instanceof Error
-              ? problem.message
-              : "Couldn't verify holdings. Try again.",
-          );
-      });
-    return () => {
-      alive = false;
-    };
-  }, [refresh, wallet.authenticated, wallet.address]);
-  async function signIn() {
-    ++refreshGeneration.current;
-    setPhase("sign-in");
-    setError("");
-    try {
-      const proof = await wallet.headers();
-      const provider = await wallet.provider();
-      loginStage("handoff-start");
-      const address = await selectedWallet(provider, wallet.address);
-      const challenge = await request(
-        "/api/access",
-        (value) =>
-          z.object({ nonce: z.string(), message: z.string() }).parse(value),
-        { operation: "challenge", wallet: address },
-        undefined,
-        proof,
-      );
-      loginStage("signature-request");
-      const signature = await provider.request({
-        method: "personal_sign",
-        params: [hexMessage(challenge.message), address],
-      });
-      loginStage("signature-returned");
-      await request(
-        "/api/access",
-        (value) => z.object({ signedIn: z.literal(true) }).parse(value),
-        { operation: "verify", ...challenge, signature },
-        undefined,
-        proof,
-      );
-      loginStage("session-ready");
-      setPhase("holdings");
-      loginStage("eligibility-start");
-      const next = await refresh();
-      setView(next.view);
-      setSaved(next.saved);
-    } catch (problem) {
-      setError(
-        problem instanceof Error
-          ? problem.message
-          : "Sign-in unavailable. Try again.",
-      );
-    } finally {
-      setPhase(null);
-    }
-  }
-  async function recheck() {
-    ++refreshGeneration.current;
-    setPhase("holdings");
-    loginStage("eligibility-start");
-    setError("");
-    try {
-      const next = await request(
-        "/api/access",
-        accessViewSchema.parse,
-        { operation: "refresh" },
-        undefined,
-        await headers(),
-      );
-      loginStage("eligibility-ready", next.status);
-      setView(next);
-    } catch (problem) {
-      setError(
-        problem instanceof Error
-          ? problem.message
-          : "Couldn't verify holdings. Try again.",
-      );
-    } finally {
-      setPhase(null);
-    }
-  }
-  async function equip(equipped: boolean) {
-    ++refreshGeneration.current;
-    setPhase("holdings");
-    setError("");
-    try {
-      setView(
-        await request(
-          "/api/access",
-          accessViewSchema.parse,
-          { operation: "equip", equipped },
-          undefined,
-          await headers(),
-        ),
-      );
-    } catch (problem) {
-      setError(
-        problem instanceof Error
-          ? problem.message
-          : "Could not equip. Try again.",
-      );
-    } finally {
-      setPhase(null);
-    }
-  }
-  async function signOut() {
-    ++refreshGeneration.current;
-    setPhase("sign-out");
-    setError("");
-    try {
-      await request(
-        "/api/access",
-        (value) => z.object({ signedOut: z.literal(true) }).parse(value),
-        { operation: "logout" },
-      );
-      setView({
-        status: "signed-out",
-        message: "Connect wallet",
-        fighters: [],
-        checkedAt: null,
-        authenticated: false,
-      });
-      setSaved(false);
-      setReadRecords(false);
-      await wallet.logout();
-    } catch (problem) {
-      setError(
-        problem instanceof Error
-          ? problem.message
-          : "Sign-out failed. Try again.",
-      );
-    } finally {
-      setPhase(null);
-    }
-  }
+  const {
+    wallet,
+    view,
+    phase,
+    error,
+    busy,
+    cooldown,
+    saved,
+    readRecords,
+    setReadRecords,
+    signIn,
+    recheck,
+    equip,
+    signOut,
+  } = useAccessController(recordsOnly);
   const qualified =
     view?.status === "token" ||
     view?.status === "nft" ||
@@ -263,6 +58,7 @@ export function AccessGate({
             busy={busy}
             phase={phase}
             error={error}
+            cooldown={cooldown}
             signIn={signIn}
             recheck={recheck}
             signOut={signOut}
@@ -282,15 +78,10 @@ export function AccessGate({
         >
           {(busy || !view) && (
             <p role="status">
-              {phase === "sign-in"
-                ? "Signing in to your wallet…"
-                : phase === "holdings"
-                  ? "Verifying holdings…"
-                  : phase === "sign-out"
-                    ? "Signing out…"
-                    : !wallet.ready
-                      ? "Loading wallet sign-in…"
-                      : "Checking your session…"}
+              {accessProgress(phase) ||
+                (!wallet.ready
+                  ? "Loading wallet sign-in…"
+                  : "Checking your session…")}
             </p>
           )}
           {qualified ? (
@@ -383,6 +174,7 @@ export function AccessGate({
                   Connected wallet
                   <select
                     value={wallet.address}
+                    disabled={busy}
                     onChange={(event) =>
                       wallet.selectWallet(event.target.value)
                     }
@@ -423,6 +215,11 @@ export function AccessGate({
             >
               Sign out
             </button>
+          )}
+          {cooldown > 0 && (
+            <p role="status">
+              Too many requests. Try again in {cooldown} seconds.
+            </p>
           )}
           {error && <p role="alert">{error}</p>}
         </section>

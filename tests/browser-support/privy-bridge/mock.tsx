@@ -4,6 +4,7 @@ export interface FixtureState {
   user: string;
   access: string | null;
   identity: string | null;
+  limited?: boolean;
 }
 export const FixtureContext = createContext<FixtureState>({
   authenticated: true,
@@ -12,6 +13,18 @@ export const FixtureContext = createContext<FixtureState>({
   identity: "identity-fixture",
 });
 let identity: string | null = "identity-fixture";
+let limited = false;
+let refreshes = 0;
+export function limitIdentityRefresh() {
+  limited = true;
+}
+export function identityRefreshCount() {
+  return refreshes;
+}
+export function useIdentityToken() {
+  const state = useContext(FixtureContext);
+  return { identityToken: state.identity };
+}
 export function usePrivy() {
   const state = useContext(FixtureContext);
   return {
@@ -27,6 +40,13 @@ export function setIdentityToken(value: string | null) {
   identity = value;
 }
 export function getIdentityToken() {
+  refreshes++;
+  if (limited)
+    return Promise.reject(
+      Object.assign(new Error("Fixture users/me rate limited"), {
+        status: 429,
+      }),
+    );
   return Promise.resolve(identity);
 }
 export function useWallets() {

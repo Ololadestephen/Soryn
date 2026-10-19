@@ -42,7 +42,7 @@ function MyCollection({
       )}
       <section className="mychog-fighters" aria-labelledby="available-title">
         <h2 id="available-title">Available fighters</h2>
-        <ul>
+        <ul data-count={view?.fighters.length}>
           {view?.fighters.map((id) => (
             <li key={id}>
               <Image
@@ -61,7 +61,10 @@ function MyCollection({
           ))}
         </ul>
       </section>
-      <HolderPerks view={view} profile />
+      <details className="mychog-perks">
+        <summary>Holder perks</summary>
+        <HolderPerks view={view} profile />
+      </details>
       {!nft && (
         <details
           className="mychog-record-history"

@@ -3,6 +3,7 @@ export class RequestError extends Error {
     message: string,
     readonly status: number,
     readonly code?: string,
+    readonly retryAfterSeconds?: number,
   ) {
     super(message);
     this.name = "RequestError";
@@ -27,6 +28,10 @@ export async function request<T>(
         }
       : { cache: "no-store", signal, headers },
   );
+  const retryAfter =
+    reply.status === 429
+      ? retryDelay(reply.headers?.get("Retry-After"))
+      : undefined;
   let data: unknown;
   try {
     data = await reply.json();
@@ -36,6 +41,8 @@ export async function request<T>(
         ? "The server response was unavailable. Reload or retry the saved request."
         : `Request unavailable (${reply.status}). Please retry.`,
       reply.status,
+      undefined,
+      retryAfter,
     );
   }
   if (!reply.ok) {
@@ -54,7 +61,7 @@ export async function request<T>(
       data.code.length <= 48
         ? data.code
         : undefined;
-    throw new RequestError(message, reply.status, code);
+    throw new RequestError(message, reply.status, code, retryAfter);
   }
   try {
     return parse(data);
@@ -64,6 +71,14 @@ export async function request<T>(
       reply.status,
     );
   }
+}
+
+function retryDelay(value: string | null | undefined): number {
+  if (!value) return 60;
+  const seconds = /^\d+$/.test(value)
+    ? Number(value)
+    : Math.ceil((Date.parse(value) - Date.now()) / 1000);
+  return Number.isFinite(seconds) && seconds >= 0 ? Math.max(1, seconds) : 60;
 }
 
 /** Use only for acknowledged operations whose response body is not consumed. */

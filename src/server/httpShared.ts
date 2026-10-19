@@ -94,10 +94,13 @@ function logServerFailure(error: unknown): void {
 export function failure(error: unknown): NextResponse {
   if (error instanceof ServiceError) {
     if (error.status >= 500) logServerFailure(error);
-    return response(
+    const reply = response(
       { error: error.message, ...(error.code ? { code: error.code } : {}) },
       error.status,
     );
+    if (error.status === 429)
+      reply.headers.set("Retry-After", String(error.retryAfterSeconds ?? 60));
+    return reply;
   }
   logServerFailure(error);
   return response(

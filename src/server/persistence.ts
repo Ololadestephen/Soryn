@@ -64,6 +64,13 @@ export class Store {
       throw new ServiceError(
         429,
         "Too many requests. Wait a minute and retry.",
+        undefined,
+        {
+          retryAfterSeconds: Math.max(
+            1,
+            Math.ceil(((bucket + 1) * RATE_WINDOW_MS - now) / 1000),
+          ),
+        },
       );
   }
 }

@@ -104,3 +104,46 @@ it("rejects malformed successful payloads before they reach client state", async
       "The server response was invalid. Reload or retry the saved request.",
   });
 });
+
+it.each([
+  ["3", 3],
+  [null, 60],
+  ["invalid", 60],
+])(
+  "retains Retry-After for 429 JSON and proxy responses: %s",
+  async (header, seconds) => {
+    for (const json of [true, false]) {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn(
+          async () =>
+            new Response(
+              json
+                ? JSON.stringify({ error: "Rate limited" })
+                : "<html>Limited</html>",
+              { status: 429, headers: header ? { "Retry-After": header } : {} },
+            ),
+        ),
+      );
+      await expect(
+        request("/api/access", ignoreResponse),
+      ).rejects.toMatchObject({ status: 429, retryAfterSeconds: seconds });
+    }
+  },
+);
+it("understands an HTTP-date Retry-After without retrying automatically", async () => {
+  const now = Date.now();
+  vi.spyOn(Date, "now").mockReturnValue(now);
+  const date = new Date(Math.ceil(now / 1000) * 1000 + 4000).toUTCString();
+  const fetchMock = vi.fn(
+    async () =>
+      new Response("{}", { status: 429, headers: { "Retry-After": date } }),
+  );
+  vi.stubGlobal("fetch", fetchMock);
+  await expect(request("/api/access", ignoreResponse)).rejects.toMatchObject({
+    status: 429,
+    retryAfterSeconds: Math.ceil((Date.parse(date) - now) / 1000),
+  });
+  expect(fetchMock).toHaveBeenCalledTimes(1);
+  vi.restoreAllMocks();
+});

@@ -61,3 +61,14 @@ test("mocked Privy bridge rejects missing identity token even with an access tok
   await page.getByRole("button", { name: "Get headers" }).click();
   await expect(page.getByTestId("result")).toContainText("token unavailable");
 });
+
+test("cached SDK identity proof survives a users/me refresh limit without requesting another refresh", async ({
+  page,
+}) => {
+  await page.getByRole("button", { name: "Limit identity refresh" }).click();
+  await page.getByRole("button", { name: "Get headers" }).click();
+  await expect(page.getByTestId("result")).toContainText(
+    "Bearer access-fixture",
+  );
+  await expect(page.getByTestId("identity-refreshes")).toHaveText("0");
+});

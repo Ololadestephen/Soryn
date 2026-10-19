@@ -1,5 +1,6 @@
 export interface AccessFixtureDriver {
   releaseSignature(): void;
+  rejectSignature(): void;
   events: string[];
 }
 declare global {

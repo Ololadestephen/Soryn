@@ -51,6 +51,11 @@ export class WalletAccessAuth {
     const proof = await this.proof(request),
       wallet = addressSchema.parse(walletInput);
     requireLinkedWallet(proof, wallet);
+    this.store.rateLimit(
+      `access:challenge:${secretHash(proof.userId)}`,
+      this.now(),
+      60,
+    );
     const nonce = randomBytes(24).toString("hex"),
       url = new URL(this.origin);
     const sessionExpires = this.now() + SESSION_MS;
@@ -96,6 +101,11 @@ export class WalletAccessAuth {
     signature: Hex,
   ) {
     const proof = await this.proof(request);
+    this.store.rateLimit(
+      `access:verify:${secretHash(proof.userId)}`,
+      this.now(),
+      60,
+    );
     const row = this.store.db
       .prepare("SELECT record FROM wallet_access_challenges WHERE nonce=?")
       .get(nonce);
