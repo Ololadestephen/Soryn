@@ -5,6 +5,7 @@ import { guestMutationSchema } from "../../domain/adventure/responses";
 import { guestStartRequest } from "../characters/startRequests";
 
 import type { CharacterId } from "../../domain/characters/definitions";
+import type { GuestMutationRequest } from "../../domain/requests";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ExhibitSummary, RunView } from "../../domain/views";
@@ -21,7 +22,7 @@ export function useGuestGame() {
   const [museum, setMuseum] = useState<ExhibitSummary[]>([]);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
-  const [pending, setPending] = useState<Record<string, unknown> | null>(null);
+  const [pending, setPending] = useState<GuestMutationRequest | null>(null);
   const locked = useRef(false);
   const mounted = useRef(false);
   const gate = {
@@ -74,7 +75,7 @@ export function useGuestGame() {
     };
   }, [setJournal]);
 
-  async function mutate(input: Record<string, unknown>) {
+  async function mutate(input: GuestMutationRequest) {
     if (!gate.begin()) return;
     setError("");
     setPending(input);
@@ -92,8 +93,8 @@ export function useGuestGame() {
         setPublicReplay(null);
         setChapter(null);
         router.push(
-          input.exhibitId
-            ? `/play?challenge=${encodeURIComponent(String(input.exhibitId))}#adventure`
+          input.operation === "start" && input.exhibitId
+            ? `/play?challenge=${encodeURIComponent(input.exhibitId)}#adventure`
             : "/play#adventure",
         );
         document.getElementById("adventure")?.focus();

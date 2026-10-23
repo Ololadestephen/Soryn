@@ -48,7 +48,7 @@ it("record-only profile reads do not invent an encounter or trigger an eligibili
   expect(fetcher).toHaveBeenCalledTimes(1);
   expect(fetcher.mock.calls[0][0]).toBe("/api/access?records=1");
 });
-it("failed saved-encounter reads grant no gameplay and cannot erase confirmed authentication", async () => {
+it("failed saved-encounter reads grant no gameplay, surface lookupError, and cannot erase confirmed authentication", async () => {
   const fetcher = vi.fn<typeof fetch>(async (url) =>
     url === "/api/access"
       ? new Response(JSON.stringify(view))
@@ -58,5 +58,22 @@ it("failed saved-encounter reads grant no gameplay and cannot erase confirmed au
   expect(await readAccessState("/story", false, {})).toEqual({
     view,
     saved: false,
+    lookupError: "Try again.",
   });
+});
+it("uncreated room invite 404 reports saved=false without a lookup error", async () => {
+  const fetcher = vi.fn<typeof fetch>(async (url) =>
+    url === "/api/access"
+      ? new Response(JSON.stringify(view))
+      : new Response(JSON.stringify({ error: "Invitation not found." }), {
+          status: 404,
+        }),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  expect(await readAccessState("/challenge/uncreated-room", false, {})).toEqual(
+    {
+      view,
+      saved: false,
+    },
+  );
 });

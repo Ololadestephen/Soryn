@@ -22,7 +22,7 @@ function withRoom(publicMatch: boolean, check: (view: PvpView) => void) {
           now,
         )
       : service.create({ actor, mode: "guest" }, now);
-    const view = service.preview(room.invite, actor, now);
+    const view = service.pollRoom(actor, room.invite, now);
     if (!view.seated) throw new Error("Fixture did not take a seat");
     check(view);
   } finally {
@@ -38,10 +38,22 @@ function render(room: PvpView, error = "") {
     createElement(RoomLobby, { game, leave: () => {} }),
   );
 }
+function findDisclosureBySummary(html: string, summaryText: string) {
+  for (const [, attrs, body] of html.matchAll(
+    /<details\b([^>]*)>([\s\S]*?)<\/details>/g,
+  )) {
+    const summary = /<summary\b[^>]*>([\s\S]*?)<\/summary>/.exec(body);
+    if (summary?.[1]?.trim() === summaryText) {
+      return { open: /\bopen(?:="")?/.test(attrs), body };
+    }
+  }
+  return null;
+}
 it("public room markup never exposes private invitation controls or wording", () => {
   withRoom(true, (room) => {
     const html = render(room);
     expect(html).toContain("Public match");
+    expect(findDisclosureBySummary(html, "Invite a friend")).toBeNull();
     for (const text of [
       "Invitation link",
       "Copy invitation",
@@ -57,7 +69,9 @@ it("public room markup never exposes private invitation controls or wording", ()
 });
 it("private sharing is prominent before joining and secondary once occupied", () => {
   withRoom(false, (room) => {
-    expect(render(room)).toContain('<details class="pvp-sharing" open="">');
+    expect(findDisclosureBySummary(render(room), "Invite a friend")?.open).toBe(
+      true,
+    );
     room.opponent = {
       name: "Friend",
       characterId: null,
@@ -67,15 +81,16 @@ it("private sharing is prominent before joining and secondary once occupied", ()
       joined: true,
     };
     const html = render(room);
-    expect(html).toContain('<details class="pvp-sharing">');
-    expect(html).toContain("Copy invitation");
+    const sharing = findDisclosureBySummary(html, "Invite a friend");
+    expect(sharing?.open).toBe(false);
+    expect(sharing?.body).toContain("Copy invitation");
     expect(html).toContain("Opponent is choosing");
   });
 });
 it("visible failures and archived results retain useful actions without reopening setup", () => {
   withRoom(true, (room) => {
-    expect(render(room, "Ownership verification unavailable")).toContain(
-      'role="alert">Ownership verification unavailable',
+    expect(render(room, "Ownership verification unavailable")).toMatch(
+      /<[^>]*\brole="alert"[^>]*>Ownership verification unavailable<\//,
     );
     room.phase = "closed";
     const html = render(room);

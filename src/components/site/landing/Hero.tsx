@@ -26,9 +26,6 @@ export function Hero() {
           <Brand hero />
         </h1>
         <p className="gateway-genre">Turn-based creature battles.</p>
-        <p className="gateway-companion-line">
-          Choose your fighter. Unleash your companion.
-        </p>
         <div className="gateway-actions">
           <Link prefetch={false} className="world-button" href="/start">
             Play now

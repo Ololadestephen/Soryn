@@ -52,19 +52,7 @@ export function GameplayShowcase() {
       aria-labelledby="gameplay-title"
     >
       <div className="section-heading">
-        <div>
-          <p className="world-kicker">Inside the arena</p>
-          <h2 id="gameplay-title">
-            Pick a move.
-            <br />
-            Make it count.
-          </h2>
-        </div>
-        <p>
-          Both choices lock. Defences prepare first.
-          <br />
-          Then watch the round unfold.
-        </p>
+        <h2 id="gameplay-title">Gameplay</h2>
       </div>
       <div className="gameplay-frame">
         {playing ? (
@@ -127,26 +115,26 @@ export function GameplayShowcase() {
           Close gameplay
         </button>
       )}
-      <ol id="gameplay-captions" className="gameplay-captions">
-        <li>
-          <strong>01 / Choose</strong>
-          <span>Attack, defend or call your companion.</span>
-        </li>
-        <li>
-          <strong>02 / Resolve</strong>
-          <span>Defence prepares. Initiative sets attack order.</span>
-        </li>
-        <li>
-          <strong>03 / Adapt</strong>
-          <span>Read health, energy and cooldowns. Choose again.</span>
-        </li>
-      </ol>
-      <p className="gameplay-source">
-        Recorded guest practice · Pip & Owl versus computer Bolt & Cheetah ·
-        silent
-      </p>
+      <details className="gameplay-rules">
+        <summary>Battle rules</summary>
+        <ol id="gameplay-captions" className="gameplay-captions">
+          <li>
+            <strong>01 / Choose</strong>
+            <span>Attack, defend or call your companion.</span>
+          </li>
+          <li>
+            <strong>02 / Resolve</strong>
+            <span>Defence prepares. Initiative sets attack order.</span>
+          </li>
+          <li>
+            <strong>03 / Adapt</strong>
+            <span>Read health, energy and cooldowns. Choose again.</span>
+          </li>
+        </ol>
+      </details>
+      <p className="gameplay-source">Recorded guest Practice</p>
       <a className="text-link" href="#fighters">
-        Meet the fighters
+        Fighters
       </a>
     </section>
   );

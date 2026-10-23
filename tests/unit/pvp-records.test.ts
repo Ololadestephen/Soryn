@@ -53,7 +53,7 @@ function playBattle(
     const battle = service.records.byInvite(invite).match;
     if (!battle || battle.phase === "complete") return now;
     if (battle.phase !== "choose") {
-      service.preview(invite, A, battle.deadlineAt + 1);
+      service.pollRoom(A, invite, battle.deadlineAt + 1);
       now = battle.deadlineAt + 1;
       continue;
     }
@@ -77,7 +77,7 @@ function playBattle(
     );
     const after = service.records.byInvite(invite).match;
     if (!after || after.phase === "complete") return now;
-    service.preview(invite, A, after.deadlineAt + 1);
+    service.pollRoom(A, invite, after.deadlineAt + 1);
     now = after.deadlineAt + 1;
   }
   throw new Error("Battle did not finish");
@@ -138,8 +138,8 @@ describe("official series land in the token record", () => {
       }
       // Repeated reads and polls never double-record a finished series.
       for (let repeat = 0; repeat < 3; repeat += 1) {
-        service.preview(invite, A, now + repeat);
-        service.preview(invite, B, now + repeat);
+        service.pollRoom(A, invite, now + repeat);
+        service.pollRoom(B, invite, now + repeat);
       }
       expect(records.list(TOKEN)).toHaveLength(3);
     } finally {

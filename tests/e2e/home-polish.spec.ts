@@ -146,9 +146,10 @@ test("failed and slow media do not block navigation", async ({ page }) => {
       "Free",
     );
     for (const mode of ["/story", "/match", "/challenge"])
-      await expect(page.locator(`.play-mode[href="${mode}"]`)).toContainText(
-        "Holder access",
-      );
+      await expect(page.locator(`.play-mode[href="${mode}"]`)).toBeVisible();
+    await expect(page.locator(".play-menu > .muted")).toHaveText(
+      "Story and player battles: 500 $CHOG or a Chog NFT.",
+    );
   } finally {
     release();
   }
@@ -205,8 +206,16 @@ test("only Practice is available without holdings; mode entry preserves access g
     await expect(
       page.getByRole("region", { name: "Soryn access" }),
     ).toBeVisible();
+    // Provider readiness is external to this anonymous-gate check; full sign-in
+    // and recovery are covered by the labelled access-gate adapter fixtures.
+    const entry = page.getByRole("button", {
+      name: /^(Connect wallet|Checking your session…)$/,
+    });
+    await expect(entry).toBeVisible();
+    if ((await entry.textContent()) === "Checking your session…")
+      await expect(entry).toBeDisabled();
     await expect(
-      page.getByRole("button", { name: "Connect wallet", exact: true }),
+      page.getByRole("link", { name: "Play Practice", exact: true }),
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Create invitation", exact: true }),

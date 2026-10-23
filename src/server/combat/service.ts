@@ -292,4 +292,24 @@ export class BattleService {
       }
     });
   }
+  interrupt(
+    id: string,
+    actor: string,
+    reason: NonNullable<BattleRecord["interruption"]>,
+  ): BattleRecord | null {
+    return this.records.store.transaction(() => {
+      let record: BattleRecord;
+      try {
+        record = this.records.get(id, actor);
+      } catch (error) {
+        if (error instanceof ServiceError && error.status === 404) return null;
+        throw error;
+      }
+      if (!record.state.outcome) {
+        record.interruption = reason;
+        this.records.save(record);
+      }
+      return record;
+    });
+  }
 }

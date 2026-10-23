@@ -121,7 +121,7 @@ function finishBattle(service: PvpService, invite: string, now: number) {
     if (!room.match || room.match.phase === "complete") return room;
     if (room.match.phase !== "choose") {
       t = room.match.deadlineAt + 1;
-      service.preview(invite, A, t);
+      service.pollRoom(A, invite, t);
       continue;
     }
     const round = room.match.state.round;
@@ -564,9 +564,9 @@ describe("completion verification on reads", () => {
 
   it("saves timeout completions when ownership still verifies", async () => {
     const { service, stub, invite } = await timedOutRoom();
-    const view = await service.previewChecked(
-      invite,
+    const view = await service.pollRoomChecked(
       A,
+      invite,
       NOW + 120_000,
       GRANT_A,
     );
@@ -582,7 +582,7 @@ describe("completion verification on reads", () => {
     const { service, invite } = await timedOutRoom([
       { seat: "b", token: TOKEN, owner: OWNER_B, generation: GEN2 },
     ]);
-    await service.previewChecked(invite, A, NOW + 120_000, GRANT_A);
+    await service.pollRoomChecked(A, invite, NOW + 120_000, GRANT_A);
     const room = service.records.byInvite(invite);
     expect(room.series?.outcome).toMatchObject({
       kind: "no-contest",
@@ -596,7 +596,7 @@ describe("completion verification on reads", () => {
       new ServiceError(503, "Fixture RPC unavailable."),
     );
     await expect(
-      service.previewChecked(invite, A, NOW + 120_000, GRANT_A),
+      service.pollRoomChecked(A, invite, NOW + 120_000, GRANT_A),
     ).rejects.toThrow(/verification is unavailable/);
     const room = service.records.byInvite(invite);
     expect(room.series?.outcome).toBeNull();
@@ -608,8 +608,8 @@ describe("completion verification on reads", () => {
     const { service } = serviceWith(stub);
     const created = service.create({ actor: A, mode: "guest" }, NOW);
     service.join({ actor: B, mode: "guest" }, created.invite, NOW);
-    await service.previewChecked(created.invite, A, NOW + 120_000, null);
-    await service.sessionChecked(A, NOW + 120_000, null);
+    await service.pollRoomChecked(A, created.invite, NOW + 120_000, null);
+    await service.pollSessionChecked(A, NOW + 120_000, null);
     expect(stub.calls.count).toBe(0);
   });
 });
@@ -655,7 +655,7 @@ describe("queue token reservations", () => {
       queue.join({ actor: B, mode: "guest" }, NOW + 1);
       queue.accept(A, NOW + 2);
       queue.accept(B, NOW + 2);
-      const room = queue.state(A, NOW + 3);
+      const room = queue.pollState(A, NOW + 3);
       expect(room.status).toBe("matched");
       expect(room.invite).toBeTruthy();
       const lock = queue.locks.get(TOKEN, NOW + 3);
@@ -672,12 +672,12 @@ describe("queue token reservations", () => {
     const { store, queue } = queueWith();
     try {
       queue.join({ actor: A, mode: "guest" }, NOW, token);
-      const view = queue.state(A, NOW);
+      const view = queue.pollState(A, NOW);
       expect(view.status).toBe("waiting");
       store.db.exec(
         "UPDATE pvp_queue SET token_key=123 WHERE actor='11111111-1111-4111-8111-111111111111'",
       );
-      expect(queue.state(A, NOW).status).toBe("waiting");
+      expect(queue.pollState(A, NOW).status).toBe("waiting");
     } finally {
       store.close();
     }

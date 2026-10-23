@@ -1,10 +1,12 @@
 import {
   actionSchema,
   scenarioSchema,
+  GameActionError,
   type Action,
   type GameState,
   type Scenario,
 } from "./contracts";
+export { GameActionError };
 import * as legacy from "./legacy";
 import * as tactical from "./tactical/engine";
 export function initialState(scenario: Scenario): GameState {

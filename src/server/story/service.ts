@@ -1,7 +1,14 @@
-import { StoryLedger } from "./ledger";
 import {
-  journeySchema,
-  freshJourney,
+  StoryLedger,
+  freshProgress,
+  officialBindingSchema,
+  sameBinding,
+  type StoryOfficialBinding,
+  type StoryProgress,
+} from "./ledger";
+export type { StoryOfficialBinding } from "./ledger";
+import {
+  JourneyActionError,
   enterJourney,
   interactJourney,
   bindInteraction,
@@ -9,18 +16,9 @@ import {
 import { grantedFighter, type AccessGrant } from "../../domain/access/policy";
 import type { StoryState } from "../../domain/story/responses";
 import { randomUUID } from "node:crypto";
-import { z } from "zod";
-import {
-  character,
-  characterIdSchema,
-} from "../../domain/characters/definitions";
+import { character } from "../../domain/characters/definitions";
 import type { CharacterId } from "../../domain/characters/definitions";
-import {
-  addressSchema,
-  identitySchema,
-  tokenKey,
-  tokenStoryActor,
-} from "../../domain/identity";
+import { tokenKey, tokenStoryActor } from "../../domain/identity";
 import type { OfficialAuthority } from "../../domain/identity";
 import { tokenActorUuid } from "../tokenActors";
 import {
@@ -33,7 +31,6 @@ import {
 import { ServiceError } from "../errors";
 import type { Store } from "../persistence";
 import { BattleService } from "../combat/service";
-import { readStored } from "../storedRecord";
 import { TokenLocks } from "../pvp/locks";
 import { OWNERSHIP_STALL_TERMINATE_MS } from "../../domain/pvp/ownership";
 import type { Move } from "../../domain/combat/contracts";
@@ -41,82 +38,6 @@ import { TokenRecords } from "../records/tokenRecords";
 
 /** A story encounter reservation lives at most this long. */
 const STORY_RESERVATION_TTL_MS = 2 * 3_600_000;
-
-const officialBindingSchema = z.strictObject({
-  identity: identitySchema,
-  owner: addressSchema,
-  generation: z.uuid(),
-});
-export type StoryOfficialBinding = z.infer<typeof officialBindingSchema>;
-
-function sameBinding(
-  left: StoryOfficialBinding,
-  right: StoryOfficialBinding,
-): boolean {
-  return (
-    left.owner === right.owner &&
-    left.generation === right.generation &&
-    left.identity.chainId === right.identity.chainId &&
-    left.identity.collection === right.identity.collection &&
-    left.identity.tokenId === right.identity.tokenId
-  );
-}
-
-const progressSchema = z.strictObject({
-  policy: z.literal(STORY_POLICY),
-  journey: journeySchema.nullable().optional(),
-  fighter: characterIdSchema.nullable(),
-  step: z.enum([
-    "meet",
-    "scout",
-    "route",
-    "path",
-    "guardian",
-    "boss",
-    "ending",
-  ]),
-  route: z.enum(["grove", "foundry"]).nullable(),
-  battleId: z.uuid().nullable(),
-  completed: z.boolean(),
-  completionId: z.uuid().nullable(),
-  retry: z.boolean().default(false),
-  interruption: z
-    .enum([
-      "ownership-changed",
-      "generation-invalidated",
-      "verification-unavailable",
-      "reservation-expired",
-      "legacy-encounter",
-      "cancelled",
-    ])
-    .nullable()
-    .default(null),
-  unavailableSince: z.number().int().nullable().default(null),
-  /**
-   * Official participation binding. Absent on guest rows and on rows from
-   * before official story existed; those rows keep working as guest rows.
-   */
-  official: officialBindingSchema.nullable().default(null),
-});
-
-type StoryProgress = z.infer<typeof progressSchema>;
-
-function fresh(): StoryProgress {
-  return {
-    policy: STORY_POLICY,
-    journey: freshJourney(randomUUID()),
-    fighter: null,
-    step: "meet",
-    route: null,
-    battleId: null,
-    completed: false,
-    completionId: null,
-    retry: false,
-    interruption: null,
-    unavailableSince: null,
-    official: null,
-  };
-}
 
 export class StoryService {
   constructor(
@@ -126,12 +47,6 @@ export class StoryService {
   ) {
     this.tokenRecords = new TokenRecords(store);
     this.ledger = new StoryLedger(store);
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS story_progress (
-        actor TEXT PRIMARY KEY,
-        record TEXT NOT NULL
-      );
-    `);
   }
   private readonly tokenRecords: TokenRecords;
   private readonly ledger: StoryLedger;
@@ -145,18 +60,17 @@ export class StoryService {
       authority.ownership.owner,
     );
     this.store.transaction(() => {
-      const own = this.store.db
-        .prepare("SELECT 1 FROM story_progress WHERE actor=?")
-        .get(actor);
-      if (!own) {
-        const legacy = this.load(tokenStoryActor(authority.identity));
+      if (!this.ledger.hasProgress(actor)) {
+        const legacy = this.ledger.loadProgress(
+          tokenStoryActor(authority.identity),
+        );
         if (legacy.official?.owner === authority.ownership.owner) {
           // Preserve saved steps; do not silently revive a legacy in-flight encounter.
           if (legacy.battleId)
             this.locks.release(tokenKey(authority.identity), legacy.battleId);
           legacy.battleId = null;
           legacy.interruption = "legacy-encounter";
-          this.save(actor, legacy);
+          this.ledger.saveProgress(actor, legacy);
         }
       }
       const binding = {
@@ -168,13 +82,13 @@ export class StoryService {
       if (checked.status === "changed")
         this.interrupt(
           actor,
-          this.load(actor).official?.owner === binding.owner
+          this.ledger.loadProgress(actor).official?.owner === binding.owner
             ? "generation-invalidated"
             : "ownership-changed",
           now,
           binding,
         );
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.battleId) {
         const held = this.locks.get(tokenKey(authority.identity), now);
         if (
@@ -191,7 +105,7 @@ export class StoryService {
           this.interrupt(actor, "verification-unavailable", now);
         else if (progress.unavailableSince !== null) {
           progress.unavailableSince = null;
-          this.save(actor, progress);
+          this.ledger.saveProgress(actor, progress);
         }
       }
     });
@@ -203,12 +117,8 @@ export class StoryService {
     reason: "generation-invalidated" | "ownership-changed",
     now: number,
   ): void {
-    const rows = this.store.db
-      .prepare(
-        "SELECT actor FROM story_progress WHERE json_extract(record, '$.battleId')=? AND json_extract(record, '$.official.generation')=?",
-      )
-      .all(encounter, generation);
-    for (const row of rows) this.interrupt(String(row.actor), reason, now);
+    for (const actor of this.ledger.actorsForReservation(encounter, generation))
+      this.interrupt(actor, reason, now);
   }
   interrupt(
     actor: string,
@@ -217,20 +127,19 @@ export class StoryService {
     binding?: StoryOfficialBinding,
   ) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.battleId && progress.official) {
         const token = tokenKey(progress.official.identity);
         const battleActor = tokenActorUuid(
           progress.official.identity,
           progress.official.owner,
         );
-        try {
-          const battle = this.battles.records.get(
-            progress.battleId,
-            battleActor,
-          );
-          battle.interruption = reason;
-          this.battles.records.save(battle);
+        const battle = this.battles.interrupt(
+          progress.battleId,
+          battleActor,
+          reason,
+        );
+        if (battle)
           this.tokenRecords.write({
             token,
             kind: "no-contest",
@@ -251,10 +160,6 @@ export class StoryService {
             eligibleForPublication: true,
             reason,
           });
-        } catch (error) {
-          if (!(error instanceof ServiceError) || error.status !== 404)
-            throw error;
-        }
         this.locks.release(token, progress.battleId);
       }
       progress.battleId = null;
@@ -262,13 +167,13 @@ export class StoryService {
       progress.unavailableSince = null;
       progress.interruption = reason;
       if (binding) progress.official = binding;
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   unavailable(actor: string, now: number) {
     const terminated = this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (!progress.battleId) return null;
       if (
         progress.unavailableSince !== null &&
@@ -276,7 +181,7 @@ export class StoryService {
       )
         return this.interrupt(actor, "verification-unavailable", now);
       progress.unavailableSince ??= now;
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return null;
     });
     if (terminated) return terminated;
@@ -291,7 +196,7 @@ export class StoryService {
     now: number,
     id?: string,
   ) {
-    const progress = this.load(actor);
+    const progress = this.ledger.loadProgress(actor);
     if (!progress.battleId) return null;
     if (id && id !== progress.battleId)
       throw new ServiceError(404, "This is not your current Story encounter.");
@@ -356,10 +261,10 @@ export class StoryService {
     presented: StoryOfficialBinding,
   ): { status: "ok" } | { status: "changed"; bound: StoryOfficialBinding } {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (!progress.official) {
         progress.official = officialBindingSchema.parse(presented);
-        this.save(actor, progress);
+        this.ledger.saveProgress(actor, progress);
         return { status: "ok" };
       }
       if (sameBinding(progress.official, presented)) return { status: "ok" };
@@ -374,16 +279,18 @@ export class StoryService {
    */
   discardEncounter(actor: string, binding: StoryOfficialBinding | null = null) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       progress.battleId = null;
       progress.retry = false;
       if (binding) progress.official = officialBindingSchema.parse(binding);
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   state(actor: string) {
-    return this.store.transaction(() => this.present(this.load(actor)));
+    return this.store.transaction(() =>
+      this.present(this.ledger.loadProgress(actor)),
+    );
   }
   choose(
     actor: string,
@@ -392,7 +299,7 @@ export class StoryService {
     nft = false,
   ) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.step !== "meet")
         throw new ServiceError(409, "This chapter already has a fighter.");
       if (
@@ -407,13 +314,13 @@ export class StoryService {
       progress.fighter = fighter;
       progress.step = "scout";
       if (progress.journey) enterJourney(progress.journey, "shrine", "intro");
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   route(actor: string, route: StoryRoute, access?: AccessGrant) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.step !== "route")
         throw new ServiceError(409, "The route choice is not open.");
       progress.route = route;
@@ -426,7 +333,7 @@ export class StoryService {
         );
       if (progress.journey && access)
         bindInteraction(progress.journey, access, Date.now(), randomUUID());
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
@@ -442,7 +349,7 @@ export class StoryService {
     cosmetic = false,
   ) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.journey && progress.journey.stage !== "battle")
         throw new ServiceError(
           409,
@@ -507,6 +414,7 @@ export class StoryService {
             return {
               ...this.present(progress),
               battleId: existing.id,
+              battle: this.battles.view(existing),
             };
           }
         }
@@ -522,7 +430,7 @@ export class StoryService {
           openedAt: now,
           expiresAt: now + STORY_RESERVATION_TTL_MS,
         });
-      this.battles.start({
+      const battle = this.battles.start({
         actor: battleActor,
         id: id,
         player: progress.fighter,
@@ -538,8 +446,13 @@ export class StoryService {
       progress.retry = false;
       progress.interruption = null;
       progress.unavailableSince = null;
-      this.save(actor, progress);
-      return { ...this.present(progress), battleId: id, startedAt: now };
+      this.ledger.saveProgress(actor, progress);
+      return {
+        ...this.present(progress),
+        battleId: id,
+        battle,
+        startedAt: now,
+      };
     });
   }
   /**
@@ -553,7 +466,7 @@ export class StoryService {
     now: number = Date.now(),
   ) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (progress.battleId !== battleId) return this.present(progress);
       const battleActor = progress.official
         ? tokenActorUuid(progress.official.identity, progress.official.owner)
@@ -563,7 +476,7 @@ export class StoryService {
       if (battle.state.outcome !== "victory") {
         progress.battleId = null;
         progress.retry = true;
-        this.save(actor, progress);
+        this.ledger.saveProgress(actor, progress);
         if (token) this.locks.release(token, battleId);
         return { ...this.present(progress), lost: true };
       }
@@ -622,7 +535,7 @@ export class StoryService {
         completedNow = true;
       }
       if (progress.step === "ending") this.archiveRun(actor, progress, now);
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       // A completed official chapter lands in the token's public record once.
       // Guest rows and replays (same completion id) never write here.
       if (completedNow && progress.official && progress.completionId) {
@@ -652,25 +565,21 @@ export class StoryService {
   }
   replay(actor: string, token: string | null = null) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (!progress.completed)
         throw new ServiceError(409, "Finish the chapter before replaying it.");
       if (progress.battleId) {
         const battleActor = progress.official
           ? tokenActorUuid(progress.official.identity, progress.official.owner)
           : actor;
-        const record = this.battles.records.get(progress.battleId, battleActor);
-        if (!record.state.outcome) {
-          record.interruption = "cancelled";
-          this.battles.records.save(record);
-        }
+        this.battles.interrupt(progress.battleId, battleActor, "cancelled");
         if (token) this.locks.release(token, progress.battleId);
       }
       const kept = progress.completionId;
-      const next = fresh();
+      const next = freshProgress();
       next.completed = true;
       next.completionId = kept;
-      this.save(actor, next);
+      this.ledger.saveProgress(actor, next);
       return this.present(next);
     });
   }
@@ -709,41 +618,41 @@ export class StoryService {
     };
   }
   interactionAccess(actor: string, now: number): AccessGrant | null {
-    const active = this.load(actor).journey?.interaction;
+    const active = this.ledger.loadProgress(actor).journey?.interaction;
     return active && active.expiresAt > now ? active.access : null;
   }
   interactionOpen(actor: string, now: number) {
-    const active = this.load(actor).journey?.interaction;
+    const active = this.ledger.loadProgress(actor).journey?.interaction;
     return !!active && active.expiresAt > now;
   }
   dialogue(actor: string) {
     return this.store.transaction(() => {
-      const progress = this.load(actor),
+      const progress = this.ledger.loadProgress(actor),
         journey = progress.journey;
       if (journey) {
         const key = `${journey.stage}:${progress.step}`;
         if (!journey.viewed.includes(key)) journey.viewed.push(key);
-        this.save(actor, progress);
+        this.ledger.saveProgress(actor, progress);
       }
       return this.present(progress);
     });
   }
   vow(actor: string, choice: "restore" | "preserve", access?: AccessGrant) {
     return this.store.transaction(() => {
-      const progress = this.load(actor),
+      const progress = this.ledger.loadProgress(actor),
         journey = progress.journey;
       if (!journey || journey.stage !== "vow")
         throw new ServiceError(409, "This decision is not available here.");
       journey.vow = choice;
       enterJourney(journey, "seal", "vow");
       if (access) bindInteraction(journey, access, Date.now(), randomUUID());
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   side(actor: string, access?: AccessGrant) {
     return this.store.transaction(() => {
-      const progress = this.load(actor),
+      const progress = this.ledger.loadProgress(actor),
         journey = progress.journey;
       if (
         !journey ||
@@ -757,17 +666,17 @@ export class StoryService {
         );
       enterJourney(journey, "side");
       if (access) bindInteraction(journey, access, Date.now(), randomUUID());
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   leaveSide(actor: string) {
     return this.store.transaction(() => {
-      const progress = this.load(actor);
+      const progress = this.ledger.loadProgress(actor);
       if (!progress.journey || progress.journey.stage !== "side")
         throw new ServiceError(409, "No optional encounter is active.");
       enterJourney(progress.journey, "ending");
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
@@ -778,7 +687,7 @@ export class StoryService {
     admission: AccessGrant | null = null,
   ) {
     return this.store.transaction(() => {
-      const progress = this.load(actor),
+      const progress = this.ledger.loadProgress(actor),
         journey = progress.journey;
       if (!journey || !progress.fighter)
         throw new ServiceError(409, "Choose your fighter first.");
@@ -788,10 +697,11 @@ export class StoryService {
       try {
         solved = interactJourney(journey, progress.fighter, action);
       } catch (error) {
-        throw new ServiceError(
-          409,
-          error instanceof Error ? error.message : "Interaction unavailable.",
-        );
+        if (error instanceof JourneyActionError)
+          throw new ServiceError(409, error.message, undefined, {
+            cause: error,
+          });
+        throw error;
       }
       if (solved) {
         const location = journey.stage;
@@ -808,12 +718,15 @@ export class StoryService {
           this.archiveRun(actor, progress, now);
         } else enterJourney(journey, "battle", location);
       }
-      this.save(actor, progress);
+      this.ledger.saveProgress(actor, progress);
       return this.present(progress);
     });
   }
   rewards(actor: string) {
-    return this.ledger.rewards(actor, this.load(actor).official?.owner);
+    return this.ledger.rewards(
+      actor,
+      this.ledger.loadProgress(actor).official?.owner,
+    );
   }
   runs(actor: string) {
     return this.ledger.runs(actor);
@@ -836,21 +749,6 @@ export class StoryService {
         progress.official?.owner,
         now,
       );
-  }
-  private load(actor: string): StoryProgress {
-    const row = this.store.db
-      .prepare("SELECT record FROM story_progress WHERE actor=?")
-      .get(actor) as { record: string } | undefined;
-    return row ? readStored(progressSchema, row.record) : fresh();
-  }
-  private save(actor: string, progress: StoryProgress) {
-    const record = JSON.stringify(progressSchema.parse(progress));
-    this.store.db
-      .prepare(
-        `INSERT INTO story_progress (actor, record) VALUES (?, ?)
-         ON CONFLICT(actor) DO UPDATE SET record=excluded.record`,
-      )
-      .run(actor, record);
   }
 }
 

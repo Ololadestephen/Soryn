@@ -9,7 +9,7 @@ import { BattleStore } from "../../src/server/combat/persistence";
 import { BattleService } from "../../src/server/combat/service";
 const A = "11111111-1111-4111-8111-111111111111";
 const B = "22222222-2222-4222-8222-222222222222";
-it("shows stored guest progress without creating sessions, queue rows or battles, or settling expired clocks", () => {
+it("shows stored guest progress without creating sessions, queue rows or battles, or settling expired clocks", async () => {
   const store = new Store(":memory:");
   try {
     expect(menuState(store, null, 1)).toEqual({
@@ -25,8 +25,8 @@ it("shows stored guest progress without creating sessions, queue rows or battles
     pvp.join({ actor: B, mode: "guest" }, room.invite, 10);
     pvp.select(A, room.invite, "pip", 10);
     pvp.select(B, room.invite, "bolt", 10);
-    pvp.ready(A, room.invite, true, 10);
-    pvp.ready(B, room.invite, true, 10);
+    await pvp.confirmReady(A, room.invite, true, 10);
+    await pvp.confirmReady(B, room.invite, true, 10);
     const before = JSON.stringify(pvp.records.byInvite(room.invite));
     expect(menuState(store, A, 999999)).toMatchObject({
       story: "continue",

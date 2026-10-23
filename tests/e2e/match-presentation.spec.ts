@@ -17,7 +17,7 @@ test("labelled holders use the queue, offer and fighter selection with compact k
     const b = await fixtureWalletAccess(other.request, 1, baseURL!);
     await page.goto("/match");
     await expect(
-      page.getByRole("heading", { name: "Ready when you are" }),
+      page.getByRole("heading", { name: "Join matchmaking" }),
     ).toBeVisible();
     await expect(page.locator(".match-roster li")).toHaveCount(6);
     await expect(
@@ -70,7 +70,7 @@ test("labelled holders use the queue, offer and fighter selection with compact k
       .getByRole("button", { name: "Leave queue", exact: true })
       .click();
     await expect(
-      page.getByRole("heading", { name: "Ready when you are" }),
+      page.getByRole("heading", { name: "Join matchmaking" }),
     ).toBeVisible();
     await page
       .getByRole("button", { name: "Find a match", exact: true })

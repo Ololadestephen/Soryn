@@ -5,7 +5,7 @@ import {
   character,
   type CharacterId,
 } from "../../../domain/characters/definitions";
-import { companions } from "../../combat/rendered/catalogue";
+import { companions } from "./catalogue";
 import assets from "./assets.json";
 
 export function IdleArt({

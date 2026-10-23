@@ -48,6 +48,34 @@ describe("release storage safeguards", () => {
       expect(
         restored.db.prepare("SELECT token_key FROM pvp_queue").get()?.token_key,
       ).toBeNull();
+      const queueCols = new Set(
+        restored.db
+          .prepare("PRAGMA table_info(pvp_queue)")
+          .all()
+          .map((row) => String(row.name)),
+      );
+      expect(queueCols.has("access_grant")).toBe(true);
+      expect(queueCols.has("cosmetic")).toBe(true);
+      const tables = new Set(
+        restored.db
+          .prepare("SELECT name FROM sqlite_master WHERE type='table'")
+          .all()
+          .map((row) => String(row.name)),
+      );
+      for (const required of [
+        "wallet_accounts",
+        "access_grants",
+        "player_cosmetics",
+        "battles",
+        "pvp_rooms",
+        "pvp_members",
+        "story_progress",
+        "story_runs",
+        "story_rewards",
+        "token_locks",
+        "token_record",
+      ])
+        expect(tables.has(required)).toBe(true);
       expect(new TokenLocks(restored).get(lock.token, 101)).toEqual(lock);
       expect(
         new TokenLocks(restored).release(lock.token, "wrong-encounter"),

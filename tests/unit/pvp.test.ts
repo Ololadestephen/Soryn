@@ -346,7 +346,7 @@ describe("private match contract", () => {
 });
 
 describe("private match persistence", () => {
-  it("reopens an active round after the database connection is replaced", () => {
+  it("reopens an active round after the database connection is replaced", async () => {
     const folder = mkdtempSync(join(tmpdir(), "chog-pvp-"));
     const path = join(folder, "pvp.sqlite");
     let count = 0;
@@ -368,8 +368,8 @@ describe("private match persistence", () => {
     first.join({ actor: B, mode: "guest" }, created.invite, NOW);
     first.select(A, created.invite, "pip", NOW);
     first.select(B, created.invite, "bolt", NOW);
-    first.ready(A, created.invite, true, NOW);
-    first.ready(B, created.invite, true, NOW);
+    await first.confirmReady(A, created.invite, true, NOW);
+    await first.confirmReady(B, created.invite, true, NOW);
     first.assets(A, created.invite, NOW);
     first.assets(B, created.invite, NOW);
     first.move(A, created.invite, 1, "basic", NOW + 20);
@@ -379,13 +379,17 @@ describe("private match persistence", () => {
       PVP_TIMERS,
       ids,
     );
-    const hidden = second.preview(created.invite, B, NOW + 20);
+    const hidden = second.pollRoom(B, created.invite, NOW + 20);
     expect(hidden.seated).toBe(true);
     if (!hidden.seated) return;
     expect(hidden.opponent?.locked).toBe(true);
     expect(hidden.you.move).toBeNull();
     expect(lockPairs(hidden)).toEqual([]);
-    const resolved = second.preview(created.invite, A, NOW + PVP_TIMERS.moveMs);
+    const resolved = second.pollRoom(
+      A,
+      created.invite,
+      NOW + PVP_TIMERS.moveMs,
+    );
     expect(resolved.seated).toBe(true);
     if (!resolved.seated) return;
     expect(resolved.battle?.rounds).toHaveLength(1);
@@ -393,7 +397,7 @@ describe("private match persistence", () => {
     second.records.store.close();
   });
 
-  it("keeps the timeout when a move arriving at the deadline is rejected", () => {
+  it("keeps the timeout when a move arriving at the deadline is rejected", async () => {
     const folder = mkdtempSync(join(tmpdir(), "chog-pvp-deadline-"));
     const path = join(folder, "pvp.sqlite");
     const service = new PvpService(new PvpStore(new Store(path)), PVP_TIMERS);
@@ -401,24 +405,24 @@ describe("private match persistence", () => {
     service.join({ actor: B, mode: "guest" }, created.invite, NOW);
     service.select(A, created.invite, "pip", NOW);
     service.select(B, created.invite, "bolt", NOW);
-    service.ready(A, created.invite, true, NOW);
-    service.ready(B, created.invite, true, NOW);
+    await service.confirmReady(A, created.invite, true, NOW);
+    await service.confirmReady(B, created.invite, true, NOW);
     service.assets(A, created.invite, NOW);
     service.assets(B, created.invite, NOW);
     const deadline = NOW + PVP_TIMERS.moveMs;
     expect(() =>
       service.move(A, created.invite, 1, "special", deadline),
     ).toThrow(/another move|over/);
-    const caught = service.preview(created.invite, B, deadline);
+    const caught = service.pollRoom(B, created.invite, deadline);
     expect(caught.seated && caught.battle?.rounds).toHaveLength(1);
     expect(caught.seated && caught.battle?.rounds[0]).toMatchObject({
       player: "guard",
       opponent: "guard",
     });
     const presentUntil = caught.seated ? caught.deadlineAt : null;
-    const nextChoose = service.preview(
-      created.invite,
+    const nextChoose = service.pollRoom(
       A,
+      created.invite,
       presentUntil ?? deadline,
     );
     const second = nextChoose.seated ? nextChoose.deadlineAt : null;
@@ -426,13 +430,13 @@ describe("private match persistence", () => {
     expect(() =>
       service.move(A, created.invite, 2, "basic", second ?? deadline),
     ).toThrow(/over|another move|moved on/);
-    const abandoned = service.preview(created.invite, B, second ?? deadline);
+    const abandoned = service.pollRoom(B, created.invite, second ?? deadline);
     expect(abandoned.seated && abandoned.result?.kind).toBe("abandoned");
     expect(abandoned.seated && abandoned.battle?.rounds).toHaveLength(1);
     service.records.store.close();
   });
 
-  it("uses a locked move when only the other player reaches the deadline", () => {
+  it("uses a locked move when only the other player reaches the deadline", async () => {
     const service = new PvpService(
       new PvpStore(new Store(":memory:")),
       PVP_TIMERS,
@@ -441,8 +445,8 @@ describe("private match persistence", () => {
     service.join({ actor: B, mode: "guest" }, created.invite, NOW);
     service.select(A, created.invite, "pip", NOW);
     service.select(B, created.invite, "bolt", NOW);
-    service.ready(A, created.invite, true, NOW);
-    service.ready(B, created.invite, true, NOW);
+    await service.confirmReady(A, created.invite, true, NOW);
+    await service.confirmReady(B, created.invite, true, NOW);
     service.assets(A, created.invite, NOW);
     service.assets(B, created.invite, NOW);
     service.move(A, created.invite, 1, "special", NOW + 10);
@@ -450,7 +454,7 @@ describe("private match persistence", () => {
     expect(() => service.move(B, created.invite, 1, "basic", deadline)).toThrow(
       /another move/,
     );
-    const view = service.preview(created.invite, A, deadline);
+    const view = service.pollRoom(A, created.invite, deadline);
     expect(view.seated && view.battle?.rounds).toHaveLength(1);
     expect(view.seated && view.battle?.rounds[0]).toMatchObject({
       player: "special",
@@ -459,7 +463,7 @@ describe("private match persistence", () => {
     service.records.store.close();
   });
 
-  it("refuses an unseated player with the invitation from changing setup", () => {
+  it("refuses an unseated player with the invitation from changing setup", async () => {
     const service = new PvpService(
       new PvpStore(new Store(":memory:")),
       PVP_TIMERS,
@@ -467,9 +471,9 @@ describe("private match persistence", () => {
     const created = service.create({ actor: A, mode: "guest" }, NOW);
     service.join({ actor: B, mode: "guest" }, created.invite, NOW);
     service.select(A, created.invite, "pip", NOW);
-    service.ready(A, created.invite, true, NOW);
+    await service.confirmReady(A, created.invite, true, NOW);
     expect(() => service.setup(C, created.invite, NOW)).toThrow(/not seated/);
-    const host = service.preview(created.invite, A, NOW);
+    const host = service.pollRoom(A, created.invite, NOW);
     expect(host.seated && host.you.ready).toBe(true);
     expect(host.seated && host.you.characterId).toBe("pip");
     service.records.store.close();
@@ -483,7 +487,7 @@ describe("private match persistence", () => {
     const stale = service.create({ actor: A, mode: "guest" }, NOW);
     service.create({ actor: B, mode: "guest" }, NOW + PVP_TIMERS.lobbyMs);
     expect(() =>
-      service.preview(stale.invite, A, NOW + PVP_TIMERS.lobbyMs),
+      service.pollRoom(A, stale.invite, NOW + PVP_TIMERS.lobbyMs),
     ).toThrow(/not found/);
     const room = readyRoom();
     room.match!.phase = "complete";
@@ -582,13 +586,13 @@ describe("holder seats at match start", () => {
     owner,
   };
 
-  function officialRoom(path: string) {
+  async function officialRoom(path: string) {
     const service = new PvpService(new PvpStore(new Store(path)), PVP_TIMERS);
     const created = service.create({ actor: A, mode: "official" }, NOW);
     service.join({ actor: B, mode: "official" }, created.invite, NOW);
     service.select(A, created.invite, "aegis", NOW, grantA);
     service.select(B, created.invite, "nyx", NOW, grantB);
-    service.ready(A, created.invite, true, NOW, grantA);
+    await service.confirmReady(A, created.invite, true, NOW, grantA);
     return { service, invite: created.invite };
   }
 
@@ -597,13 +601,13 @@ describe("holder seats at match start", () => {
       mkdtempSync(join(tmpdir(), "chog-pvp-")),
       "holders.sqlite",
     );
-    const { service, invite } = officialRoom(path);
+    const { service, invite } = await officialRoom(path);
     await expect(
       service.confirmReady(B, invite, true, NOW, grantB),
     ).rejects.toThrow(/verification is unavailable/);
-    const view = service.preview(invite, B, NOW);
+    const view = service.pollRoom(B, invite, NOW);
     expect(view.seated && view.battle).toBeFalsy();
-    const host = service.preview(invite, A, NOW);
+    const host = service.pollRoom(A, invite, NOW);
     expect(host.seated && host.you.characterId).toBe("aegis");
     expect(host.seated && host.series?.outcome).toBeNull();
     service.records.store.close();
@@ -625,7 +629,7 @@ describe("holder seats at match start", () => {
     service.join({ actor: B, mode: "official" }, created.invite, NOW);
     service.select(A, created.invite, "aegis", NOW, grantA);
     service.select(B, created.invite, "nyx", NOW, grantB);
-    service.ready(A, created.invite, true, NOW, grantA);
+    await service.confirmReady(A, created.invite, true, NOW, grantA);
     const opened = await service.confirmReady(
       B,
       created.invite,
@@ -647,16 +651,24 @@ describe("holder seats at match start", () => {
     expect(pvpRoomSchema.parse(legacy).seats.a?.holderGrant).toBeNull();
   });
 
-  it("does not treat a direct ready as a completed holder check", () => {
+  it("does not expose an unchecked public ready mutation", async () => {
     const path = join(
       mkdtempSync(join(tmpdir(), "chog-pvp-")),
       "holders.sqlite",
     );
-    const { service, invite } = officialRoom(path);
-    expect(() => service.ready(B, invite, true, NOW, grantB)).toThrow(
-      ServiceError,
-    );
-    const view = service.preview(invite, A, NOW);
+    const { service, invite } = await officialRoom(path);
+    expect("ready" in service).toBe(false);
+    const applyReady = Reflect.get(service, "applyReady") as (
+      actor: string,
+      invite: string,
+      ready: boolean,
+      now: number,
+      grant: typeof grantB,
+    ) => unknown;
+    expect(() =>
+      applyReady.call(service, B, invite, true, NOW, grantB),
+    ).toThrow(ServiceError);
+    const view = service.pollRoom(A, invite, NOW);
     expect(view.seated && view.phase).not.toBe("loading");
     service.records.store.close();
   });

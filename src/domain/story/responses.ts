@@ -3,6 +3,7 @@ import { z } from "zod";
 import { characterIdSchema } from "../characters/definitions";
 import { arenaSchema } from "../combat/arenas";
 import { difficultySchema } from "../combat/contracts";
+import { battleViewSchema } from "../combat/responses";
 import { STORY_POLICY, type StoryStep, type StoryRoute } from "./sanctuary";
 export const storyStepSchema: z.ZodType<StoryStep> = z.enum([
   "meet",
@@ -58,5 +59,6 @@ export const storyStateSchema = z.object({
   authorized: z.boolean().optional(),
   interruption: z.string().nullable().optional(),
   tokenId: z.string().optional(),
+  battle: battleViewSchema.nullable().optional(),
 });
 export type StoryState = z.infer<typeof storyStateSchema>;

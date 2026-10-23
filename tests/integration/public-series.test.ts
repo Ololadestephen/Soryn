@@ -26,13 +26,13 @@ describe("public queue through authoritative series completion", () => {
         const invite = paired.invite!;
         service.select(A, invite, "pip", now++);
         service.select(B, invite, "bolt", now++);
-        service.ready(A, invite, true, now++);
-        service.ready(B, invite, true, now++);
+        await service.confirmReady(A, invite, true, now++);
+        await service.confirmReady(B, invite, true, now++);
         const ids: string[] = [];
         for (const winner of wins) {
           service.assets(A, invite, now++);
           service.assets(B, invite, now++);
-          let view = service.preview(invite, A, now);
+          let view = service.pollRoom(A, invite, now);
           expect(view.seated).toBe(true);
           if (!view.seated) throw new Error("Missing public seat");
           ids.push(view.battle!.id);
@@ -50,7 +50,7 @@ describe("public queue through authoritative series completion", () => {
               winner === "a" && canSpecial("player") ? "special" : "basic",
               now++,
             );
-            const hidden = service.preview(invite, B, now);
+            const hidden = service.pollRoom(B, invite, now);
             expect(hidden.seated && hidden.opponent?.locked).toBe(true);
             if (hidden.seated)
               expect(hidden.opponent).not.toHaveProperty("move");
@@ -62,7 +62,7 @@ describe("public queue through authoritative series completion", () => {
               now++,
             );
             now += PVP_TIMERS.presentMs + 1;
-            const next = service.preview(invite, A, now);
+            const next = service.pollRoom(A, invite, now);
             if (!next.seated) throw new Error("Public seat disappeared");
             view = next;
           }
@@ -71,13 +71,13 @@ describe("public queue through authoritative series completion", () => {
           );
           const score = view.series;
           for (let repeat = 0; repeat < 3; repeat++) {
-            const duplicate = service.preview(invite, A, now++);
+            const duplicate = service.pollRoom(A, invite, now++);
             expect(duplicate.seated && duplicate.series).toEqual(score);
           }
           if (view.series?.phase === "intermission") {
             expect(service.records.byInvite(invite).closedAt).toBeNull();
-            expect(service.session(A, now).activeInvite).toBe(invite);
-            expect(service.session(B, now).activeInvite).toBe(invite);
+            expect(service.pollSession(A, now).activeInvite).toBe(invite);
+            expect(service.pollSession(B, now).activeInvite).toBe(invite);
             expect(
               store.db
                 .prepare("SELECT COUNT(*) n FROM pvp_queue WHERE room_invite=?")
@@ -96,8 +96,8 @@ describe("public queue through authoritative series completion", () => {
             .prepare("SELECT COUNT(*) n FROM pvp_queue WHERE room_invite=?")
             .get(invite)?.n,
         ).toBe(0);
-        expect(service.session(A, now).activeInvite).toBeNull();
-        expect(service.session(B, now).activeInvite).toBeNull();
+        expect(service.pollSession(A, now).activeInvite).toBeNull();
+        expect(service.pollSession(B, now).activeInvite).toBeNull();
         expect(final.series).toMatchObject({
           phase: "complete",
           wins: { a: 2, b: wins.length - 2 },
@@ -106,16 +106,16 @@ describe("public queue through authoritative series completion", () => {
         expect(new Set(ids).size).toBe(wins.length);
         expect(final.series?.recorded).toHaveLength(wins.length);
         const last = final.match!.id;
-        service.preview(invite, A, now + PVP_TIMERS.intermissionMs * 10);
+        service.pollRoom(A, invite, now + PVP_TIMERS.intermissionMs * 10);
         expect(service.records.byInvite(invite).match!.id).toBe(last);
-        expect(queue.state(A, now).status).toBe("idle");
+        expect(queue.pollState(A, now).status).toBe("idle");
         queue.join({ actor: A, mode: "guest" }, now++);
         queue.join({ actor: B, mode: "guest" }, now++);
         queue.accept(A, now++);
         const again = queue.accept(B, now++);
         expect(again.invite).not.toBe(invite);
-        service.preview(invite, A, now++);
-        expect(queue.state(A, now).invite).toBe(again.invite);
+        service.pollRoom(A, invite, now++);
+        expect(queue.pollState(A, now).invite).toBe(again.invite);
         expect(service.records.byInvite(invite).series).toEqual(final.series);
         expect(() => service.setup(A, invite, now)).toThrow(/archived/);
         expect(() => service.rematch(A, invite, now)).toThrow(/archived/);

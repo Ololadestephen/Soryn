@@ -3,6 +3,7 @@ import { ignoreResponse } from "../request";
 
 import { officialStartRequest } from "../characters/startRequests";
 import type { CharacterId } from "../../domain/characters/definitions";
+import type { OfficialMutationRequest } from "../../domain/requests";
 import { useRef, useState } from "react";
 import { identityFor } from "../../domain/identity";
 import {
@@ -106,7 +107,7 @@ export function useOfficialGame(onMuseumChanged: () => Promise<void>) {
       setChallenge(null);
     });
   }
-  function mutate(input: Record<string, unknown>) {
+  function mutate(input: OfficialMutationRequest) {
     return perform(async () => {
       setPending(input);
       if ((await selected()) !== session.account?.wallet)

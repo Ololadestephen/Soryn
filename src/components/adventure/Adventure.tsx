@@ -1,26 +1,30 @@
 "use client";
 
-import type { useGuestGame } from "../guest/useGuestGame";
+import type {
+  AdventureMutationRequest,
+  SharedAdventureMutationRequest,
+} from "../../domain/requests";
+import type { RunView } from "../../domain/views";
 import { RoomInteractions } from "../characters/RoomInteractions";
 import { Stage } from "./Stage";
 import { Result } from "./Result";
 import { Controls } from "./Controls";
 import { GuestRequestError } from "../guest/GuestRequestError";
 
-type Props = Pick<
-  ReturnType<typeof useGuestGame>,
-  "run" | "busy" | "error" | "pending" | "mutate" | "start"
-> & { official?: boolean };
+type Props<T extends AdventureMutationRequest = AdventureMutationRequest> = {
+  run: RunView | null;
+  busy: boolean;
+  error: string;
+  pending: T | null;
+  mutate: ((input: T) => Promise<void>) &
+    ((input: SharedAdventureMutationRequest) => Promise<void>);
+  start: (exhibitId?: string | null, retryOf?: string | null) => void;
+  official?: boolean;
+};
 
-export function Adventure({
-  run,
-  busy,
-  error,
-  pending,
-  mutate,
-  start,
-  official = false,
-}: Props) {
+export function Adventure<
+  T extends AdventureMutationRequest = AdventureMutationRequest,
+>({ run, busy, error, pending, mutate, start, official = false }: Props<T>) {
   const observation = run?.observation;
   return (
     <section
@@ -99,7 +103,7 @@ export function Adventure({
           official={official}
         />
       </div>
-      <GuestRequestError
+      <GuestRequestError<T>
         error={error}
         pending={pending}
         busy={busy}

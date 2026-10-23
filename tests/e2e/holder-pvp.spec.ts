@@ -17,11 +17,46 @@ test("qualified private lifecycle preserves mobile Ready bar, archived history a
   await attachSignedHeaders(friend, [`${baseURL}/api/**`], b.headers);
   try {
     await page.goto("/challenge");
+    mkdirSync(".cache/copy-pass", { recursive: true });
+    for (const width of [1440, 390, 320]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(
+        page.getByRole("textbox", { name: "Invitation link or room code" }),
+      ).toBeVisible();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      await page.screenshot({
+        path: `.cache/copy-pass/friend-entry-${width}.png`,
+        fullPage: true,
+      });
+    }
+    const invitation = page.getByRole("textbox", {
+      name: "Invitation link or room code",
+    });
+    await invitation.fill(
+      "https://example.invalid/challenge/" + "a".repeat(24),
+    );
+    await invitation.press("Enter");
+    await expect(
+      page
+        .getByRole("region", { name: "Challenge a friend", exact: true })
+        .getByRole("alert"),
+    ).toHaveText("Paste a Soryn invitation from this site or its room code.");
+    await invitation.fill("");
     await page.getByRole("button", { name: "Create invitation" }).click();
     await expect(page).toHaveURL(/\/challenge\/[A-Za-z0-9_-]{20,}/);
     const url = page.url(),
       invite = new URL(url).pathname.split("/").at(-1)!;
-    await friend.goto(url);
+    await friend.goto("/challenge");
+    await friend
+      .getByRole("textbox", { name: "Invitation link or room code" })
+      .fill(url);
+    await friend
+      .getByRole("button", { name: "Join a room", exact: true })
+      .click();
     await friend.getByRole("button", { name: "Take the open seat" }).click();
     await friend.getByRole("radio", { name: "Nyx / Infiltrator" }).click();
     await page.getByRole("radio", { name: "Aegis / Guardian" }).click();

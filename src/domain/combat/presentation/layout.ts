@@ -15,7 +15,7 @@ export function stageLayout(
       sourceLimit,
       available,
       portrait
-        ? width * 0.64
+        ? width * 0.54
         : landscape
           ? height * 0.5
           : Math.min(width * 0.38, height * 0.64),

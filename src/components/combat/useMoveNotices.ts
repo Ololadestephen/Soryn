@@ -4,9 +4,19 @@ import {
   moveNotice,
   noticeDuration,
   updateMoveNotice,
+  type MoveNotice,
   type MoveNoticeState,
 } from "../../domain/combat/presentation/notices";
 import type { CombatPresentation } from "./playback";
+
+export function scheduleMoveNoticeExpiry(
+  active: MoveNotice | null,
+  onExpire: (expired: MoveNotice) => void,
+): (() => void) | undefined {
+  if (!active) return undefined;
+  const timer = setTimeout(() => onExpire(active), noticeDuration);
+  return () => clearTimeout(timer);
+}
 
 export function useMoveNotices(
   battle: BattleView,
@@ -23,16 +33,14 @@ export function useMoveNotices(
   const next = updateMoveNotice(state, battle.id, notice, ended);
   if (next !== state) setState(next);
   const active = state.active;
-  useEffect(() => {
-    if (!active) return;
-    const timer = setTimeout(
-      () =>
+  useEffect(
+    () =>
+      scheduleMoveNoticeExpiry(active, (expired) =>
         setState((current) =>
-          current.active === active ? { ...current, active: null } : current,
+          current.active === expired ? { ...current, active: null } : current,
         ),
-      noticeDuration,
-    );
-    return () => clearTimeout(timer);
-  }, [active]);
+      ),
+    [active],
+  );
   return !ended && state.battleId === battle.id ? active : null;
 }

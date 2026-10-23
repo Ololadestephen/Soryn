@@ -12,6 +12,10 @@ Read SORYN_PLAN.md before changing this direction. Also read START_HERE.md, READ
 
 Token ownership still controls official holder fighters and official writes. A CHOG balance does not change damage, health, or initiative. The approved access threshold is at least 500 $CHOG or a verified Chog NFT on Monad Mainnet; either route qualifies independently. Guests keep four-starter Practice and private history. New holder admissions remain operator-gated; this policy does not authorize enabling production. Achievement claims stay off the player path until a contract deploy is approved. The app remains one Node process with SQLite. Do not add Redis, WebSockets, or another database without a tested reason.
 
+## Interface clarity
+
+Use page titles, grouped actions and semantic controls to explain the interface. Cut promotional taglines, repeated helper copy and redundant secondary labels. Retain meaningful game choices, access/privacy boundaries, errors, pending states and accessible names. Keep action names and destinations canonical; tests should locate controls by their purpose rather than incidental marketing copy. Evaluate UX, DX and agent navigability together without adding speculative abstractions.
+
 ## Do not drift
 
 - Start combat with one complete starter-versus-computer encounter, then four starters, then eight distinct holder fighters. Preserve the three-room adventure and museum without forcing players through them.

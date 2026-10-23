@@ -33,13 +33,7 @@ export function BattleHistoryPage() {
   }, [identity.walletPlay]);
   return (
     <section className="pvp-history" aria-label="Battle history">
-      <p className="eyebrow">Your battles only</p>
-      <h1>Battle history</h1>
-      <p>
-        {identity.walletPlay
-          ? "Private records for this authenticated wallet. No new holdings check is required to read them."
-          : "Practice and player battles for this browser stay separate."}
-      </p>
+      <h1>{identity.walletPlay ? "Wallet history" : "Battle history"}</h1>
       {error && <p role="alert">{error}</p>}
       <h2>Practice</h2>
       {practice.length === 0 ? (

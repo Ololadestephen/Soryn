@@ -130,21 +130,7 @@ export interface TokenRecordSummary {
 const LIST_LIMIT = 200;
 
 export class TokenRecords {
-  constructor(private readonly store: Store) {
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS token_record (
-        id TEXT PRIMARY KEY,
-        token TEXT NOT NULL,
-        kind TEXT NOT NULL,
-        source TEXT NOT NULL,
-        recorded_at INTEGER NOT NULL,
-        record TEXT NOT NULL,
-        UNIQUE(token, kind, source)
-      );
-      CREATE INDEX IF NOT EXISTS token_record_token
-        ON token_record(token, recorded_at DESC);
-    `);
-  }
+  constructor(private readonly store: Store) {}
   /** Idempotent: a retry of the same result is ignored, not duplicated. */
   write(entry: Omit<TokenRecord, "id"> & { id?: string }): boolean {
     const record = tokenRecordSchema.parse({ id: randomUUID(), ...entry });

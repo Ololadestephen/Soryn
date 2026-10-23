@@ -22,7 +22,6 @@ function MyChogHeading() {
   return (
     <header className="mychog-heading">
       <h1 id="mychog-title">My Chog</h1>
-      <p>Fighters, progress and private records.</p>
     </header>
   );
 }
@@ -69,9 +68,7 @@ export function MyChogEntry({
   return (
     <>
       <MyChogHeading />
-      <section className="mychog-entry panel" aria-labelledby="connect-title">
-        <h2 id="connect-title">Connect your wallet</h2>
-        <p>Open your collection and see what’s available to you.</p>
+      <section className="mychog-entry panel" aria-label="Wallet sign-in">
         <button onClick={connect} disabled={!ready}>
           Connect wallet
         </button>

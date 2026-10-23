@@ -23,19 +23,7 @@ export type TokenLock = z.infer<typeof tokenLockSchema>;
  * request cannot release a newer lock.
  */
 export class TokenLocks {
-  constructor(private readonly store: Store) {
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS token_locks (
-        token TEXT PRIMARY KEY,
-        encounter TEXT NOT NULL,
-        kind TEXT NOT NULL,
-        owner TEXT NOT NULL,
-        generation TEXT NOT NULL,
-        opened_at INTEGER NOT NULL,
-        expires_at INTEGER NOT NULL
-      );
-    `);
-  }
+  constructor(private readonly store: Store) {}
   acquire(lock: TokenLock): void {
     const record = tokenLockSchema.parse(lock);
     this.store.db

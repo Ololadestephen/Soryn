@@ -253,6 +253,19 @@ export function createStoryHandlers(
     try {
       requireJsonOrigin(request, origin);
       const input = parseInput(inputSchema, await body(request));
+      const now = Date.now();
+      let actor: string;
+      let nft = false;
+      let tokenId: string | undefined;
+      let token: string | null = null;
+      let officialBegin: {
+        token: string;
+        binding: StoryOfficialBinding;
+        authority: OfficialAuthority;
+      } | null = null;
+      let admission:
+        import("../../domain/access/policy").AccessGrant | undefined;
+      let cosmetic = false;
       if (input.mode === "official") {
         const resolved = await official(request, true);
         if ("interrupted" in resolved) return response(resolved.interrupted);
@@ -263,7 +276,7 @@ export function createStoryHandlers(
             input.id,
             input.round,
             input.move,
-            Date.now(),
+            now,
           );
           return response({
             ...story.state(resolved.actor),
@@ -273,129 +286,110 @@ export function createStoryHandlers(
             tokenId: resolved.authority.identity.tokenId,
           });
         }
+        if (input.operation === "cancel") {
+          return response({
+            ...enrich(
+              resolved.actor,
+              story.interrupt(resolved.actor, "cancelled", now),
+            ),
+            authorized: true,
+            tokenId: resolved.authority.identity.tokenId,
+          });
+        }
         if (
           input.operation !== "resolve" &&
-          input.operation !== "cancel" &&
           input.operation !== "dialogue" &&
           input.operation !== "leave-side" &&
           !(input.operation === "begin" && story.state(resolved.actor).battleId)
         )
           requireAdmissionsOpen();
-        let extra: unknown = null;
-        if (input.operation === "dialogue")
-          extra = story.dialogue(resolved.actor);
-        if (input.operation === "vow")
-          extra = story.vow(resolved.actor, input.choice);
-        if (input.operation === "interact")
-          extra = story.interact(resolved.actor, input.action, Date.now());
-        if (input.operation === "side") extra = story.side(resolved.actor);
-        if (input.operation === "leave-side")
-          extra = story.leaveSide(resolved.actor);
-        if (extra)
-          return response({
-            ...enrich(resolved.actor, extra),
-            authorized: true,
-            tokenId: resolved.authority.identity.tokenId,
-          });
-        const payload =
-          input.operation === "choose"
-            ? story.choose(resolved.actor, input.fighter, undefined, true)
-            : input.operation === "route"
-              ? story.route(resolved.actor, input.route)
-              : input.operation === "begin"
-                ? story.begin(
-                    resolved.actor,
-                    Date.now(),
-                    {
-                      token: resolved.token,
-                      binding: resolved.binding,
-                      authority: resolved.authority,
-                    },
-                    undefined,
-                    access.entitlements.equipped(resolved.accountActor),
-                  )
-                : input.operation === "resolve"
-                  ? story.resolve(
-                      resolved.actor,
-                      input.battleId,
-                      resolved.token,
-                      Date.now(),
-                    )
-                  : input.operation === "cancel"
-                    ? story.interrupt(resolved.actor, "cancelled", Date.now())
-                    : story.replay(resolved.actor, resolved.token);
-        return response({
-          ...enrich(resolved.actor, payload),
-          authorized: true,
-          tokenId: resolved.authority.identity.tokenId,
-        });
+        actor = resolved.actor;
+        nft = true;
+        tokenId = resolved.authority.identity.tokenId;
+        token = resolved.token;
+        officialBegin = {
+          token: resolved.token,
+          binding: resolved.binding,
+          authority: resolved.authority,
+        };
+        cosmetic = access.entitlements.equipped(resolved.accountActor);
+      } else {
+        const player = await access.player(request);
+        const existing = player?.actor ?? guestActor(request);
+        if (!existing)
+          throw new ServiceError(401, "Open wallet access to continue Story.");
+        if (!player) protectWalletActor(store, existing);
+        store.rateLimit(existing);
+        const active = story.state(existing);
+        const canFinish =
+          input.operation === "resolve" && active.battleId === input.battleId;
+        const canResume = input.operation === "begin" && !!active.battleId;
+        const insideInteraction =
+          input.operation === "interact" &&
+          story.interactionOpen(existing, now);
+        if (
+          !canFinish &&
+          !canResume &&
+          !insideInteraction &&
+          input.operation !== "dialogue" &&
+          input.operation !== "leave-side"
+        )
+          admission = await access.admit(player);
+        if (
+          input.operation === "dialogue" &&
+          !player &&
+          !active.journey &&
+          active.step === "meet"
+        )
+          throw new ServiceError(
+            403,
+            "Connect wallet to unlock Story. Practice remains available.",
+          );
+        actor = existing;
+        cosmetic = player ? access.entitlements.equipped(player.actor) : false;
       }
-      const player = await access.player(request);
-      const existing = player?.actor ?? guestActor(request);
-      if (!existing)
-        throw new ServiceError(401, "Open wallet access to continue Story.");
-      if (!player) protectWalletActor(store, existing);
-      store.rateLimit(existing);
-      let admission;
-      const active = story.state(existing);
-      const canFinish =
-        input.operation === "resolve" && active.battleId === input.battleId;
-      const canResume = input.operation === "begin" && !!active.battleId;
-      const insideInteraction =
-        input.operation === "interact" &&
-        story.interactionOpen(existing, Date.now());
-      if (
-        !canFinish &&
-        !canResume &&
-        !insideInteraction &&
-        input.operation !== "dialogue" &&
-        input.operation !== "leave-side"
-      )
-        admission = await access.admit(player);
-      if (
-        input.operation === "dialogue" &&
-        !player &&
-        !active.journey &&
-        active.step === "meet"
-      )
-        throw new ServiceError(
-          403,
-          "Connect wallet to unlock Story. Practice remains available.",
-        );
-      const payload =
-        input.operation === "choose"
-          ? story.choose(existing, input.fighter, admission)
-          : input.operation === "route"
-            ? story.route(existing, input.route, admission)
-            : input.operation === "vow"
-              ? story.vow(existing, input.choice, admission)
-              : input.operation === "interact"
-                ? story.interact(
-                    existing,
-                    input.action,
-                    Date.now(),
-                    admission ?? story.interactionAccess(existing, Date.now()),
-                  )
-                : input.operation === "leave-side"
-                  ? story.leaveSide(existing)
-                  : input.operation === "side"
-                    ? story.side(existing, admission)
-                    : input.operation === "dialogue"
-                      ? story.dialogue(existing)
-                      : input.operation === "begin"
-                        ? story.begin(
-                            existing,
-                            Date.now(),
-                            null,
-                            admission,
-                            player
-                              ? access.entitlements.equipped(player.actor)
-                              : false,
-                          )
-                        : input.operation === "resolve"
-                          ? story.resolve(existing, input.battleId)
-                          : story.replay(existing);
-      return response(enrich(existing, payload));
+      let payload: unknown;
+      switch (input.operation) {
+        case "choose":
+          payload = story.choose(actor, input.fighter, admission, nft);
+          break;
+        case "route":
+          payload = story.route(actor, input.route, admission);
+          break;
+        case "vow":
+          payload = story.vow(actor, input.choice, admission);
+          break;
+        case "interact":
+          payload = story.interact(
+            actor,
+            input.action,
+            now,
+            nft ? null : (admission ?? story.interactionAccess(actor, now)),
+          );
+          break;
+        case "leave-side":
+          payload = story.leaveSide(actor);
+          break;
+        case "side":
+          payload = story.side(actor, admission);
+          break;
+        case "dialogue":
+          payload = story.dialogue(actor);
+          break;
+        case "begin":
+          payload = story.begin(actor, now, officialBegin, admission, cosmetic);
+          break;
+        case "resolve":
+          payload = story.resolve(actor, input.battleId, token, now);
+          break;
+        case "replay":
+          payload = story.replay(actor, token);
+          break;
+      }
+      return response({
+        ...enrich(actor, payload),
+        ...(nft ? { authorized: true, tokenId } : {}),
+      });
     } catch (error) {
       return failure(error);
     }

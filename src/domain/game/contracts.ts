@@ -77,3 +77,10 @@ export function tacticalScenarioFor(
     loadout: loadoutFor(id),
   });
 }
+
+export class GameActionError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "GameActionError";
+  }
+}

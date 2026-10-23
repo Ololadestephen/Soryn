@@ -56,17 +56,7 @@ export const chapterSchema = z.strictObject({
 export type ChapterRecord = z.infer<typeof chapterSchema>;
 
 export class IdentityStore {
-  constructor(readonly store: Store) {
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS token_ownership (identity TEXT PRIMARY KEY, record TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS wallet_accounts (wallet TEXT PRIMARY KEY, actor TEXT UNIQUE NOT NULL);
-      CREATE TABLE IF NOT EXISTS auth_challenges (nonce TEXT PRIMARY KEY, record TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS wallet_sessions (secret_hash TEXT PRIMARY KEY, token TEXT NOT NULL, record TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS token_chapters (id TEXT PRIMARY KEY, run_id TEXT UNIQUE NOT NULL, token TEXT NOT NULL, actor TEXT NOT NULL, record TEXT NOT NULL);
-    `);
-    if (Number(store.db.prepare("PRAGMA user_version").get()?.user_version) < 2)
-      store.db.exec("PRAGMA user_version=2");
-  }
+  constructor(readonly store: Store) {}
   ownership(identity: TokenIdentity): Ownership | null {
     const row = this.store.db
       .prepare("SELECT record FROM token_ownership WHERE identity=?")

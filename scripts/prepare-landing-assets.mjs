@@ -72,7 +72,7 @@ for (const [id, pet] of Object.entries(pairs)) {
   });
 }
 fs.writeFileSync(
-  "src/components/site/landing/assets.json",
+  "src/components/combat/rendered/assets.json",
   JSON.stringify(assets, null, 2) + "\n",
 );
 fs.writeFileSync(

@@ -3,6 +3,7 @@ import { officialSessionSchema } from "../../domain/adventure/responses";
 import { ignoreResponse } from "../request";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import type { OfficialSessionView } from "../../domain/officialViews";
+import type { OfficialMutationRequest } from "../../domain/requests";
 import { request } from "../request";
 import { useWalletAdapter } from "../auth/WalletAdapter";
 
@@ -26,7 +27,7 @@ export function useWalletSession() {
   const [challenge, setChallenge] = useState<SignInChallenge | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
-  const [pending, setPending] = useState<Record<string, unknown> | null>(null);
+  const [pending, setPending] = useState<OfficialMutationRequest | null>(null);
   const revision = useRef(0);
   const headersForSession = useEffectEvent(() => adapter.headers());
   useEffect(() => {

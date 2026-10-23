@@ -53,11 +53,7 @@ export const battleRecordSchema = z
   );
 export type BattleRecord = z.infer<typeof battleRecordSchema>;
 export class BattleStore {
-  constructor(readonly store: Store) {
-    store.db.exec(
-      "CREATE TABLE IF NOT EXISTS battles (id TEXT PRIMARY KEY, actor TEXT NOT NULL, mode TEXT NOT NULL, record TEXT NOT NULL)",
-    );
-  }
+  constructor(readonly store: Store) {}
   get(id: string, actor: string): BattleRecord {
     const row = this.store.db
       .prepare("SELECT record FROM battles WHERE id=? AND actor=?")

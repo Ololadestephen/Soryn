@@ -1,5 +1,4 @@
 import { holderAccessEnabled, HOLDER_ACCESS_PAUSED } from "./rollout";
-import { readStored } from "../storedRecord";
 import type { NextRequest } from "next/server";
 import type { AuthService } from "../auth/service";
 import type { PrivyVerifier } from "../auth/privy";
@@ -9,8 +8,8 @@ import { Entitlements, type WalletPlayer } from "./service";
 import { WalletAccessAuth, walletPlay } from "./auth";
 import type { HoldingReader } from "./reader";
 import type { PvpRoom } from "../../domain/pvp/types";
+import type { QueueService } from "../pvp/queue";
 import {
-  accessGrantSchema,
   HOLDER_QUALIFICATION_MESSAGE,
   type AccessGrant,
 } from "../../domain/access/policy";
@@ -20,13 +19,7 @@ export function requireAdmissionsOpen() {
 }
 /** A client-selected guest UUID must never impersonate an authenticated wallet account. */
 export function protectWalletActor(store: Store, actor: string) {
-  const exists = store.db
-    .prepare(
-      "SELECT 1 FROM sqlite_master WHERE type='table' AND name='wallet_accounts'",
-    )
-    .get();
   if (
-    exists &&
     store.db.prepare("SELECT 1 FROM wallet_accounts WHERE actor=?").get(actor)
   )
     throw new ServiceError(
@@ -83,23 +76,16 @@ export class AccessBoundary {
     return grants;
   }
   /** Offer acceptance is a new admission, unlike a poll of an already started series. */
-  async refreshOffer(actor: string) {
-    const row = this.store.db
-      .prepare("SELECT offer_id FROM pvp_queue WHERE actor=?")
-      .get(actor);
-    if (!row?.offer_id) return;
-    const rows = this.store.db
-      .prepare("SELECT actor,access_grant FROM pvp_queue WHERE offer_id=?")
-      .all(row.offer_id);
-    for (const seat of rows) {
-      if (!seat.access_grant) continue;
-      readStored(accessGrantSchema, seat.access_grant);
-      const grant = await this.entitlements.refreshActor(String(seat.actor));
-      this.store.db
-        .prepare(
-          "UPDATE pvp_queue SET access_grant=? WHERE actor=? AND offer_id=?",
-        )
-        .run(JSON.stringify(grant), seat.actor, row.offer_id);
+  async refreshOffer(
+    queue: QueueService,
+    actor: string,
+  ): Promise<string | null> {
+    const offer = queue.offerSeats(actor);
+    if (!offer) return null;
+    for (const seat of offer.seats) {
+      const grant = await this.entitlements.refreshActor(seat.actor);
+      queue.updateOfferGrant(offer.offerId, seat.actor, grant);
     }
+    return offer.offerId;
   }
 }

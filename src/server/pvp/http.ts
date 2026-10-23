@@ -350,7 +350,7 @@ export function createPvpHandlers(
       if (invite) openingRevision = service.records.byInvite(invite).revision;
       const guestId = await actorId(request);
       const guestStored =
-        invite && guestId ? service.seatMode(invite, guestId) : null;
+        invite && guestId ? service.seatMode(guestId, invite) : null;
       const requested = requestedSeatMode(
         guestStored,
         explicit ?? (walletPlay(request) ? "guest" : undefined),
@@ -384,8 +384,8 @@ export function createPvpHandlers(
         });
       const presented = actor.mode === "official" ? actor.holderGrant : null;
       const payload = invite
-        ? await service.previewChecked(invite, actor.actor, now, presented)
-        : await service.sessionChecked(actor.actor, now, presented);
+        ? await service.pollRoomChecked(actor.actor, invite, now, presented)
+        : await service.pollSessionChecked(actor.actor, now, presented);
       return rememberGuest(
         request,
         response(payload),
@@ -397,7 +397,7 @@ export function createPvpHandlers(
         if (error instanceof ServiceError && error.status === 503) {
           const invite = request.nextUrl.searchParams.get("invite");
           const actor = await formerActor(request);
-          if (invite && actor && service.seatMode(invite, actor)) {
+          if (invite && actor && service.seatMode(actor, invite)) {
             try {
               return response(
                 voidedView(
@@ -434,10 +434,48 @@ export function createPvpHandlers(
       return failure(error);
     }
   }
+  async function refreshReadyRoomAdmission(invite: string, actor: string) {
+    const before = service.records.byInvite(invite);
+    if (before.match) return;
+    const grants = await access.refreshRoom(before);
+    store.transaction(() => {
+      const current = service.records.byInvite(invite);
+      if (admissionState(current, actor) !== admissionState(before, actor))
+        throw new ServiceError(
+          409,
+          "The room changed during eligibility verification. Try again.",
+        );
+      for (const sitting of Object.values(current.seats))
+        if (sitting) {
+          if (grants.has(sitting.actor))
+            sitting.access = grants.get(sitting.actor)!;
+          sitting.cosmetic = access.entitlements.equipped(sitting.actor);
+        }
+      current.revision++;
+      service.records.save(current);
+    });
+  }
+  async function verifyHistoricalReopen(opening: PvpRoom) {
+    if (
+      seatIds.some(
+        (id) =>
+          opening.seats[id]?.mode === "official" &&
+          !opening.seats[id]?.holderGrant,
+      )
+    )
+      throw new ServiceError(
+        503,
+        "This historical room has no verifiable ownership binding. Open a fresh invitation.",
+      );
+    if ((await checkSeatOwnership(auth, opening)).length)
+      throw new ServiceError(
+        403,
+        "Ownership changed since this series. Open a fresh invitation.",
+      );
+  }
   async function post(request: NextRequest): Promise<NextResponse> {
     let invite: string | null = null;
     let openingRevision: number | undefined;
-    let checkingAdmission = false;
     try {
       requireJsonOrigin(request, origin);
       const input = parseInput(inputSchema, await body(request));
@@ -445,7 +483,7 @@ export function createPvpHandlers(
       invite = "invite" in input ? input.invite : null;
       if (invite) openingRevision = service.records.byInvite(invite).revision;
       const guestStored =
-        invite && guestId ? service.seatMode(invite, guestId) : null;
+        invite && guestId ? service.seatMode(guestId, invite) : null;
       const requested = requestedSeatMode(
         guestStored,
         input.mode ?? (walletPlay(request) ? "guest" : undefined),
@@ -464,39 +502,16 @@ export function createPvpHandlers(
         input.operation === "create" ||
         input.operation === "join" ||
         input.operation === "select";
-      if (freshEntry) {
-        checkingAdmission = true;
-        requireAdmissionsOpen();
-        if (mode === "guest")
-          actor.access = await access.admit(await access.player(request));
-      }
-      checkingAdmission = false;
-      if (invite && input.operation === "ready" && input.ready) {
-        const before = service.records.byInvite(invite);
-        if (!before.match) {
-          checkingAdmission = true;
-          const grants = await access.refreshRoom(before);
-          checkingAdmission = false;
-          store.transaction(() => {
-            const current = service.records.byInvite(invite!);
-            if (
-              admissionState(current, actor.actor) !==
-              admissionState(before, actor.actor)
-            )
-              throw new ServiceError(
-                409,
-                "The room changed during eligibility verification. Try again.",
-              );
-            for (const sitting of Object.values(current.seats))
-              if (sitting) {
-                if (grants.has(sitting.actor))
-                  sitting.access = grants.get(sitting.actor)!;
-                sitting.cosmetic = access.entitlements.equipped(sitting.actor);
-              }
-            current.revision++;
-            service.records.save(current);
-          });
+      try {
+        if (freshEntry) {
+          requireAdmissionsOpen();
+          if (mode === "guest")
+            actor.access = await access.admit(await access.player(request));
         }
+        if (invite && input.operation === "ready" && input.ready)
+          await refreshReadyRoomAdmission(invite, actor.actor);
+      } catch (admissionError) {
+        return failure(admissionError);
       }
       let payload: unknown;
       if (invite) {
@@ -505,24 +520,7 @@ export function createPvpHandlers(
         const reopening =
           (input.operation === "setup" || input.operation === "rematch") &&
           hasOfficialSeats(opening);
-        if (reopening) {
-          if (
-            seatIds.some(
-              (id) =>
-                opening.seats[id]?.mode === "official" &&
-                !opening.seats[id]?.holderGrant,
-            )
-          )
-            throw new ServiceError(
-              503,
-              "This historical room has no verifiable ownership binding. Open a fresh invitation.",
-            );
-          if ((await checkSeatOwnership(auth, opening)).length)
-            throw new ServiceError(
-              403,
-              "Ownership changed since this series. Open a fresh invitation.",
-            );
-        }
+        if (reopening) await verifyHistoricalReopen(opening);
         const voided = await service.guardOfficialRoom(
           invite,
           {
@@ -554,14 +552,9 @@ export function createPvpHandlers(
         origin,
       );
     } catch (error) {
-      if (
-        !checkingAdmission &&
-        error instanceof ServiceError &&
-        error.status === 503 &&
-        invite
-      ) {
+      if (error instanceof ServiceError && error.status === 503 && invite) {
         const actor = await formerActor(request);
-        if (actor && service.seatMode(invite, actor)) {
+        if (actor && service.seatMode(actor, invite)) {
           try {
             return response(
               voidedView(

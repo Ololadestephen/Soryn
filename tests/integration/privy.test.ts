@@ -239,7 +239,7 @@ describe("Privy ES256 authentication boundary", () => {
       ),
     ).rejects.toMatchObject({ status: 503 });
   });
-  it("fails closed when app/key configuration is missing", async () => {
+  it("fails closed when app/key configuration is missing or malformed", async () => {
     const signed = await proof();
     await expect(
       new PrivyTokenVerifier("", pem).verify(signed.access, signed.identity),
@@ -247,6 +247,15 @@ describe("Privy ES256 authentication boundary", () => {
     await expect(
       new PrivyTokenVerifier(appId, "").verify(signed.access, signed.identity),
     ).rejects.toMatchObject({ status: 503 });
+    await expect(
+      new PrivyTokenVerifier(appId, "not-a-valid-spki-pem").verify(
+        signed.access,
+        signed.identity,
+      ),
+    ).rejects.toMatchObject({
+      status: 503,
+      cause: expect.any(Error),
+    });
   });
   it("requires verified Privy identity for nonce/grant/play, binds user and rejects legacy cookie-only writes", async () => {
     const store = new Store(":memory:");

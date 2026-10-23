@@ -2,6 +2,7 @@ import { enforceBudget } from "./budget";
 import {
   basicActionSchema as actionSchema,
   legacyScenarioSchema as scenarioSchema,
+  GameActionError,
   type BasicAction as Action,
   type Choice,
   type GameState,
@@ -194,7 +195,7 @@ function guardTurn(state: GameState, action: Action): void {
       state.message = "You wait. The guard changes patrol phase.";
       break;
     default:
-      throw new Error("Unsupported guard action.");
+      throw new GameActionError("Unsupported guard action.");
   }
 }
 
@@ -224,7 +225,7 @@ function extractionTurn(state: GameState, action: Action): void {
         : "You escaped. The sandwich remains tragically employed.";
       break;
     default:
-      throw new Error("Unsupported extraction action.");
+      throw new GameActionError("Unsupported extraction action.");
   }
 }
 
@@ -253,7 +254,7 @@ function applyAction(state: GameState, action: Action): void {
 export function transition(previous: GameState, input: unknown): GameState {
   const action = actionSchema.parse(input);
   if (!choices(previous).some((entry) => entry.action === action))
-    throw new Error("Action unavailable in this state.");
+    throw new GameActionError("Action unavailable in this state.");
   const state = { ...previous, turns: previous.turns - 1 };
   applyAction(state, action);
   if (previous.room === 1)

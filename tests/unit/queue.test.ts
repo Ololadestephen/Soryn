@@ -40,7 +40,7 @@ describe("public starter queue", () => {
     const matched = rows.accept(B, NOW + 12);
     expect(matched.status).toBe("matched");
     expect(matched.invite).toMatch(/^[A-Za-z0-9_-]{20,}$/);
-    const again = rows.state(A, NOW + 13);
+    const again = rows.pollState(A, NOW + 13);
     expect(again.invite).toBe(matched.invite);
     const count = store.db
       .prepare("SELECT COUNT(*) AS count FROM pvp_rooms")
@@ -50,6 +50,25 @@ describe("public starter queue", () => {
     expect(room.roster).toBe("starters");
     expect(room.series?.phase).toBe("setup");
     expect(room.seats.a?.actor).not.toBe(room.seats.b?.actor);
+    store.close();
+  });
+
+  it("preserves queued cosmetic selection and guards offer grant refreshes on seal", () => {
+    const { store, queue: rows, matches } = queue();
+    rows.join({ actor: A, mode: "guest", cosmetic: true }, NOW);
+    rows.join({ actor: B, mode: "guest", cosmetic: false }, NOW + 5);
+    const offer = rows.offerSeats(A);
+    expect(offer?.offerId).toBeTruthy();
+    expect(() => rows.accept(A, NOW + 6, "stale-offer-id")).toThrow(
+      /offer changed/,
+    );
+    rows.accept(A, NOW + 6, offer?.offerId ?? null);
+    const matched = rows.accept(B, NOW + 7, offer?.offerId ?? null);
+    const room = matches.records.byInvite(matched.invite!);
+    expect(room.seats.a?.actor).toBe(A);
+    expect(room.seats.a?.cosmetic).toBe(true);
+    expect(room.seats.b?.actor).toBe(B);
+    expect(room.seats.b?.cosmetic).toBeUndefined();
     store.close();
   });
 
@@ -70,7 +89,7 @@ describe("public starter queue", () => {
     expect(() => rows.join({ actor: B, mode: "guest" }, NOW + 32)).toThrow(
       /paused/,
     );
-    const blocked = rows.state(B, NOW + 32);
+    const blocked = rows.pollState(B, NOW + 32);
     expect(blocked.status).toBe("blocked");
     expect(blocked.lockedUntil).toBe(NOW + 31 + QUEUE_LOCK_MS);
     store.close();
@@ -81,11 +100,13 @@ describe("public starter queue", () => {
     rows.join({ actor: A, mode: "guest" }, NOW);
     rows.join({ actor: B, mode: "guest" }, NOW + 1);
     rows.accept(A, NOW + 2);
-    const expired = rows.state(A, NOW + 2 + QUEUE_ACCEPT_MS);
+    const expired = rows.pollState(A, NOW + 2 + QUEUE_ACCEPT_MS);
     expect(expired.status).toBe("waiting");
-    expect(rows.state(B, NOW + 2 + QUEUE_ACCEPT_MS).status).not.toBe("offered");
+    expect(rows.pollState(B, NOW + 2 + QUEUE_ACCEPT_MS).status).not.toBe(
+      "offered",
+    );
     rows.join({ actor: B, mode: "guest" }, NOW);
-    const left = rows.state(B, NOW + QUEUE_WAIT_MS + 1);
+    const left = rows.pollState(B, NOW + QUEUE_WAIT_MS + 1);
     expect(left.status).toBe("idle");
     store.close();
   });
@@ -95,7 +116,7 @@ describe("public starter queue", () => {
     rows.join({ actor: A, mode: "guest" }, NOW);
     rows.join({ actor: B, mode: "guest" }, NOW + 1);
     expect(rows.cancel(A, NOW + 2).status).toBe("idle");
-    expect(rows.state(B, NOW + 2).status).toBe("waiting");
+    expect(rows.pollState(B, NOW + 2).status).toBe("waiting");
     expect(rows.cancel(A, NOW + 3).status).toBe("idle");
     store.close();
   });

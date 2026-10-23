@@ -123,8 +123,8 @@
     min-height: 100px;
   }
   .battle-stage .arena-companion {
-    width: min(22vw, 30cqh);
-    height: min(22vw, 30cqh);
+    width: min(19vw, 26cqh);
+    height: min(19vw, 26cqh);
     bottom: 0;
   }
   .battle-stage .companion-side-player {

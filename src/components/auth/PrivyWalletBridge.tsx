@@ -3,15 +3,8 @@ import { Fragment, useEffect, useState, useRef } from "react";
 import { usePrivy, useWallets, useIdentityToken } from "@privy-io/react-auth";
 import { loginStage } from "./accessTelemetry";
 import { WalletAdapterContext, type WalletAdapter } from "./WalletAdapter";
-import { OfficialExperience } from "../identity/OfficialExperience";
 
-export function PrivyWalletBridge({
-  onMuseumChanged,
-  children,
-}: {
-  onMuseumChanged?: () => Promise<void>;
-  children?: React.ReactNode;
-}) {
+export function PrivyWalletBridge({ children }: { children: React.ReactNode }) {
   const privy = usePrivy();
   const connected = useWallets();
   const { identityToken } = useIdentityToken();
@@ -78,12 +71,7 @@ export function PrivyWalletBridge({
   return (
     <WalletAdapterContext value={adapter}>
       <Fragment key={`${privy.user?.id ?? "anonymous"}:${address}`}>
-        {children ?? (
-          <OfficialExperience
-            key={`${privy.user?.id ?? "anonymous"}:${address}`}
-            onMuseumChanged={onMuseumChanged ?? (async () => {})}
-          />
-        )}
+        {children}
       </Fragment>
     </WalletAdapterContext>
   );

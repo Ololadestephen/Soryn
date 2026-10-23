@@ -1,6 +1,9 @@
 import { holderAccessEnabled } from "../access/rollout";
 import { readStored } from "../storedRecord";
-import { accessGrantSchema } from "../../domain/access/policy";
+import {
+  accessGrantSchema,
+  type AccessGrant,
+} from "../../domain/access/policy";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { isLate } from "../../domain/pvp/deadline";
@@ -35,6 +38,7 @@ interface QueueRow {
   token_generation: string | null;
   token_encounter: string | null;
   access_grant: string | null;
+  cosmetic: number | string | null;
 }
 
 /** Fresh ownership binding for an official queue seat. Guests pass nothing. */
@@ -66,6 +70,7 @@ const queueRowSchema = z.strictObject({
   token_generation: z.string().nullable().default(null),
   token_encounter: z.string().nullable().default(null),
   access_grant: z.string().nullable().default(null),
+  cosmetic: z.union([z.number(), z.string()]).nullable().default(0),
 });
 
 function parseQueueRow(value: unknown): QueueRow | null {
@@ -83,41 +88,47 @@ export class QueueService {
     private readonly store: Store,
     private readonly matches: PvpService,
     readonly locks: TokenLocks = new TokenLocks(store),
-  ) {
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS pvp_queue (
-        actor TEXT PRIMARY KEY,
-        joined_at INTEGER NOT NULL,
-        status TEXT NOT NULL,
-        offer_id TEXT,
-        accepted INTEGER NOT NULL DEFAULT 0,
-        deadline_at INTEGER,
-        declines INTEGER NOT NULL DEFAULT 0,
-        locked_until INTEGER NOT NULL DEFAULT 0,
-        room_invite TEXT
-      );
-    `);
-    const columns = store.db.prepare("PRAGMA table_info(pvp_queue)").all() as {
-      name: string;
-    }[];
-    const names = new Set(columns.map((column) => column.name));
-    // Additive migration: existing queue rows keep working with null bindings.
-    if (!names.has("access_grant"))
-      store.db.exec("ALTER TABLE pvp_queue ADD COLUMN access_grant TEXT");
-    if (!names.has("token_key"))
-      store.db.exec("ALTER TABLE pvp_queue ADD COLUMN token_key TEXT");
-    if (!names.has("token_owner"))
-      store.db.exec("ALTER TABLE pvp_queue ADD COLUMN token_owner TEXT");
-    if (!names.has("token_generation"))
-      store.db.exec("ALTER TABLE pvp_queue ADD COLUMN token_generation TEXT");
-    if (!names.has("token_encounter"))
-      store.db.exec("ALTER TABLE pvp_queue ADD COLUMN token_encounter TEXT");
-  }
-  state(actor: string, now: number): QueueView {
+  ) {}
+  pollState(actor: string, now: number): QueueView {
     return this.store.transaction(() => {
       this.sweep(now);
       return this.view(this.row(actor), actor, now);
     });
+  }
+  offerSeats(actor: string): {
+    offerId: string;
+    seats: { actor: string; access: AccessGrant }[];
+  } | null {
+    const current = this.row(actor);
+    if (!current || current.status !== "offered" || !current.offer_id)
+      return null;
+    const rows = this.store.db
+      .prepare("SELECT actor, access_grant FROM pvp_queue WHERE offer_id=?")
+      .all(current.offer_id) as {
+      actor: string;
+      access_grant: string | null;
+    }[];
+    const seats: { actor: string; access: AccessGrant }[] = [];
+    for (const row of rows) {
+      if (!row.access_grant) continue;
+      seats.push({
+        actor: String(row.actor),
+        access: readStored(accessGrantSchema, row.access_grant),
+      });
+    }
+    return { offerId: current.offer_id, seats };
+  }
+  updateOfferGrant(offerId: string, actor: string, grant: AccessGrant): void {
+    const updated = this.store.db
+      .prepare(
+        "UPDATE pvp_queue SET access_grant=? WHERE actor=? AND offer_id=? AND status='offered'",
+      )
+      .run(JSON.stringify(grant), actor, offerId);
+    if (updated.changes !== 1)
+      throw new ServiceError(
+        409,
+        "The opponent offer changed during verification. Retry.",
+      );
   }
   join(
     actor: SeatActor,
@@ -163,8 +174,8 @@ export class QueueService {
       this.store.db
         .prepare(
           `INSERT INTO pvp_queue
-           (actor, joined_at, status, offer_id, accepted, deadline_at, declines, locked_until, room_invite, token_key, token_owner, token_generation, token_encounter)
-           VALUES (?, ?, 'waiting', NULL, 0, NULL, ?, ?, NULL, ?, ?, ?, ?)
+           (actor, joined_at, status, offer_id, accepted, deadline_at, declines, locked_until, room_invite, token_key, token_owner, token_generation, token_encounter, access_grant, cosmetic)
+           VALUES (?, ?, 'waiting', NULL, 0, NULL, ?, ?, NULL, ?, ?, ?, ?, ?, ?)
            ON CONFLICT(actor) DO UPDATE SET
              joined_at=excluded.joined_at,
              status='waiting',
@@ -175,7 +186,9 @@ export class QueueService {
              token_key=excluded.token_key,
              token_owner=excluded.token_owner,
              token_generation=excluded.token_generation,
-             token_encounter=excluded.token_encounter`,
+             token_encounter=excluded.token_encounter,
+             access_grant=excluded.access_grant,
+             cosmetic=excluded.cosmetic`,
         )
         .run(
           actor.actor,
@@ -186,10 +199,9 @@ export class QueueService {
           token?.owner ?? null,
           token?.generation ?? null,
           token ? actor.actor : null,
+          actor.access ? JSON.stringify(actor.access) : null,
+          actor.cosmetic ? 1 : 0,
         );
-      this.store.db
-        .prepare("UPDATE pvp_queue SET access_grant=? WHERE actor=?")
-        .run(actor.access ? JSON.stringify(actor.access) : null, actor.actor);
       this.pair(now);
       return this.view(this.row(actor.actor), actor.actor, now);
     });
@@ -208,7 +220,11 @@ export class QueueService {
       return this.view(null, actor, now);
     });
   }
-  accept(actor: string, now: number): QueueView {
+  accept(
+    actor: string,
+    now: number,
+    expectedOfferId: string | null = null,
+  ): QueueView {
     return this.store.transaction(() => {
       this.sweep(now);
       const current = this.row(actor);
@@ -216,6 +232,11 @@ export class QueueService {
         this.locks.refresh(current.token_key, actor, now, QUEUE_WAIT_MS);
       if (!current || current.status !== "offered" || !current.offer_id)
         throw new ServiceError(409, "There is no opponent offer to accept.");
+      if (expectedOfferId !== null && current.offer_id !== expectedOfferId)
+        throw new ServiceError(
+          409,
+          "The opponent offer changed during verification. Retry.",
+        );
       if (current.deadline_at !== null && isLate(now, current.deadline_at))
         throw new ServiceError(409, "That offer expired.");
       this.store.db
@@ -269,6 +290,9 @@ export class QueueService {
               access: readStored(accessGrantSchema, seats[0].access_grant),
             }
           : {}),
+        ...(seats[0].cosmetic === 1 || seats[0].cosmetic === "1"
+          ? { cosmetic: true }
+          : {}),
       },
       {
         actor: seats[1].actor,
@@ -277,6 +301,9 @@ export class QueueService {
           ? {
               access: readStored(accessGrantSchema, seats[1].access_grant),
             }
+          : {}),
+        ...(seats[1].cosmetic === 1 || seats[1].cosmetic === "1"
+          ? { cosmetic: true }
           : {}),
       },
       now,

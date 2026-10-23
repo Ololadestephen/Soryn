@@ -35,28 +35,20 @@ export function PlayMenu() {
         </Link>
       )}
       <div className="play-modes">
-        {playModes.map((mode, index) => (
+        {playModes.map((mode) => (
           <Link
             prefetch={false}
             className="play-mode"
             key={mode.kind}
             href={mode.href}
           >
-            <span className="play-mode-number" aria-hidden="true">
-              0{index + 1}
-            </span>
             <h2>{mode.name}</h2>
-            <p>{mode.description}</p>
-            <span className="play-mode-state">
-              {mode.kind === "practice" ? "Free" : "Holder access"}
-            </span>
-            {mode.kind === "story" && saved && (
+            {mode.kind === "practice" && (
+              <span className="play-mode-state">Free</span>
+            )}
+            {mode.kind === "story" && saved && saved.story !== "begin" && (
               <span className="play-mode-state">
-                {saved.story === "begin"
-                  ? "Begin Story"
-                  : saved.story === "ending"
-                    ? "View your ending"
-                    : "Continue Story"}
+                {saved.story === "ending" ? "View ending" : "Continue"}
               </span>
             )}
             {mode.kind === "practice" && saved?.practice && (
@@ -70,10 +62,7 @@ export function PlayMenu() {
           Saved progress is unavailable right now. You can still choose a mode.
         </p>
       )}
-      <p className="muted">
-        When available, Story and player battles require {CHOG_REQUIREMENT}. No
-        tokens are spent.
-      </p>
+      <p className="muted">Story and player battles: {CHOG_REQUIREMENT}.</p>
       <p>
         <Link href="/arena?as=holder">Holder Practice</Link> ·{" "}
         <Link href="/history?as=holder">Wallet history</Link>

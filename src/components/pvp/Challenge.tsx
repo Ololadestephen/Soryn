@@ -60,12 +60,7 @@ export function ChallengeHome() {
   }
   return (
     <section className="pvp-home" aria-label="Challenge a friend">
-      <p className="eyebrow">Private battle · two seats</p>
-      <h1>Challenge a friend.</h1>
-      <p>
-        Share an invitation to battle a friend. The link opens a seat; it never
-        controls an occupied one.
-      </p>
+      <h1>Challenge a friend</h1>
       {game.session?.activeInvite && (
         <p>
           <Link
@@ -75,26 +70,38 @@ export function ChallengeHome() {
           </Link>
         </p>
       )}
-      <button disabled={game.busy} onClick={() => void create()}>
-        Create invitation
-      </button>
-      <form
-        className="friend-join"
-        onSubmit={(event) => {
-          event.preventDefault();
-          joinInvitation();
-        }}
-      >
-        <label htmlFor="friend-invitation">Invitation link or room code</label>
-        <input
-          id="friend-invitation"
-          value={invitation}
-          onChange={(event) => setInvitation(event.target.value)}
-          autoComplete="off"
-          maxLength={300}
-        />
-        <button disabled={!invitation.trim()}>Join a room</button>
-      </form>
+      <div className="friend-actions">
+        <section
+          className="friend-create"
+          aria-labelledby="friend-create-title"
+        >
+          <h2 id="friend-create-title">Invite</h2>
+          <button disabled={game.busy} onClick={() => void create()}>
+            Create invitation
+          </button>
+        </section>
+        <form
+          className="friend-join"
+          aria-labelledby="friend-join-title"
+          onSubmit={(event) => {
+            event.preventDefault();
+            joinInvitation();
+          }}
+        >
+          <h2 id="friend-join-title">Join</h2>
+          <label htmlFor="friend-invitation">
+            Invitation link or room code
+          </label>
+          <input
+            id="friend-invitation"
+            value={invitation}
+            onChange={(event) => setInvitation(event.target.value)}
+            autoComplete="off"
+            maxLength={300}
+          />
+          <button disabled={!invitation.trim()}>Join a room</button>
+        </form>
+      </div>
       {(error || game.error) && <p role="alert">{error || game.error}</p>}
       <p>
         <Link href="/arena">Practice against the computer</Link>

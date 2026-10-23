@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, type ComponentType } from "react";
 import type { CharacterId } from "../../../domain/characters/definitions";
 import { prepareSpecial, previewSequence } from "./preview-media";
 import type { PreviewPhase } from "./SpecialScene";
-import { IdleArt } from "./IdleArt";
+import { IdleArt } from "../../combat/rendered/IdleArt";
 
 type SceneProps = { id: CharacterId; phase: PreviewPhase; hit: number };
 export function SpecialPreview({

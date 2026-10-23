@@ -820,7 +820,7 @@ export class PvpService {
     }
   }
   /** Stored seat access. Missing rooms and empty seats return null. */
-  seatMode(invite: string, actor: string): "guest" | "official" | null {
+  seatMode(actor: string, invite: string): "guest" | "official" | null {
     try {
       const room = this.records.byInvite(invite);
       const seat = seatOf(room, actor);
@@ -832,9 +832,9 @@ export class PvpService {
   }
   /**
    * Room status for a seated actor. Commits any deadline that already passed
-   * (settle) before shaping the view, so this read can finalize a battle.
+   * (settle) before shaping the view, so this poll can finalize a battle.
    */
-  preview(invite: string, actor: string | null, now: number) {
+  pollRoom(actor: string | null, invite: string, now: number) {
     try {
       this.settle(invite, actor, now);
       return this.records.store.transaction(() => {
@@ -949,7 +949,7 @@ export class PvpService {
       chooseArena(room, actor, choice),
     );
   }
-  ready(
+  private applyReady(
     actor: string,
     invite: string,
     ready: boolean,
@@ -987,14 +987,14 @@ export class PvpService {
     now: number,
     grant: HolderGrant | null = null,
   ) {
-    if (!ready) return this.ready(actor, invite, false, now, grant);
+    if (!ready) return this.applyReady(actor, invite, false, now, grant);
     this.settle(invite, actor, now);
     const loaded = this.records.byInvite(invite);
     const staged = this.rememberGrant(structuredClone(loaded), actor, grant);
     const seat = seatOf(staged, actor);
     if (seat && staged.seats[seat]) staged.seats[seat]!.ready = true;
     if (!opensHolderMatch(loaded, actor, true))
-      return this.ready(actor, invite, true, now, grant);
+      return this.applyReady(actor, invite, true, now, grant);
     let ineligible: readonly SeatId[];
     try {
       ineligible = await this.holderSeats(staged);
@@ -1021,7 +1021,7 @@ export class PvpService {
         "The lobby changed during ownership verification. Retry.",
         "revision-conflict",
       );
-    return this.ready(actor, invite, true, now, grant, true);
+    return this.applyReady(actor, invite, true, now, grant, true);
   }
   assets(actor: string, invite: string, now: number) {
     return this.mutate(invite, actor, now, (room) =>
@@ -1048,7 +1048,7 @@ export class PvpService {
     await this.confirmNextBattle(invite, now);
     return holderIntermission(this.records.byInvite(invite))
       ? view
-      : this.preview(invite, actor, now);
+      : this.pollRoom(actor, invite, now);
   }
   /** Automatic and explicit intermissions share the same ownership/lock gate. */
   async confirmNextBattle(invite: string, now: number) {
@@ -1112,9 +1112,9 @@ export class PvpService {
   }
   /**
    * Session summary across rooms. Settles open matches first, so it shares
-   * the commit-on-poll rule with preview().
+   * the commit-on-poll rule with pollRoom().
    */
-  session(actor: string, now: number) {
+  pollSession(actor: string, now: number) {
     for (const room of this.records.roomsFor(actor))
       this.settle(room.invite, actor, now);
     return this.summarize(actor, this.records.roomsFor(actor), now);
@@ -1151,9 +1151,9 @@ export class PvpService {
     return history.slice(0, 50);
   }
   /** All official polls guard ownership and reservations before ANY clock progression. */
-  async previewChecked(
-    invite: string,
+  async pollRoomChecked(
     actor: string | null,
+    invite: string,
     now: number,
     presented: HolderGrant | null = null,
   ) {
@@ -1173,10 +1173,10 @@ export class PvpService {
         ? presentRoom(interrupted, actor, now)
         : previewRoom(interrupted, now);
     await this.confirmNextBattle(invite, now);
-    return this.preview(invite, actor, now);
+    return this.pollRoom(actor, invite, now);
   }
   /** Own historical rows remain private; each open room gets the same ownership gate. */
-  async sessionChecked(
+  async pollSessionChecked(
     actor: string,
     now: number,
     presented: HolderGrant | null = null,
@@ -1186,7 +1186,7 @@ export class PvpService {
         this.settle(room.invite, actor, now);
         continue;
       }
-      await this.previewChecked(room.invite, actor, now, presented);
+      await this.pollRoomChecked(actor, room.invite, now, presented);
     }
     return this.summarize(actor, this.records.roomsFor(actor), now);
   }

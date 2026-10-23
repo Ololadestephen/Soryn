@@ -36,11 +36,7 @@ export class Entitlements {
     private readonly reader: HoldingReader = new MonadHoldings(),
     private readonly now = Date.now,
     private readonly enabled = holderAccessEnabled,
-  ) {
-    store.db.exec(
-      "CREATE TABLE IF NOT EXISTS access_grants (actor TEXT PRIMARY KEY, record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS player_cosmetics (actor TEXT PRIMARY KEY, equipped INTEGER NOT NULL DEFAULT 0)",
-    );
-  }
+  ) {}
   stored(actor: string): AccessGrant | null {
     const row = this.store.db
       .prepare("SELECT record FROM access_grants WHERE actor=?")

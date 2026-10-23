@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { accessViewSchema } from "../../domain/access/policy";
-import { request } from "../request";
+import { RequestError, request } from "../request";
 import { loginStage } from "./accessTelemetry";
 /** Eligibility and frozen-encounter reads share one proof, independently of signing. */
 export async function readAccessState(
@@ -23,6 +23,7 @@ export async function readAccessState(
     ? { ...proof, "x-soryn-play": "wallet" }
     : {};
   let savedEncounter = false;
+  let lookupError: string | undefined;
 
   let url: string | null = null;
   if (path.startsWith("/challenge/") || path.startsWith("/match/"))
@@ -43,9 +44,18 @@ export async function readAccessState(
         !!state.battle ||
         state.phase === "complete" ||
         state.phase === "closed";
-    } catch {
+    } catch (error) {
       savedEncounter = false;
+      if (!(error instanceof RequestError && error.status === 404))
+        lookupError =
+          error instanceof Error
+            ? error.message
+            : "Saved encounter check unavailable. Try again.";
     }
   }
-  return { view: next, saved: savedEncounter };
+  return {
+    view: next,
+    saved: savedEncounter,
+    ...(lookupError ? { lookupError } : {}),
+  };
 }

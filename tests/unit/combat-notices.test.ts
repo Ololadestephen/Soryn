@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { combatSnapshot } from "../../src/domain/combat/definitions";
 import { initialCombat, resolveRound } from "../../src/domain/combat/engine";
 import { presentationFrames } from "../../src/domain/combat/presentation/project";
@@ -8,6 +8,7 @@ import {
   updateMoveNotice,
   type MoveNoticeState,
 } from "../../src/domain/combat/presentation/notices";
+import { scheduleMoveNoticeExpiry } from "../../src/components/combat/useMoveNotices";
 import { fighterPose } from "../../src/components/combat/rendered/pose";
 import type { BattleView, Move } from "../../src/domain/combat/contracts";
 
@@ -65,6 +66,44 @@ describe("executed move notices and rendered poses", () => {
     expect(updateMoveNotice(rematch, "second", fresh, false).active).toEqual(
       fresh,
     );
+  });
+  it("reschedules notice expiry deterministically when a replacement notice arrives before the deadline", () => {
+    vi.useFakeTimers();
+    try {
+      let state: MoveNoticeState = {
+        battleId: "first",
+        active: null,
+        seen: new Set(),
+      };
+      const expire = (expired: NonNullable<MoveNoticeState["active"]>) => {
+        if (state.active === expired) {
+          state = { ...state, active: null };
+        }
+      };
+      const first = { id: "first:1:player", label: "Shield Bash" };
+      const second = { id: "first:1:opponent", label: "Ember Burst" };
+
+      state = updateMoveNotice(state, "first", first, false);
+      const cancelFirst = scheduleMoveNoticeExpiry(state.active, expire);
+      vi.advanceTimersByTime(1200);
+      expect(state.active).toEqual(first);
+
+      cancelFirst?.();
+      state = updateMoveNotice(state, "first", second, false);
+      const cancelSecond = scheduleMoveNoticeExpiry(state.active, expire);
+
+      vi.advanceTimersByTime(noticeDuration - 1200);
+      expect(state.active).toEqual(second);
+
+      vi.advanceTimersByTime(1199);
+      expect(state.active).toEqual(second);
+
+      vi.advanceTimersByTime(1);
+      expect(state.active).toBeNull();
+      cancelSecond?.();
+    } finally {
+      vi.useRealTimers();
+    }
   });
   it("names the new attack during its wind-up before contact, without announcing it again at delivery", () => {
     const { battle, frames } = recorded("aegis", "ember", "special", "basic");

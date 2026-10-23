@@ -25,12 +25,12 @@ for (const route of ["grove", "foundry"] as const) {
     await expect(
       page.getByRole("heading", { name: "The Fractured Sanctuary" }),
     ).toBeVisible();
-    await page.getByText(/Holder access unlocked ·/).click();
+    await page.locator(".wallet-menu > summary").click();
     const equip = page.getByRole("checkbox", { name: /Equip holder frame/ });
     if (!(await equip.isChecked())) await equip.click();
     await expect(equip).toBeChecked();
     await expect(page.locator(".holder-profile-frame")).toBeVisible();
-    await page.getByText(/Holder access unlocked ·/).click();
+    await page.locator(".wallet-menu > summary").click();
     await page.getByRole("button", { name: /Enter Sanctuary as Pip/ }).click();
     await expect(
       page.getByRole("heading", { name: "The broken listening shrine" }),

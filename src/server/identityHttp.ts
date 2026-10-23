@@ -1,4 +1,5 @@
 import { AdventureStore } from "./adventure/persistence";
+import { protectWalletActor } from "./access/boundary";
 import { parseInput } from "./httpShared";
 import { characterIdSchema } from "../domain/characters/definitions";
 import { randomUUID } from "node:crypto";
@@ -175,6 +176,7 @@ function publicHistory(
   const identity = identityFor(tokenId);
   const chapters = records.chapters(identity);
   const guest = z.uuid().safeParse(request.cookies.get("chog_guest")?.value);
+  if (guest.success) protectWalletActor(records.store, guest.data);
   const walletSecret = request.cookies.get(sessionCookie)?.value;
   let walletActor: string | null = null;
   if (walletSecret) {
@@ -230,7 +232,8 @@ async function verifySignIn(
     proof.userId,
   );
   const guest = z.uuid().safeParse(request.cookies.get("chog_guest")?.value);
-  if (guest.success)
+  if (guest.success) {
+    protectWalletActor(records.store, guest.data);
     for (const run of new AdventureStore(records.store)
       .history(guest.data)
       .filter((run) => run.mode === "guest"))
@@ -238,6 +241,7 @@ async function verifySignIn(
         signed.session.actor,
         run.scenario,
       );
+  }
   const reply = response(official.session(signed.session));
   setCookie(
     reply,

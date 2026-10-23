@@ -1,5 +1,5 @@
 "use client";
-import { useImageFailure } from "./useImageFailure";
+import { useImageFailure } from "../../combat/rendered/useImageFailure";
 import type { ArenaId } from "../../../domain/combat/arenas";
 export function Environment({
   id,

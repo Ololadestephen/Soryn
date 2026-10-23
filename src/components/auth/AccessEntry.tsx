@@ -27,9 +27,6 @@ export function AccessEntry({
     <div className="access-entry">
       <header className="access-entry-heading">
         <div>
-          <span className="access-eyebrow">
-            {signedIn ? "Wallet signed in" : "Soryn wallet play"}
-          </span>
           <h1>{title}</h1>
         </div>
         {c.wallet.authenticated && (
@@ -42,11 +39,6 @@ export function AccessEntry({
           </button>
         )}
       </header>
-      <p>
-        {signedIn
-          ? "Your sign-in works across Story and player battles."
-          : "Connect once to use your wallet across Story and player battles."}
-      </p>
       <p className="access-requirement">
         {CHOG_REQUIREMENT}. No tokens are spent.
       </p>

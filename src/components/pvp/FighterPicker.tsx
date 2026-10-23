@@ -7,8 +7,8 @@ import {
 } from "../../domain/characters/definitions";
 import { fighter } from "../../domain/combat/definitions";
 import { companions } from "../combat/rendered/catalogue";
-import { IdleArt } from "../site/landing/IdleArt";
-import assets from "../site/landing/assets.json";
+import { IdleArt } from "../combat/rendered/IdleArt";
+import assets from "../combat/rendered/assets.json";
 
 export function FighterPicker({
   selected,

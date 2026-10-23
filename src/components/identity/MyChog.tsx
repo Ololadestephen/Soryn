@@ -6,7 +6,7 @@ import Link from "next/link";
 import { AccessGate, useAccessState } from "../auth/AccessGate";
 import { character } from "../../domain/characters/definitions";
 import { HolderPerks } from "../site/HolderPerks";
-import assets from "../site/landing/assets.json";
+import assets from "../combat/rendered/assets.json";
 import { OfficialExperience } from "./OfficialExperience";
 
 function MyCollection({

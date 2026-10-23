@@ -1,6 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import type {
+  PublicationRequest,
+  WithdrawalRequest,
+} from "../../domain/requests";
 import type { RunView } from "../../domain/views";
 import { Replay } from "./Replay";
 import { RaceReplay } from "./RaceReplay";
@@ -13,7 +17,7 @@ export function Result({
 }: {
   run: RunView;
   busy: boolean;
-  mutate: (input: Record<string, unknown>) => Promise<void>;
+  mutate: (input: PublicationRequest | WithdrawalRequest) => Promise<void>;
   start: (exhibitId?: string | null, retryOf?: string | null) => void;
 }) {
   const [consent, setConsent] = useState(false);
@@ -214,12 +218,13 @@ export function Result({
               <form
                 onSubmit={(event) => {
                   event.preventDefault();
+                  if (!consent) return;
                   void mutate({
                     operation: "publish",
                     id: run.id,
                     title,
                     alias,
-                    consent,
+                    consent: true,
                   });
                 }}
               >

@@ -14,12 +14,10 @@ import { PrivyWalletBridge } from "./PrivyWalletBridge";
 
 export default function PrivyIdentity({
   appId,
-  onMuseumChanged,
   children,
 }: {
   appId: string;
-  onMuseumChanged?: () => Promise<void>;
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <PrivyProvider
@@ -38,9 +36,7 @@ export default function PrivyIdentity({
         },
       }}
     >
-      <PrivyWalletBridge onMuseumChanged={onMuseumChanged}>
-        {children}
-      </PrivyWalletBridge>
+      <PrivyWalletBridge>{children}</PrivyWalletBridge>
     </PrivyProvider>
   );
 }

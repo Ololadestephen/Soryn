@@ -12,7 +12,7 @@ import {
 import { arenas } from "../../domain/combat/arenas";
 import { useAccessState } from "../auth/AccessGate";
 import { FighterPicker } from "../pvp/FighterPicker";
-import { IdleArt } from "../site/landing/IdleArt";
+import { IdleArt } from "../combat/rendered/IdleArt";
 import { companions } from "../combat/rendered/catalogue";
 const ALL = [
   "pip",
@@ -124,11 +124,6 @@ export function StoryJourney({
     <section className="story-journey" aria-label="The Fractured Sanctuary">
       <header className="story-title">
         <h1>The Fractured Sanctuary</h1>
-        <p>
-          {official
-            ? "NFT competitor · keeper-private journey"
-            : "Wallet player · private journey"}
-        </p>
       </header>
       <nav aria-label="Journey map">
         <ol className="journey-map">
@@ -186,7 +181,6 @@ export function StoryJourney({
               <button className="secondary" onClick={() => void skip()}>
                 Skip dialogue
               </button>
-              <small>Choices remain yours.</small>
             </div>
           </section>
         ) : (
@@ -279,7 +273,6 @@ export function StoryJourney({
               <span>{companions[fighter]}</span>
             </div>
             <div>
-              <p className="eyebrow">Explore · no timer or precision input</p>
               <h2>{spec.title}</h2>
               <p>{spec.prompt}</p>
               <div className="story-inspections">

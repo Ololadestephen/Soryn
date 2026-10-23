@@ -28,7 +28,7 @@ const generation = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
 const A = "11111111-1111-4111-8111-111111111111";
 const B = "22222222-2222-4222-8222-222222222222";
 const now = 1_700_000_000_000;
-function publicRoom(service: PvpService) {
+async function publicRoom(service: PvpService) {
   const created = service.create({ actor: A, mode: "official" }, now, {
     identity,
     owner,
@@ -37,8 +37,8 @@ function publicRoom(service: PvpService) {
   service.join({ actor: B, mode: "guest" }, created.invite, now);
   service.select(A, created.invite, "pip", now);
   service.select(B, created.invite, "bolt", now);
-  service.ready(A, created.invite, true, now);
-  service.ready(B, created.invite, true, now);
+  await service.confirmReady(A, created.invite, true, now);
+  await service.confirmReady(B, created.invite, true, now);
   service.assets(A, created.invite, now);
   service.assets(B, created.invite, now);
   return created.invite;
@@ -59,14 +59,14 @@ describe("M7b bounded interruption", () => {
       },
     );
     try {
-      const invite = publicRoom(service);
-      await expect(service.previewChecked(invite, B, now)).rejects.toThrow(
+      const invite = await publicRoom(service);
+      await expect(service.pollRoomChecked(B, invite, now)).rejects.toThrow(
         /unavailable/,
       );
       available = true;
-      const ended = await service.previewChecked(
-        invite,
+      const ended = await service.pollRoomChecked(
         B,
+        invite,
         now + OWNERSHIP_STALL_TERMINATE_MS,
       );
       expect(ended.seated && ended.series?.outcome).toMatchObject({
@@ -99,22 +99,22 @@ describe("M7b bounded interruption", () => {
       },
     );
     try {
-      const invite = publicRoom(service);
+      const invite = await publicRoom(service);
       const before = service.records.byInvite(invite);
       await expect(
-        service.previewChecked(invite, B, now + 100),
+        service.pollRoomChecked(B, invite, now + 100),
       ).rejects.toThrow(/unavailable/);
       expect(service.records.byInvite(invite).match?.rounds).toHaveLength(0);
       outage = false;
       const recoveredAt = now + 90_100;
-      await service.previewChecked(invite, B, recoveredAt);
+      await service.pollRoomChecked(B, invite, recoveredAt);
       const recovered = service.records.byInvite(invite);
       expect(recovered.match!.deadlineAt).toBe(
         before.match!.deadlineAt + 90_000,
       );
       expect(recovered.match!.rounds).toHaveLength(0);
       expect(recovered.series!.wins).toEqual({ a: 0, b: 0 });
-      await service.previewChecked(invite, B, recoveredAt + 1);
+      await service.pollRoomChecked(B, invite, recoveredAt + 1);
       expect(service.records.byInvite(invite).match!.deadlineAt).toBe(
         recovered.match!.deadlineAt,
       );
@@ -135,13 +135,13 @@ describe("M7b bounded interruption", () => {
       },
     );
     try {
-      const invite = publicRoom(service);
-      await expect(service.previewChecked(invite, B, now)).rejects.toThrow(
+      const invite = await publicRoom(service);
+      await expect(service.pollRoomChecked(B, invite, now)).rejects.toThrow(
         /unavailable/,
       );
-      const ended = await service.previewChecked(
-        invite,
+      const ended = await service.pollRoomChecked(
         B,
+        invite,
         now + OWNERSHIP_STALL_TERMINATE_MS,
       );
       expect(ended.seated && ended.series?.outcome).toMatchObject({
@@ -162,7 +162,7 @@ describe("M7b bounded interruption", () => {
     const store = new Store(":memory:");
     const service = new PvpService(new PvpStore(store), PVP_TIMERS);
     try {
-      const invite = publicRoom(service);
+      const invite = await publicRoom(service);
       const old = service.records.byInvite(invite).series!.id;
       const later = now + TOKEN_LOCK_TTL_MS;
       service.locks.acquire({
@@ -174,7 +174,7 @@ describe("M7b bounded interruption", () => {
         openedAt: later,
         expiresAt: later + 1000,
       });
-      const ended = await service.previewChecked(invite, A, later, {
+      const ended = await service.pollRoomChecked(A, invite, later, {
         identity,
         owner,
         generation,

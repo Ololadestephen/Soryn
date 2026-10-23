@@ -6,6 +6,7 @@ import { tmpdir } from "node:os";
 import { NextRequest } from "next/server";
 import { afterAll, describe, expect, it } from "vitest";
 import { getGame, postGame } from "../../src/server/adventure/http";
+import { IdentityStore } from "../../src/server/auth/persistence";
 import { database } from "../../src/server/database";
 
 const directory = mkdtempSync(join(tmpdir(), "chog-http-"));
@@ -238,4 +239,19 @@ it("adventure recovery reads cannot spend the mutation quota", async () => {
       .status,
   ).toBe(429);
   expect((await post(start(), cookie)).status).toBe(200);
+});
+
+it("adventure routes reject guest cookies that impersonate a wallet account actor", async () => {
+  const walletActor = new IdentityStore(database()).account(
+    "0x1111111111111111111111111111111111111111",
+  );
+  const forgedCookie = `chog_guest=${walletActor}`;
+  expect(
+    getGame(
+      new NextRequest(`${origin}/api/game`, {
+        headers: { cookie: forgedCookie },
+      }),
+    ).status,
+  ).toBe(401);
+  expect((await post(start(), forgedCookie)).status).toBe(401);
 });

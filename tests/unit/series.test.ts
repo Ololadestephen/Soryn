@@ -341,7 +341,7 @@ describe("best of three", () => {
     expect(again.series?.recorded).toHaveLength(1);
   });
 
-  it("keeps the intermission deadline across a reopened database", () => {
+  it("keeps the intermission deadline across a reopened database", async () => {
     const folder = mkdtempSync(join(tmpdir(), "chog-series-"));
     const path = join(folder, "series.sqlite");
     const first = new PvpService(new PvpStore(new Store(path)), PVP_TIMERS);
@@ -349,8 +349,8 @@ describe("best of three", () => {
     first.join({ actor: B, mode: "guest" }, created.invite, NOW);
     first.select(A, created.invite, "pip", NOW);
     first.select(B, created.invite, "bolt", NOW);
-    first.ready(A, created.invite, true, NOW);
-    first.ready(B, created.invite, true, NOW);
+    await first.confirmReady(A, created.invite, true, NOW);
+    await first.confirmReady(B, created.invite, true, NOW);
     const room = first.records.byInvite(created.invite);
     finish(room, "a", NOW + 10);
     first.records.save(room);
@@ -364,12 +364,12 @@ describe("best of three", () => {
     const opened = advanceRoom(restored, deadline ?? NOW);
     expect(opened.series?.battleNumber).toBe(2);
     second.records.save(opened);
-    const view = second.preview(created.invite, B, (deadline ?? NOW) + 1);
+    const view = second.pollRoom(B, created.invite, (deadline ?? NOW) + 1);
     expect(view.seated && view.series?.battle).toBe(2);
     const live = second.records.byInvite(created.invite);
     finish(live, "a", (deadline ?? NOW) + 2);
     second.records.save(live);
-    const finalView = second.preview(created.invite, A, (deadline ?? NOW) + 3);
+    const finalView = second.pollRoom(A, created.invite, (deadline ?? NOW) + 3);
     expect(finalView.seated && finalView.series?.phase).toBe("complete");
     expect(() =>
       second.rematch(A, created.invite, (deadline ?? NOW) + 4),

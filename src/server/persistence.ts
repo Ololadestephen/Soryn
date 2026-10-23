@@ -20,14 +20,7 @@ export class Store {
       this.db.close();
       throw error;
     }
-    this.db.exec(`PRAGMA journal_mode=WAL;
-      CREATE TABLE IF NOT EXISTS runs (id TEXT PRIMARY KEY, actor TEXT NOT NULL, record TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS exhibits (id TEXT PRIMARY KEY, actor TEXT NOT NULL, run_id TEXT UNIQUE NOT NULL, record TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS exposures (actor TEXT NOT NULL, scenario TEXT NOT NULL, PRIMARY KEY(actor, scenario));
-      CREATE TABLE IF NOT EXISTS rate_limits (actor TEXT NOT NULL, bucket INTEGER NOT NULL, count INTEGER NOT NULL, PRIMARY KEY(actor, bucket));
-      `);
-    if (Number(this.db.prepare("PRAGMA user_version").get()?.user_version) < 1)
-      this.db.exec("PRAGMA user_version=1");
+    this.db.exec("PRAGMA journal_mode=WAL");
   }
   close(): void {
     this.db.close();

@@ -74,14 +74,5 @@ export function MatchScreen() {
       setBusy(false);
     }
   }
-  return (
-    <MatchPanel
-      queue={queue}
-      busy={busy}
-      error={error}
-      mode={identity.mode}
-      walletPlay={identity.walletPlay}
-      onAction={send}
-    />
-  );
+  return <MatchPanel queue={queue} busy={busy} error={error} onAction={send} />;
 }

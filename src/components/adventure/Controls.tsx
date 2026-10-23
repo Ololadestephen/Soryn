@@ -1,12 +1,16 @@
 "use client";
 
 import { AbilityStatus } from "../characters/AbilityStatus";
-import type { useGuestGame } from "../guest/useGuestGame";
+import type { StepRequest } from "../../domain/requests";
+import type { RunView } from "../../domain/views";
 
-type Props = Pick<
-  ReturnType<typeof useGuestGame>,
-  "run" | "busy" | "mutate" | "start"
-> & { official?: boolean };
+type Props = {
+  run: RunView | null;
+  busy: boolean;
+  mutate: (input: StepRequest) => Promise<void>;
+  start: (exhibitId?: string | null, retryOf?: string | null) => void;
+  official?: boolean;
+};
 
 export function Controls({
   run,
@@ -95,7 +99,7 @@ export function Controls({
               : "Start guest adventure"}
         </button>
       )}
-      {!!observation?.choices.length && (
+      {run && !!observation?.choices.length && (
         <div className="choices">
           {observation.choices.map((choice) => (
             <button
@@ -106,8 +110,8 @@ export function Controls({
               onClick={() =>
                 void mutate({
                   operation: "step",
-                  id: run?.id,
-                  step: run?.step,
+                  id: run.id,
+                  step: run.step,
                   action: choice.action,
                 })
               }

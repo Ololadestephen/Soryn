@@ -1,11 +1,15 @@
-import type { useGuestGame } from "./useGuestGame";
+import type { AdventureMutationRequest } from "../../domain/requests";
 
-type Props = Pick<
-  ReturnType<typeof useGuestGame>,
-  "error" | "pending" | "busy" | "mutate"
->;
+type Props<T extends AdventureMutationRequest = AdventureMutationRequest> = {
+  error: string;
+  pending: T | null;
+  busy: boolean;
+  mutate: (input: T) => Promise<void>;
+};
 
-export function GuestRequestError({ error, pending, busy, mutate }: Props) {
+export function GuestRequestError<
+  T extends AdventureMutationRequest = AdventureMutationRequest,
+>({ error, pending, busy, mutate }: Props<T>) {
   if (!error) return null;
   return (
     <div role="alert" className="error">

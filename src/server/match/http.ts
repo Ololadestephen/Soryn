@@ -117,7 +117,7 @@ export function createMatchHandlers(
     );
     // Record a verification stall or confirmed interruption through the same
     // gate as room polling before a failed grant can strand a matched seat.
-    await matches.sessionChecked(session.actor, Date.now());
+    await matches.pollSessionChecked(session.actor, Date.now());
     const authority = (await auth.authorize(secret)).authority;
     reconcileParticipation(store, authority, Date.now());
     return {
@@ -138,7 +138,7 @@ export function createMatchHandlers(
       const holder = await officialSeat(request, mode);
       if (holder) {
         store.rateLimit(`read:${holder.actor}`, Date.now(), 90);
-        const state = queue.state(holder.actor, Date.now());
+        const state = queue.pollState(holder.actor, Date.now());
         queue.assertToken(holder.actor, holder.token);
         return response({
           ...state,
@@ -153,8 +153,8 @@ export function createMatchHandlers(
         Date.now(),
         existing ? 90 : 120,
       );
-      await matches.sessionChecked(id, Date.now());
-      const state = queue.state(id, Date.now());
+      await matches.pollSessionChecked(id, Date.now());
+      const state = queue.pollState(id, Date.now());
       queue.assertToken(id, null);
       const reply = response({ ...state, mode: "guest" });
       if (!existing && !walletPlay(request))
@@ -182,15 +182,17 @@ export function createMatchHandlers(
           : await requireGuestActor(request));
       const mode = holder ? "official" : "guest";
       store.rateLimit(id);
-      if (!holder) await matches.sessionChecked(id, now);
-      queue.state(id, now);
+      if (!holder) await matches.pollSessionChecked(id, now);
+      queue.pollState(id, now);
       queue.assertToken(id, holder?.token ?? null);
       let admission;
+      let refreshedOffer: string | null = null;
       if (input.operation === "join" || input.operation === "accept") {
         requireAdmissionsOpen();
         if (!holder)
           admission = await access.admit(await access.player(request));
-        if (input.operation === "accept") await access.refreshOffer(id);
+        if (input.operation === "accept")
+          refreshedOffer = await access.refreshOffer(queue, id);
       }
       let payload;
       switch (input.operation) {
@@ -210,7 +212,7 @@ export function createMatchHandlers(
           payload = queue.cancel(id, now);
           break;
         case "accept":
-          payload = queue.accept(id, now);
+          payload = queue.accept(id, now, refreshedOffer);
           break;
         case "decline":
           payload = queue.decline(id, now);

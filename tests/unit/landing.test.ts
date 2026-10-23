@@ -3,7 +3,7 @@ import { statSync } from "node:fs";
 import { arenaIds, arenaSuggestion } from "../../src/domain/combat/arenas";
 import { characters } from "../../src/domain/characters/definitions";
 import { companions } from "../../src/components/combat/rendered/catalogue";
-import assets from "../../src/components/site/landing/assets.json";
+import assets from "../../src/components/combat/rendered/assets.json";
 
 describe("landing setup suggestions", () => {
   it("accepts catalogue arenas and rejects ambiguous, random and malformed input", () => {

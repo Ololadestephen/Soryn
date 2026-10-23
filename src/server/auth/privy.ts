@@ -55,21 +55,23 @@ export class PrivyTokenVerifier implements PrivyVerifier {
         401,
         "Valid Privy access and identity tokens are required.",
       );
-    try {
-      let key;
-      if (this.mode === "jwks") {
-        this.keySet ??= createRemoteJWKSet(
-          new URL(
-            `https://api.privy.io/v1/apps/${encodeURIComponent(this.appId)}/jwks.json`,
-          ),
-          {
-            cacheMaxAge: JWKS_CACHE_MS,
-            timeoutDuration: JWKS_TIMEOUT_MS,
-            cooldownDuration: JWKS_COOLDOWN_MS,
-          },
-        );
-        key = this.keySet;
-      } else {
+    let key:
+      | Awaited<ReturnType<typeof importSPKI>>
+      | ReturnType<typeof createRemoteJWKSet>;
+    if (this.mode === "jwks") {
+      this.keySet ??= createRemoteJWKSet(
+        new URL(
+          `https://api.privy.io/v1/apps/${encodeURIComponent(this.appId)}/jwks.json`,
+        ),
+        {
+          cacheMaxAge: JWKS_CACHE_MS,
+          timeoutDuration: JWKS_TIMEOUT_MS,
+          cooldownDuration: JWKS_COOLDOWN_MS,
+        },
+      );
+      key = this.keySet;
+    } else {
+      try {
         const escapedNewline = String.fromCharCode(92) + "n";
         this.key ??= importSPKI(
           this.verificationKey
@@ -78,7 +80,17 @@ export class PrivyTokenVerifier implements PrivyVerifier {
           "ES256",
         );
         key = await this.key;
+      } catch (error) {
+        this.key = undefined;
+        throw new ServiceError(
+          503,
+          "Privy verification key configuration is invalid. Guest play remains available.",
+          undefined,
+          { cause: error },
+        );
       }
+    }
+    try {
       const options = {
         algorithms: ["ES256"],
         issuer: "privy.io",
@@ -141,10 +153,14 @@ export class PrivyTokenVerifier implements PrivyVerifier {
         throw new ServiceError(
           503,
           "Privy signing-key evidence unavailable. No protected request was authorized.",
+          undefined,
+          { cause: error },
         );
       throw new ServiceError(
         401,
         "Privy session invalid or expired. Sign in again.",
+        undefined,
+        { cause: error },
       );
     }
   }

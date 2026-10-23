@@ -353,9 +353,9 @@ test("entry, public discovery and landing remain responsive with one hero additi
       fullPage: true,
     });
     await page.goto("/");
-    await expect(page.locator(".gateway-companion-line")).toHaveText(
-      "Choose your fighter. Unleash your companion.",
-    );
+    await expect(
+      page.getByRole("link", { name: "Play now", exact: true }).last(),
+    ).toHaveAttribute("href", "/start");
     await expect(page.locator(".gateway-actions a")).toHaveCount(2);
     await noOverflow(page);
     await page.locator("#holders").scrollIntoViewIfNeeded();

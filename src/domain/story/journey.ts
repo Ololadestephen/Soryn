@@ -175,6 +175,13 @@ export function enterJourney(
   journey.interaction = null;
   journey.feedback = "";
 }
+export class JourneyActionError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = "JourneyActionError";
+  }
+}
+
 /** Returns solved only after explicit inspection/answer; wrong answers never punish input speed. */
 export function interactJourney(
   journey: Journey,
@@ -182,7 +189,8 @@ export function interactJourney(
   action: string,
 ): boolean {
   const spec = interactionSpec(journey.stage, journey.vow);
-  if (!spec) throw new Error("This location is not an interaction.");
+  if (!spec)
+    throw new JourneyActionError("This location is not an interaction.");
   if (spec.inspections.some((option) => option.id === action)) {
     if (!journey.clues.includes(action)) journey.clues.push(action);
     journey.feedback =
@@ -190,7 +198,7 @@ export function interactJourney(
     return false;
   }
   if (!spec.answers.some((option) => option.id === action))
-    throw new Error("That action is not available here.");
+    throw new JourneyActionError("That action is not available here.");
   if (!spec.inspections.every((option) => journey.clues.includes(option.id))) {
     journey.feedback = "Look for the clues first. Your companion can help.";
     return false;

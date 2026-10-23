@@ -1,4 +1,5 @@
 import { parseInput } from "../httpShared";
+import { protectWalletActor } from "../access/boundary";
 import { characterIdSchema } from "../../domain/characters/definitions";
 import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
@@ -49,6 +50,7 @@ export function getGame(request: NextRequest): NextResponse {
     const existing = actorFor(request);
     const actor = existing ?? randomUUID();
     const db = database();
+    if (existing) protectWalletActor(db, existing);
     db.rateLimit(
       existing ? `read:${actor}` : "read:anonymous-guest",
       Date.now(),
@@ -85,6 +87,7 @@ export async function postGame(request: NextRequest): Promise<NextResponse> {
         "Open the game to establish a guest session.",
       );
     const db = database();
+    protectWalletActor(db, actor);
     db.rateLimit(actor);
     const input = parseInput(requestSchema, await body(request));
     const service = new RunService(db);

@@ -59,7 +59,11 @@ for (const mobile of [false, true])
     await expect(page).toHaveURL(/\/start$/);
     await expect(page.getByRole("heading", { name: "Play" })).toBeVisible();
     await expect(page.locator(".play-mode")).toHaveCount(4);
-    await expect(page.getByText("Begin Story", { exact: true })).toBeVisible();
+    await expect(
+      page
+        .locator(".play-modes")
+        .getByRole("link", { name: "Story", exact: true }),
+    ).toHaveAttribute("href", "/story");
     expect(writes).toEqual([]);
     const audit = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
@@ -70,7 +74,7 @@ for (const mobile of [false, true])
     });
     for (const [href, expected] of [
       ["/match", "Find a Match"],
-      ["/challenge", "Challenge a friend."],
+      ["/challenge", "Challenge a friend"],
       ["/story", "The Fractured Sanctuary"],
       ["/arena", "Choose your fighter."],
     ] as const) {
@@ -204,7 +208,11 @@ test("the Play menu stays small and defers fighter/media transfers until selecti
       .click();
     await expect(page.locator(".play-mode")).toHaveCount(4);
     const menuReadyMs = Date.now() - start;
-    await expect(page.getByText("Begin Story", { exact: true })).toBeVisible();
+    await expect(
+      page
+        .locator(".play-modes")
+        .getByRole("link", { name: "Story", exact: true }),
+    ).toHaveAttribute("href", "/story");
     expect(
       requested.filter((p) =>
         /\/combat\/(crisp|rendered|selection|blender)\//.test(p),

@@ -36,7 +36,7 @@ for (const width of [1440, 390, 320]) {
     await attachSignedHeaders(page, [`${baseURL}/api/**`], session.headers);
     await page.goto("/history?as=holder");
     await expect(
-      page.getByRole("heading", { name: "Battle history", exact: true }),
+      page.getByRole("heading", { name: "Wallet history", exact: true }),
     ).toBeVisible();
     await expect(
       page.getByText("Signed in · Private wallet records", { exact: true }),

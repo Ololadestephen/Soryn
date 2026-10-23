@@ -11,10 +11,10 @@ import { ArenaPicker } from "./ArenaPicker";
 import type { ArenaChoice } from "../../domain/combat/arenas";
 import { AudioControls } from "./audio/AudioControls";
 import { combatAudio } from "./audio/runtime";
-import { IdleArt } from "../site/landing/IdleArt";
+import { IdleArt } from "./rendered/IdleArt";
 import { companions } from "./rendered/catalogue";
 import { prepareSelectedAssets } from "./loading";
-import landingAssets from "../site/landing/assets.json";
+import landingAssets from "./rendered/assets.json";
 import Image from "next/image";
 import { fighterPlaystyles } from "./fighterCopy";
 

@@ -72,6 +72,7 @@ export function useAccessController(recordsOnly: boolean) {
         if (alive && generation === refreshGeneration.current) {
           setView(next.view);
           setSaved(next.saved);
+          if (next.lookupError) showError(new Error(next.lookupError));
         }
       })
       .catch((problem: unknown) => {
@@ -107,6 +108,7 @@ export function useAccessController(recordsOnly: boolean) {
       }
       setView(next.view);
       setSaved(next.saved);
+      if (next.lookupError) showError(new Error(next.lookupError));
     });
   }
   async function update(

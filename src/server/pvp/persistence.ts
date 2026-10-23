@@ -9,20 +9,7 @@ import { readStored } from "../storedRecord";
 import { seriesReservation } from "../../domain/pvp/ownership";
 
 export class PvpStore {
-  constructor(readonly store: Store) {
-    store.db.exec(`
-      CREATE TABLE IF NOT EXISTS pvp_rooms (
-        id TEXT PRIMARY KEY,
-        invite TEXT UNIQUE NOT NULL,
-        record TEXT NOT NULL
-      );
-      CREATE TABLE IF NOT EXISTS pvp_members (
-        actor TEXT NOT NULL,
-        room_id TEXT NOT NULL,
-        PRIMARY KEY (actor, room_id)
-      );
-    `);
-  }
+  constructor(readonly store: Store) {}
   byInvite(invite: string): PvpRoom {
     const row = this.store.db
       .prepare("SELECT record FROM pvp_rooms WHERE invite=?")
@@ -60,14 +47,6 @@ export class PvpStore {
   }
   /** Clear only this room's matched association, never a newer queue entry. */
   releaseMatched(invite: string) {
-    if (
-      !this.store.db
-        .prepare(
-          "SELECT name FROM sqlite_master WHERE type='table' AND name='pvp_queue'",
-        )
-        .get()
-    )
-      return;
     this.store.db
       .prepare("DELETE FROM pvp_queue WHERE status='matched' AND room_invite=?")
       .run(invite);

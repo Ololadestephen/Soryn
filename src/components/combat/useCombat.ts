@@ -3,6 +3,7 @@ import { battleSessionSchema } from "../../domain/combat/responses";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import {
   type BattleSession,
+  type BattleView,
   type Move,
   type Difficulty,
 } from "../../domain/combat/contracts";
@@ -21,6 +22,7 @@ export function useCombat(
   mode: "guest" | "official",
   headers?: () => Promise<Record<string, string>>,
   officialStory = false,
+  skipInitialLoad = false,
 ) {
   const endpoint = officialStory ? "/api/story" : "/api/battle";
   const [session, setSession] = useState<PlaySession>({
@@ -28,15 +30,20 @@ export function useCombat(
     history: [],
   });
   const { presentation, playRound, clear } = usePlayback();
-  const [busy, setBusy] = useState(true),
+  const [busy, setBusy] = useState(!skipInitialLoad),
     [error, setError] = useState(""),
-    [loaded, setLoaded] = useState(false);
+    [loaded, setLoaded] = useState(skipInitialLoad);
   const [pending, setPending] = useState<Record<string, unknown> | null>(null);
   const lock = useRef(false),
     mounted = useRef(true);
   const getHeaders = useEffectEvent(async () => (headers ? headers() : {}));
   useEffect(() => {
     mounted.current = true;
+    if (skipInitialLoad) {
+      return () => {
+        mounted.current = false;
+      };
+    }
     const abort = new AbortController();
     async function load() {
       try {
@@ -65,7 +72,7 @@ export function useCombat(
       mounted.current = false;
       abort.abort();
     };
-  }, [mode, endpoint]);
+  }, [mode, endpoint, skipInitialLoad]);
   async function perform(input?: Record<string, unknown>, id?: string) {
     if (lock.current) return;
     lock.current = true;
@@ -149,5 +156,14 @@ export function useCombat(
     },
     retry: () => pending && perform(pending),
     reload: (id?: string) => perform(undefined, id),
+    hydrate: async (battle: BattleView | null, authorized?: boolean) => {
+      clear();
+      setSession((current) => ({
+        ...current,
+        battle,
+        ...(authorized !== undefined ? { authorized } : {}),
+      }));
+      if (battle) await prepareBattleAssets(battle);
+    },
   };
 }

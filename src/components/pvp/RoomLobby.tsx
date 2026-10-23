@@ -74,12 +74,7 @@ export function RoomLobby({
     >
       <header className="pvp-room-heading">
         <p className="eyebrow">
-          {publicMatch ? "Public match" : "Friend match"} ·{" "}
-          {room.you.mode === "official"
-            ? "NFT competitor"
-            : room.you.accessKind
-              ? "Wallet player"
-              : "Guest"}
+          {publicMatch ? "Public match" : "Friend match"}
         </p>
         <h1>{room.you.ready ? "Ready" : "Choose your fighter"}</h1>
         <p className="pvp-opponent" role="status">

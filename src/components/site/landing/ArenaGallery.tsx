@@ -20,12 +20,7 @@ export function ArenaGallery() {
       </div>
       <div className="arena-gallery-shade" />
       <div className="arena-gallery-content">
-        <p className="world-kicker">Choose your ground</p>
-        <h2 id="arenas-title">
-          Four arenas.
-          <br />
-          <em>Set the scene.</em>
-        </h2>
+        <h2 id="arenas-title">Arenas</h2>
         <div className="arena-description" aria-live="polite">
           <h3>{arenas[selected].name}</h3>
           <p>{arenas[selected].description}</p>

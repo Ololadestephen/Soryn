@@ -331,9 +331,9 @@ describe("private battle HTTP", () => {
     });
     await post(pvp, host, { operation: "ready", invite, ready: true });
     await post(pvp, friend, { operation: "ready", invite, ready: true });
-    new PvpService(new PvpStore(store), PVP_TIMERS).preview(
-      invite,
+    new PvpService(new PvpStore(store), PVP_TIMERS).pollRoom(
       actorOf(host),
+      invite,
       Date.now() + 120_000,
     );
     const mine = await read(await get(pvp, host));
@@ -379,8 +379,8 @@ describe("private battle HTTP", () => {
     service.join({ actor: B, mode: "guest" }, created.invite, now);
     service.select(A, created.invite, "pip", now);
     service.select(B, created.invite, "bolt", now);
-    service.ready(A, created.invite, true, now);
-    service.ready(B, created.invite, true, now);
+    await service.confirmReady(A, created.invite, true, now);
+    await service.confirmReady(B, created.invite, true, now);
     service.assets(A, created.invite, now);
     service.assets(B, created.invite, now);
     service.records.store.close();
@@ -391,7 +391,7 @@ describe("private battle HTTP", () => {
     expect(raced.every((entry) => entry.ok)).toBe(true);
     expect(raced.reduce((total, entry) => total + entry.rounds, 0)).toBe(1);
     const check = new PvpService(new PvpStore(new Store(path)), PVP_TIMERS);
-    const view = check.preview(created.invite, A, now + 20);
+    const view = check.pollRoom(A, created.invite, now + 20);
     expect(view.seated).toBe(true);
     if (!view.seated) return;
     expect(view.battle?.rounds).toHaveLength(1);

@@ -22,8 +22,7 @@ export default async function ArenaPage({
       <SiteHeader current="/arena" />
       <main className="arena-main" id="arena-main" tabIndex={-1}>
         <div className="arena-intro">
-          <p className="eyebrow">Soryn · practice</p>
-          <h1>Prepare for battle.</h1>
+          <h1>Practice</h1>
         </div>
         <PlayIdentity official={false} holder={wallet}>
           <CombatScreen

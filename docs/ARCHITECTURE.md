@@ -1,4 +1,4 @@
-# Proposed technical architecture
+# Soryn architecture
 
 **Current visual direction — October 13, 2026:** the approved sculpted rendered artwork is restored as the default across all twelve fighters and companions. The simplified Blender pilot is not the approved visual direction. Editable Blender sources/scripts remain preserved. See [restoration, sharpness evidence and limits](ART_RESTORATION.md).
 
@@ -6,11 +6,29 @@ The current combat UI uses a native viewport-filling dialog and separate HUD/con
 
 **Current direction — October 11, 2026:** Combat is now primary, explicitly superseding adventure-first requirements. The adventure contracts and milestones below remain preserved secondary functionality, not combat rules. Read [combat rules and build sequence](COMBAT_RULES.md) for the new versioned contract. Combat implementation status is recorded separately; prior test results do not establish combat functionality.
 
-Status: one local Next.js Node application with pure game/ghost modules, strict HTTP handlers, separate guest and official orchestration, Privy wallet login plus a separate local EOA SIWE chapter grant, a read-only Monad adapter, durable ownership generations and SQLite. See [IDENTITY.md](IDENTITY.md) for implemented contracts, checks and limitations. Metadata traits, artwork reuse, contract wallets, optional anchors and deployment remain outside the implemented slice.
+Status: one local Next.js Node application with pure game/ghost modules, strict HTTP handlers, separate guest and official orchestration, Privy wallet login plus a separate local EOA SIWE chapter grant, a read-only Monad adapter, durable ownership generations and SQLite. See [IDENTITY.md](IDENTITY.md) for implemented contracts, checks and limitations. Metadata traits, artwork reuse, contract wallets, optional anchors remain outside the identity slice. Production hosting is documented separately in the deployment runbook.
+
+## Current ownership map — October 22, 2026
+
+Soryn runs as one Next.js Node process with SQLite behind nginx. HTTP handlers validate requests and access; domain modules own deterministic rules; capability services orchestrate changes within the shared Store transactions.
+
+| Capability          | Rules and server ownership                                                                                                   | UI ownership                                                                       |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Practice/combat     | `domain/combat`; `server/combat` service and BattleStore                                                                     | `components/combat`; rendered pose atlases and event-timed playback                |
+| Story               | `domain/story`; `server/story` service coordinates encounters, reservations and progress; StoryLedger stores rewards/archive | `components/story`                                                                 |
+| Private series      | `domain/pvp`; `server/pvp` service and PvpStore                                                                              | `components/pvp`                                                                   |
+| Public queue        | `server/match/http.ts` handles requests; `server/pvp/queue.ts` owns SQLite queue admission and PvP handoff                                                            | `components/match`                                                                 |
+| Wallet access       | `server/access` AccessBoundary and auth/holdings verification; NFT generation authority remains separate                     | Shared PlayIdentity and AccessGate; Privy provider persists across game navigation |
+| Participation       | `server/participation.ts` coordinates reservations across modes                                                                 | Mode-specific resume and interruption states                                       |
+| Preserved adventure | `domain/game`, ghost and exhibit rules; `server/adventure` persistence and orchestration                                     | Adventure, journal, museum and archive routes                                      |
+
+Story currently owns its progress SQL inside its service and accesses combat records for interruptions. These are tracked review findings, not proposed architecture to copy. SQLite transaction ownership must remain shared when these boundaries are refined. Connected-wallet state alone never authorizes an action; authenticated private records and fresh eligibility/current-owner checks have different purposes.
+
+The remaining sections include dated implementation history. Their proposals do not override this map or the current product/access rules in README.md and SORYN_PLAN.md.
 
 ## Combat-first extension
 
-`domain/combat` owns frozen definitions, eligibility, pure sequential resolution, bounded effects and public-state opponent policy. `server/combat` owns separate actor/mode-scoped SQLite battles, replay verification, pending computer choices and HTTP boundaries. `components/combat` renders original tall SVG fighters and server event frames; playback cannot change outcomes. `/arena` is independent of guest adventure hydration or Privy availability. Official combat is inside the existing My Chog provider/grant experience. Shared verified-provider/session and same-origin request helpers are reused by both APIs. Old adventure tables and contracts are unchanged. Snapshots now discriminate original `combat-opponent/1` (no difficulty, labelled Legacy policy) from `combat-opponent/2` (required easy/medium/hard). Friend battles add `combat-pvp/1` and poll the same Node process; see [private friend battles](PRIVATE_PVP.md). Independent pending choices persist before each player intent; replay uses only completed prefixes. Typed presentation projection separates event truth from anticipation/action/impact/recovery, with battle/round/source/phase IDs and per-battle playback de-duplication. See COMBAT_RULES.md, COMBAT.md and COMBAT_PRESENTATION.md for precise ordering and current evidence.
+`domain/combat` owns frozen definitions, eligibility, pure sequential resolution, bounded effects and public-state opponent policy. `server/combat` owns separate actor/mode-scoped SQLite battles, replay verification, pending computer choices and HTTP boundaries. `components/combat` renders approved fighter/companion artwork through isolated pose-atlas viewports and server event frames; playback cannot change outcomes. `/arena` is independent of guest adventure hydration or Privy availability. Official combat consumes shared PlayIdentity/AccessGate state and validated server grants. Shared verified-provider/session and same-origin request helpers are reused by both APIs. Old adventure tables and contracts are unchanged. Snapshots now discriminate original `combat-opponent/1` (no difficulty, labelled Legacy policy) from `combat-opponent/2` (required easy/medium/hard). Friend battles add `combat-pvp/1` and poll the same Node process; see [private friend battles](PRIVATE_PVP.md). Independent pending choices persist before each player intent; replay uses only completed prefixes. Typed presentation projection separates event truth from anticipation/action/impact/recovery, with battle/round/source/phase IDs and per-battle playback de-duplication. See COMBAT_RULES.md, COMBAT.md and COMBAT_PRESENTATION.md for precise ordering and current evidence.
 
 ## Preserved tactical adventure character extension
 
@@ -22,7 +40,7 @@ Adventure presentation is grouped in components/adventure/, with roster/portrait
 
 ## Recommended default stack
 
-Presentation routes: `/` is a server-rendered landing page; `(game)` shares a GuestProvider/AppShell layout across `/play`, `/museum`, `/journal` and `/character`. Server page modules supply metadata and the Play challenge query; client view adapters consume one guest context. Successful starts navigate with the Next router. Root challenge queries redirect to Play; a small client compatibility component maps old section hashes. Only Character imports the identity/Privy section. API/engine/storage/ownership contracts are unchanged. See PAGES_AND_LANDING.md.
+Presentation routes: `/` is a server-rendered landing page; `(game)` shares a GuestProvider/AppShell layout across `/play`, `/museum`, `/journal` and `/character`. Server page modules supply metadata and the Play challenge query; client view adapters consume one guest context. Successful starts navigate with the Next router. Root challenge queries redirect to Play; a small client compatibility component maps old section hashes. The current shared PlayIdentity provider also serves combat, Story and multiplayer; the Character-only provider description belongs to the original routing milestone. API/engine/storage/ownership contracts are unchanged. See PAGES_AND_LANDING.md.
 
 Guest journal extension: cookie-scoped completed chapter projection, pure exhibit/cohort grouping and selected-profile races live in `domain/journal.ts` and `server/journal.ts`. `ghostOf` defaults to null for old saves; personal selection detaches exhibit comparison while retaining the source scenario. Guest mutation and journal serialization share an outer transaction. The guest UI/read hooks are grouped in `components/guest/`, with a shared request gate and separate private/public readers. See GUEST_JOURNAL.md for tested privacy, legacy, rollback and persistence boundaries.
 
@@ -38,7 +56,7 @@ Guest race extension: `RunRecord.rival` stores a copied profile, source, label a
 
 Next.js/React/TypeScript/Zod, viem 2.57.4, SQLite, Vitest and Playwright are installed; the remaining hosting choices are recommendations. Pin dependencies/lockfile and disclose their licenses. Don't select paid services implicitly.
 
-## Intended layout
+## Historical proposed layout (superseded by capability modules)
 
 ```text
 src/

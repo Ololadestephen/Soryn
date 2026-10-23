@@ -6,7 +6,7 @@ import {
 } from "../../domain/access/policy";
 import { character } from "../../domain/characters/definitions";
 import { companions } from "../combat/rendered/catalogue";
-import { IdleArt } from "./landing/IdleArt";
+import { IdleArt } from "../combat/rendered/IdleArt";
 
 export function HolderPerks({
   view,

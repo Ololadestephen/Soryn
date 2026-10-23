@@ -39,11 +39,7 @@ export class WalletAccessAuth {
     private readonly verifier: PrivyVerifier,
     private readonly origin: string,
     private readonly now = Date.now,
-  ) {
-    store.db.exec(
-      "CREATE TABLE IF NOT EXISTS wallet_access_challenges (nonce TEXT PRIMARY KEY, record TEXT NOT NULL); CREATE TABLE IF NOT EXISTS wallet_access_sessions (secret_hash TEXT PRIMARY KEY, record TEXT NOT NULL)",
-    );
-  }
+  ) {}
   async proof(request: NextRequest) {
     return privyFor(request, this.verifier);
   }

@@ -4,6 +4,7 @@ import type { CharacterId } from "../../domain/characters/definitions";
 import { selectScenario, sameLoadout, holderLoadout } from "./characterAccess";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import {
+  GameActionError,
   initialState,
   observe,
   replay,
@@ -233,11 +234,15 @@ export class RunService {
         );
       try {
         transition(result(run), action);
-      } catch {
-        throw new ServiceError(
-          422,
-          "That action is unavailable. Reload the current room.",
-        );
+      } catch (error) {
+        if (error instanceof GameActionError)
+          throw new ServiceError(
+            422,
+            "That action is unavailable. Reload the current room.",
+            undefined,
+            { cause: error },
+          );
+        throw error;
       }
       if (run.actions.length >= 32)
         throw new ServiceError(422, "Frozen event budget exhausted.");

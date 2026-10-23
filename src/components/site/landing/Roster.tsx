@@ -5,7 +5,7 @@ import {
   characters,
   type CharacterId,
 } from "../../../domain/characters/definitions";
-import assets from "./assets.json";
+import assets from "../../combat/rendered/assets.json";
 import { useReveal } from "./useReveal";
 import { FighterDossier } from "./FighterDossier";
 import { SpecialPreview } from "./SpecialPreview";

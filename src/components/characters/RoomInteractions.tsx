@@ -1,4 +1,5 @@
 "use client";
+import type { StepRequest } from "../../domain/requests";
 import type { RunView } from "../../domain/views";
 const labels: Record<string, string> = {
   inspect: "Inspect nearby clue",
@@ -18,7 +19,7 @@ export function RoomInteractions({
 }: {
   run: RunView;
   busy: boolean;
-  mutate: (input: Record<string, unknown>) => Promise<void>;
+  mutate: (input: StepRequest) => Promise<void>;
 }) {
   if (!run.observation.tactics || run.observation.outcome) return null;
   return (

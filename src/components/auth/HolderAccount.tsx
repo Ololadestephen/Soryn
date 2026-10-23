@@ -36,27 +36,22 @@ export function HolderAccount({
               ? `${address.slice(0, 6)}…${address.slice(-4)}`
               : "Wallet player"}
           </strong>
-          <small>Holder access unlocked · {kind}</small>
+          <small>{kind}</small>
         </span>
         <span className="wallet-menu-chevron" aria-hidden="true">
           ⌄
         </span>
       </summary>
       <div className="wallet-menu-content">
-        <p className="eyebrow">Your account</p>
         {view.equipped && (
           <div className="holder-profile-frame">
             <Image src="/brand/soryn-icon.svg" width={36} height={36} alt="" />
             <div>
               <strong>Soryn player</strong>
               <span className="holder-badge">{kind} holder</span>
-              <small>Private profile · cosmetic frame</small>
             </div>
           </div>
         )}
-        <p>
-          Signed in across Soryn. Current holdings are checked for new gameplay.
-        </p>
         <nav aria-label="Wallet account">
           <Link href="/character">My Chog & NFT competitors</Link>
           <Link href="/history?as=holder">Private battle history</Link>

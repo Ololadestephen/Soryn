@@ -30,8 +30,13 @@ export function StoryScreen() {
     identity.mode,
     identity.headers,
     identity.mode === "official",
+    identity.mode === "official",
   );
   const getHeaders = useEffectEvent(() => identity.headers());
+  const hydrateCombat = useEffectEvent(
+    (battle: NonNullable<StoryState["battle"]> | null, authorized?: boolean) =>
+      combat.hydrate(battle, authorized),
+  );
   const [story, setStory] = useState<StoryState | null>(null);
   const [error, setError] = useState("");
   const [skipped, setSkipped] = useState(false);
@@ -49,7 +54,11 @@ export function StoryScreen() {
         await getHeaders(),
       ))()
       .then((next) => {
-        if (!stop) setStory(next);
+        if (!stop) {
+          setStory(next);
+          if (next.battle !== undefined)
+            void hydrateCombat(next.battle, next.authorized);
+        }
       })
       .catch((problem: unknown) => {
         if (!stop)
@@ -124,7 +133,9 @@ export function StoryScreen() {
       );
       setSkipped(false);
       setStory(next);
-      if (input.operation === "begin" && next.battleId)
+      if (next.battle !== undefined)
+        await combat.hydrate(next.battle, next.authorized);
+      else if (input.operation === "begin" && next.battleId)
         await combat.reload(next.battleId);
     } catch (problem) {
       setError(

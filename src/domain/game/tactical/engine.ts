@@ -7,7 +7,7 @@ import type {
   Observation,
   TacticalScenario,
 } from "../contracts";
-import { basicActionSchema } from "../contracts";
+import { basicActionSchema, GameActionError } from "../contracts";
 import * as legacy from "../legacy";
 import { scenarioFor } from "../contracts";
 import { character, skillActions } from "../../characters/definitions";
@@ -92,7 +92,7 @@ function applyAction(state: GameState, action: Action): GameState {
   if (commit(state, action)) return state;
   if (action === "resolve-choice") {
     const pending = t.pending;
-    if (!pending) throw new Error("No committed choice.");
+    if (!pending) throw new GameActionError("No committed choice.");
     t.pending = null;
     return ordinary(state, pending);
   }
@@ -112,7 +112,7 @@ function applyAction(state: GameState, action: Action): GameState {
 }
 export function advance(previous: GameState, action: Action): GameState {
   if (!observation(previous).choices.some((choice) => choice.action === action))
-    throw new Error("Action unavailable in this state.");
+    throw new GameActionError("Action unavailable in this state.");
   const state = applyAction(structuredClone(previous), action);
   const t = tacticsFor(state);
   const cost = previous.turns - state.turns;

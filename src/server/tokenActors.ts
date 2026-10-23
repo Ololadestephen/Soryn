@@ -8,12 +8,12 @@ import { tokenKey, type TokenIdentity } from "../domain/identity";
  * one token always maps to one official story slot and one battle actor.
  * Wallets never appear here: two tokens of one wallet map to two actors.
  */
-const TOKEN_ACTOR_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+const RFC4122_DNS_NAMESPACE = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
 export function tokenActorUuid(
   identity: TokenIdentity,
   owner?: string,
 ): string {
-  const namespace = Buffer.from(TOKEN_ACTOR_NAMESPACE.replace(/-/g, ""), "hex");
+  const namespace = Buffer.from(RFC4122_DNS_NAMESPACE.replace(/-/g, ""), "hex");
   const digest = createHash("sha1")
     .update(namespace)
     .update(
