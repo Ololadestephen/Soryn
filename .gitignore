@@ -33,3 +33,6 @@ docs/evidence/arena-feel/dodge-failure-trace.zip
 *.[mM][dD]
 *.[mM][dD][xX]
 *.markdown
+
+# Public project overview; internal documentation stays local.
+!/README.md
