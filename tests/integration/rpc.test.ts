@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { describe, expect, it, vi, afterEach } from "vitest";
 import { MonadReader, publicRpc, type RpcCall } from "../../src/server/nft/rpc";
 import { COLLECTION, type BlockReference } from "../../src/domain/identity";
@@ -221,6 +221,7 @@ describe("read-only Monad adapter", () => {
       expect(observation.pendingTransfer).toBe(false);
       const again = await reader.observe("276", observation.block);
       expect(again.owner).toBe(observation.owner);
+      mkdirSync("docs/evidence", { recursive: true });
       writeFileSync(
         "docs/evidence/identity-adapter-live.json",
         JSON.stringify(
