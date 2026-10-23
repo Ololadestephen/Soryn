@@ -1,27 +1,31 @@
 import { useSyncExternalStore } from "react";
-import { combatAudio } from "./runtime";
-export function AudioControls() {
+import { gameMusic } from "./runtime";
+export function AudioControls({
+  navigation = false,
+}: {
+  navigation?: boolean;
+}) {
   const { enabled, volume } = useSyncExternalStore(
-    combatAudio.subscribe,
-    combatAudio.snapshot,
-    combatAudio.serverSnapshot,
+    gameMusic.subscribe,
+    gameMusic.snapshot,
+    gameMusic.serverSnapshot,
   );
   return (
     <fieldset className="sound-controls">
-      <legend>Sound effects</legend>
+      <legend>Music</legend>
       <label>
         <input
           type="checkbox"
           checked={enabled}
           onChange={(event) => {
-            combatAudio.set(event.target.checked, volume);
-            combatAudio.activate();
+            gameMusic.set(event.target.checked, volume);
+            gameMusic.activate();
           }}
         />
-        Sound effects on
+        {navigation ? "Background soundtrack" : "Music on"}
       </label>
       <label>
-        Sound effect volume
+        {navigation ? "Background volume" : "Music volume"}
         <input
           type="range"
           min="0"
@@ -30,17 +34,13 @@ export function AudioControls() {
           value={volume}
           onChange={(event) => {
             const value = Number(event.target.value);
-            combatAudio.set(enabled, value);
-            combatAudio.activate();
+            gameMusic.set(enabled, value);
+            gameMusic.activate();
           }}
         />
       </label>
-      <p>
-        Original sound cues start when you interact. Every action remains
-        visible when muted.
-      </p>
-      <button type="button" onClick={() => combatAudio.ui("select")}>
-        Try sound
+      <button type="button" onClick={() => gameMusic.activate()}>
+        Play music
       </button>
     </fieldset>
   );

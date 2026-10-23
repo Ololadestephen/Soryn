@@ -1,0 +1,5 @@
+'Legionnaire' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au
+Track: https://www.scottbuckley.com.au/library/legionnaire-2022/
+License: https://creativecommons.org/licenses/by/4.0/
+
+Soryn reuses its demo's 126-second excerpt, beginning 12 seconds into the composer's track, with loudness normalization, an entrance fade and a three-second ending fade. The game repeats that edited excerpt as background music. The original composition is by Scott Buckley; Soryn does not claim authorship. The source and demo edit remain preserved.

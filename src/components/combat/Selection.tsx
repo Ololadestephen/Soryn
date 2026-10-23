@@ -10,7 +10,7 @@ import type { Difficulty } from "../../domain/combat/contracts";
 import { ArenaPicker } from "./ArenaPicker";
 import type { ArenaChoice } from "../../domain/combat/arenas";
 import { AudioControls } from "./audio/AudioControls";
-import { combatAudio } from "./audio/runtime";
+import { gameMusic } from "./audio/runtime";
 import { IdleArt } from "./rendered/IdleArt";
 import { companions } from "./rendered/catalogue";
 import { prepareSelectedAssets } from "./loading";
@@ -126,7 +126,7 @@ export function FighterSelection({
                   checked={difficulty === mode}
                   onChange={() => {
                     setDifficulty(mode);
-                    combatAudio.ui("select");
+                    gameMusic.activate();
                   }}
                 />
                 <span>{mode[0].toUpperCase() + mode.slice(1)}</span>
@@ -147,7 +147,7 @@ export function FighterSelection({
         disabled={busy}
         onChange={(choice) => {
           setArena(choice);
-          combatAudio.ui("select");
+          gameMusic.activate();
         }}
       />
       <AudioControls />
@@ -185,7 +185,7 @@ export function FighterSelection({
                 disabled={locked}
                 onChange={() => {
                   setSelected(entry.id);
-                  combatAudio.ui("select");
+                  gameMusic.activate();
                 }}
                 aria-label={`${identity.name} / ${identity.role}`}
               />

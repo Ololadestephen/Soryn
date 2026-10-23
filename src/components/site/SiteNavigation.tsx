@@ -1,4 +1,5 @@
 "use client";
+import { AudioControls } from "../combat/audio/AudioControls";
 import { useRef } from "react";
 import Link from "next/link";
 const secondary = [
@@ -64,7 +65,10 @@ export function SiteNavigation({ current }: { current: string }) {
         }}
       >
         <summary ref={summary}>More</summary>
-        <nav aria-label="Secondary navigation">{links}</nav>
+        <nav aria-label="Secondary navigation">
+          {links}
+          <AudioControls navigation />
+        </nav>
       </details>
       <button
         className="nav-mobile-toggle"
@@ -104,6 +108,7 @@ export function SiteNavigation({ current }: { current: string }) {
           </nav>
           <p className="eyebrow">Help &amp; records</p>
           <nav aria-label="Mobile secondary navigation">{links}</nav>
+          <AudioControls navigation />
         </div>
       </dialog>
     </div>

@@ -15,7 +15,16 @@ export function SiteFooter() {
       <Link prefetch={false} href="/help">
         Help &amp; FAQ
       </Link>
-      <p>Soryn fiction · not official Chog or Monad lore.</p>
+      <div>
+        <p>Soryn fiction · not official Chog or Monad lore.</p>
+        <p className="music-credit">
+          Music:{" "}
+          <a href="https://www.scottbuckley.com.au/library/legionnaire-2022/">
+            Legionnaire — Scott Buckley
+          </a>{" "}
+          · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+        </p>
+      </div>
     </footer>
   );
 }

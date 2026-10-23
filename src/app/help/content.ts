@@ -248,7 +248,7 @@ export const helpSections: readonly HelpSection[] = [
       {
         question: "Why is there no sound?",
         answer:
-          "Use the arena’s audio controls and check the device volume and browser/tab mute setting. Browsers may require a user interaction before playing audio. The homepage ability previews are intentionally silent. Reloading or turning up volume is not a fix for an ownership or authentication error.",
+          "Use Music in More/Menu or battle settings, and check the device volume and browser/tab mute setting. The demo soundtrack plays after you interact, continues between pages, and pauses in hidden tabs. Combat sound effects are removed. Reloading or turning up volume is not a fix for an ownership or authentication error.",
       },
       {
         question:

@@ -1,25 +1,8 @@
-import type { BattleView } from "../../../domain/combat/contracts";
-import type { SoundCue } from "../../../domain/combat/presentation/feel";
-
-const common: SoundCue[] = [
-  "select",
-  "confirm",
-  "impact",
-  "block",
-  "brace",
-  "counter",
-  "heal",
-  "energy",
-  "knockout",
-  "victory",
-  "defeat",
-  "draw",
-];
-class CombatAudio {
-  private context: AudioContext | null = null;
-  private gain: GainNode | null = null;
-  private buffers = new Map<SoundCue, AudioBuffer | null>();
-  private loading = new Map<SoundCue, Promise<void>>();
+/** One streaming music element across client navigation; never tied to combat frames. */
+export class GameMusic {
+  private audio: HTMLAudioElement | null = null;
+  private activated = false;
+  private pending: Promise<void> | null = null;
   private state = { enabled: true, volume: 0.3 };
   private serverState = this.state;
   private listeners = new Set<() => void>();
@@ -59,8 +42,16 @@ class CombatAudio {
     }
   }
   set(enabled: boolean, volume = this.volume) {
-    this.state = { enabled, volume: Math.max(0, Math.min(1, volume)) };
-    if (this.gain) this.gain.gain.value = this.enabled ? this.volume : 0;
+    this.state = {
+      enabled,
+      volume: Number.isFinite(volume)
+        ? Math.max(0, Math.min(1, volume))
+        : this.volume,
+    };
+    if (this.audio) {
+      this.audio.volume = this.volume;
+      if (!enabled) this.audio.pause();
+    }
     try {
       localStorage.setItem(
         "chog-combat-audio/1",
@@ -71,76 +62,51 @@ class CombatAudio {
     }
     this.listeners.forEach((listener) => listener());
   }
-  /** Called synchronously from an actual selection/confirmation/settings interaction only. */
-  activate() {
+  bind(audio: HTMLAudioElement) {
+    this.audio?.pause();
+    this.audio = audio;
     this.preferences();
-    if (!this.enabled || typeof window === "undefined" || !window.AudioContext)
-      return;
-    try {
-      if (!this.context) {
-        this.context = new AudioContext();
-        this.gain = this.context.createGain();
-        this.gain.gain.value = this.volume;
-        this.gain.connect(this.context.destination);
-      }
-      void this.context.resume().catch(() => undefined);
-      void this.prepareCues(["select", "confirm"]);
-    } catch {
-      /* Unsupported or denied audio cannot block combat. */
-    }
+    audio.volume = this.volume;
+    return () => {
+      audio.pause();
+      if (this.audio === audio) this.audio = null;
+    };
   }
-  private load(cue: SoundCue) {
-    if (!this.context || this.buffers.has(cue)) return Promise.resolve();
-    const prior = this.loading.get(cue);
-    if (prior) return prior;
-    const context = this.context;
-    const operation = (async () => {
-      try {
-        const reply = await fetch(`/combat/audio/${cue}.wav`, {
-          signal: AbortSignal.timeout(3500),
-        });
-        if (!reply.ok) throw new Error("Sound unavailable");
-        const buffer = await context.decodeAudioData(await reply.arrayBuffer());
-        this.buffers.set(cue, buffer);
-      } catch {
-        this.buffers.set(cue, null);
-      } finally {
-        this.loading.delete(cue);
-      }
-    })();
-    this.loading.set(cue, operation);
-    return operation;
+  /** Invoked from a player gesture, never from combat event playback. */
+  activate() {
+    this.activated = true;
+    this.resume();
   }
-  private async prepareCues(cues: SoundCue[]) {
-    await Promise.all(cues.map((cue) => this.load(cue)));
+  suspend() {
+    this.audio?.pause();
   }
-  async prepare(battle: BattleView) {
-    if (!this.context || !this.enabled) return;
-    await this.prepareCues([
-      ...common,
-      `special-${battle.snapshot.player.id}`,
-      `special-${battle.snapshot.opponent.id}`,
-    ]);
-  }
-  ui(cue: "select" | "confirm") {
-    this.activate();
-    void this.load(cue).then(() => this.play(cue));
-  }
-  play(cue: SoundCue) {
-    const buffer = this.buffers.get(cue);
+  resume() {
+    const audio = this.audio;
     if (
+      !audio ||
+      !this.activated ||
       !this.enabled ||
-      !buffer ||
-      !this.context ||
-      !this.gain ||
-      this.context.state !== "running"
+      this.pending ||
+      document.visibilityState === "hidden" ||
+      !audio.paused
     )
       return;
-    const source = this.context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(this.gain);
-    source.onended = () => source.disconnect();
-    source.start();
+    this.pending = audio
+      .play()
+      .then(() => {
+        if (
+          this.audio !== audio ||
+          !this.enabled ||
+          document.visibilityState === "hidden"
+        )
+          audio.pause();
+      })
+      .catch(() => {
+        // Autoplay denial or an unavailable track never blocks gameplay. A gesture can retry.
+      })
+      .finally(() => {
+        this.pending = null;
+      });
   }
 }
-export const combatAudio = new CombatAudio();
+export const gameMusic = new GameMusic();

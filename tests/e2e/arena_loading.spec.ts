@@ -1,3 +1,4 @@
+import { arenas } from "../../src/domain/combat/arenas";
 import { randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { test, expect, type Page } from "@playwright/test";
@@ -16,9 +17,9 @@ test("random arena · compact setup, resolved choice, refresh and rematch persis
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/arena");
   await expect(
-    page.getByRole("radio", { name: "Moonlit Grove", exact: true }),
+    page.getByRole("radio", { name: arenas.grove.name, exact: true }),
   ).toBeVisible();
-  await page.getByLabel("Sound effects on").uncheck();
+  await page.getByLabel("Music on").uncheck();
   await page.getByRole("radio", { name: /Random · chosen once/ }).check();
   await page.getByRole("button", { name: "Enter guest arena" }).click();
   const original = await (await page.request.get("/api/battle")).json();
@@ -31,7 +32,7 @@ test("random arena · compact setup, resolved choice, refresh and rematch persis
   ).toBe(original.battle.arena);
   await expect(page.locator(".move-notice")).toHaveCount(0);
   await page.getByRole("button", { name: "Battle settings" }).click();
-  await expect(page.getByLabel("Sound effects on")).not.toBeChecked();
+  await expect(page.getByLabel("Music on")).not.toBeChecked();
   await page.getByRole("button", { name: "Return to battle" }).click();
   const basic = page.getByRole("button", { name: /^Basic attack/ });
   const rematch = page.getByRole("button", { name: "Rematch", exact: true });
@@ -54,11 +55,13 @@ test("random arena · compact setup, resolved choice, refresh and rematch persis
 test("missing assets · chosen environment, new/legacy art and sound failures preserve playable state", async ({
   page,
 }) => {
-  await page.route("**/combat/audio/*", (route) => route.abort());
+  await page.route("**/music/*", (route) => route.abort());
   await page.route("**/combat/arenas/grove-*.webp", (route) => route.abort());
   await page.route("**/combat/{crisp,delivery}/*", (route) => route.abort());
   await page.goto("/arena");
-  await page.getByRole("radio", { name: "Moonlit Grove", exact: true }).check();
+  await page
+    .getByRole("radio", { name: arenas.grove.name, exact: true })
+    .check();
   await page.getByRole("button", { name: "Enter guest arena" }).click();
   await expect(page.locator(".arena-art-warning")).toBeVisible();
   await expect(page.locator(".fighter-player .rendered-art")).toHaveAttribute(

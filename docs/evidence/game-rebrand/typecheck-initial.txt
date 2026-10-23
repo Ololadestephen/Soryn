@@ -1,5 +1,0 @@
-
-> chog-deja-vu@0.1.0 typecheck
-> tsc --noEmit
-
-tests/unit/landing-render.test.ts(10,3): error TS2305: Module '"../../src/components/site/landing/LandingSections"' has no exported member 'BattleLoop'.

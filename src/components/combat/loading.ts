@@ -3,7 +3,6 @@ import type { CharacterId } from "../../domain/characters/definitions";
 import type { ArenaId } from "../../domain/combat/arenas";
 import { atlases, renderedFighters } from "./rendered/assets";
 import { deliveryPath } from "./rendered/delivery";
-import { combatAudio } from "./audio/runtime";
 import { prepareImage } from "./imagePreparation";
 export const portraitQuery = "(max-width: 700px) and (min-height: 501px)";
 export async function prepareSelectedAssets(
@@ -54,7 +53,5 @@ export async function prepareBattleAssets(
     progress,
     signal,
   );
-  // Start optional sound after visual downloads; never hold the artwork gate.
-  if (!signal?.aborted) void combatAudio.prepare(battle);
   return result;
 }

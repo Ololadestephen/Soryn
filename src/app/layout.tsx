@@ -1,3 +1,4 @@
+import { GameSoundtrack } from "../components/combat/audio/GameSoundtrack";
 import type { Metadata } from "next";
 import { WalletSession } from "../components/auth/WalletSession";
 import "./globals.css";
@@ -56,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <GameSoundtrack />
         <WalletSession>{children}</WalletSession>
       </body>
     </html>

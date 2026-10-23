@@ -59,7 +59,7 @@ test("record landing to setup, battle, result and rematch", async ({
   await expect(
     page.getByRole("button", { name: "Enter guest arena" }),
   ).toBeEnabled();
-  await page.getByLabel("Sound effects on").uncheck();
+  await page.getByLabel("Music on").uncheck();
   await page.getByRole("button", { name: "Enter guest arena" }).click();
   const battle = await playBattle(page);
   writeFileSync(

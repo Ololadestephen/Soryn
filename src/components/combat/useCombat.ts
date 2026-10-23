@@ -12,7 +12,7 @@ import { request } from "../request";
 import { usePlayback } from "./usePlayback";
 import type { ArenaChoice } from "../../domain/combat/arenas";
 import { prepareBattleAssets } from "./loading";
-import { combatAudio } from "./audio/runtime";
+import { gameMusic } from "./audio/runtime";
 type PlaySession = BattleSession & {
   authorized?: boolean;
   interruption?: string | null;
@@ -130,7 +130,7 @@ export function useCombat(
       difficulty?: Difficulty,
       arena: ArenaChoice = "sanctuary",
     ) => {
-      combatAudio.ui("confirm");
+      gameMusic.activate();
       return perform({
         operation: "start",
         mode,
@@ -142,7 +142,7 @@ export function useCombat(
       });
     },
     step: (move: Move) => {
-      combatAudio.ui("confirm");
+      gameMusic.activate();
       return (
         session.battle &&
         perform({

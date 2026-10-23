@@ -19,37 +19,10 @@ declare global {
 /** Captures the actual Web Audio output graph for QA, not a synthetic audio overlay. */
 export async function installAudioCapture(page: Page) {
   await page.addInitScript(() => {
-    const names = new WeakMap<ArrayBuffer, string>(),
-      buffers = new WeakMap<AudioBuffer, string>();
     const trace: { path: string; at: number }[] = [],
       chunks: Blob[] = [];
     let recorder: MediaRecorder | null = null,
       startedAt = 0;
-    const originalBuffer = Response.prototype.arrayBuffer;
-    Response.prototype.arrayBuffer = async function () {
-      const bytes = await originalBuffer.call(this);
-      if (this.url.includes("/combat/audio/"))
-        names.set(bytes, new URL(this.url).pathname);
-      return bytes;
-    };
-    const decode = AudioContext.prototype.decodeAudioData;
-    Object.defineProperty(AudioContext.prototype, "decodeAudioData", {
-      value: function (
-        this: AudioContext,
-        bytes: ArrayBuffer,
-        ...rest: unknown[]
-      ) {
-        const result: Promise<AudioBuffer> = Reflect.apply(decode, this, [
-          bytes,
-          ...rest,
-        ]);
-        return result.then((buffer) => {
-          const name = names.get(bytes);
-          if (name) buffers.set(buffer, name);
-          return buffer;
-        });
-      },
-    });
     const connect = AudioNode.prototype.connect;
     Object.defineProperty(AudioNode.prototype, "connect", {
       value: function (
@@ -75,15 +48,24 @@ export async function installAudioCapture(page: Page) {
         return result;
       },
     });
-    const start = AudioBufferSourceNode.prototype.start;
-    Object.defineProperty(AudioBufferSourceNode.prototype, "start", {
-      value: function (this: AudioBufferSourceNode, ...args: unknown[]) {
-        const result = Reflect.apply(start, this, args);
-        const path = this.buffer ? buffers.get(this.buffer) : undefined;
-        if (path) trace.push({ path, at: Date.now() });
-        return result;
-      },
-    });
+    const play = HTMLMediaElement.prototype.play;
+    const sources = new WeakMap<HTMLMediaElement, AudioContext>();
+    HTMLMediaElement.prototype.play = function () {
+      if (
+        this instanceof HTMLAudioElement &&
+        this.hasAttribute("data-game-soundtrack")
+      ) {
+        let context = sources.get(this);
+        if (!context) {
+          context = new AudioContext();
+          context.createMediaElementSource(this).connect(context.destination);
+          sources.set(this, context);
+        }
+        void context.resume();
+        trace.push({ path: new URL(this.src).pathname, at: Date.now() });
+      }
+      return play.call(this);
+    };
     window.chogAudioQA = {
       trace,
       contexts: 0,

@@ -26,3 +26,10 @@ data/raw/
 scorecard.png
 # Generated browser failure trace exceeds GitHub's per-file upload limit.
 docs/evidence/arena-feel/dodge-failure-trace.zip
+
+# Local project instructions, documentation, review evidence and demo workspace.
+/docs/
+/video/
+*.[mM][dD]
+*.[mM][dD][xX]
+*.markdown

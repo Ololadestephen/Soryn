@@ -1,3 +1,4 @@
+import { arenas } from "../../src/domain/combat/arenas";
 import { randomUUID } from "node:crypto";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
@@ -66,6 +67,12 @@ for (const encounter of [
       test.setTimeout(220000);
       mkdirSync("docs/evidence/arena-feel", { recursive: true });
       const videoStartedAt = Date.now();
+      await page.addInitScript(() =>
+        localStorage.setItem(
+          "chog-combat-audio/1",
+          JSON.stringify({ enabled: false, volume: 0.3 }),
+        ),
+      );
       await installAudioCapture(page);
       const official = await visualHolder(page, 1300);
       expect(
@@ -84,13 +91,7 @@ for (const encounter of [
       await page.emulateMedia({ reducedMotion: encounter.motion });
       await page.goto("/arena");
       await expect(page.locator(".arena-name")).toContainText(
-        encounter.arena === "grove"
-          ? "Moonlit Grove"
-          : encounter.arena === "foundry"
-            ? "Ember Foundry"
-            : encounter.arena === "sky"
-              ? "Sky Temple"
-              : "Ruined Sanctuary",
+        arenas[encounter.arena].name,
       );
       await expect(page.locator(".battle-stage")).not.toHaveAttribute(
         "data-preparing",
@@ -107,11 +108,11 @@ for (const encounter of [
       });
       // This page remains at one viewport for the entire recording. Other-viewport screenshots are captured in the separate full-suite visual checks.
       await page.getByRole("button", { name: "Battle settings" }).click();
-      const sound = page.getByLabel("Sound effects on");
+      const sound = page.getByLabel("Music on");
       await expect(sound).toBeVisible();
       await sound.setChecked(encounter.sound);
       if (encounter.sound)
-        await page.getByRole("button", { name: "Try sound" }).click();
+        await page.getByRole("button", { name: "Play music" }).click();
       await page.getByRole("button", { name: "Return to battle" }).click();
       const beforeControls = await page
         .locator(".combat-controls")
@@ -191,16 +192,11 @@ for (const encounter of [
       const paths = await page.evaluate(() =>
         window.chogAudioQA.trace.map((entry) => entry.path),
       );
-      if (encounter.sound) {
-        expect(paths).toContain("/combat/audio/confirm.wav");
-        expect(paths.some((path) => path.includes("special-"))).toBe(true);
-        expect(paths).toContain("/combat/audio/impact.wav");
-      } else expect(paths).toEqual([]);
+      if (encounter.sound) expect(paths).toContain("/music/legionnaire.m4a");
+      else expect(paths).toEqual([]);
+      expect(paths.some((path) => path.endsWith(".wav"))).toBe(false);
       const count = paths.length;
       if (encounter.arena === "sanctuary") {
-        expect(paths).toContain("/combat/audio/block.wav");
-        expect(paths).toContain("/combat/audio/counter.wav");
-        expect(paths).toContain("/combat/audio/knockout.wav");
         const captured = await page.evaluate(() => window.chogAudioQA.finish());
         expect(captured.bytes.length).toBeGreaterThan(1000);
         writeFileSync(

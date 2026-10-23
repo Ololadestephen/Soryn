@@ -85,7 +85,7 @@ for (const [name, viewport] of [
     ).toBeVisible();
     await page.screenshot({ path: `${evidence}/${name}-journal.png` });
     await page.goto("/arena");
-    await page.getByLabel("Sound effects on").uncheck();
+    await page.getByLabel("Music on").uncheck();
     await page.getByRole("button", { name: "Enter guest arena" }).click();
     const basic = page.getByRole("button", { name: /^Basic attack/ });
     await expect(basic).toBeEnabled();

@@ -10,7 +10,6 @@ import { useMoveNotices } from "./useMoveNotices";
 import { difficultyLabel } from "../../domain/combat/difficulty/contracts";
 import { useArenaLayout } from "./useArenaLayout";
 import { useMatchAssets } from "./useMatchAssets";
-import { usePresentationAudio } from "./audio/usePresentationAudio";
 import { AudioControls } from "./audio/AudioControls";
 import { arenas } from "../../domain/combat/arenas";
 
@@ -81,7 +80,6 @@ export function BattleStage({
       : pvp
         ? "Friend match"
         : undefined;
-  usePresentationAudio(battle, presentation, complete);
   useEffect(() => {
     const timer = setTimeout(() => setAckDue(true), ASSET_ACK_BOUND_MS);
     return () => clearTimeout(timer);
